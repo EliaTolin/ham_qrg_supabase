@@ -4,7 +4,8 @@
 -- ============================================================
 
 -- Estensioni
-create extension if not exists postgis;
+-- PostGIS nello schema extensions (non public) per evitare che le tabelle interne siano esposte via API
+create extension if not exists postgis schema extensions;
 create extension if not exists pgcrypto;
 
 -- Tipi
