@@ -1,14 +1,8 @@
+-- 1) Sblocca callsign (può essere NULL)
 alter table public.repeaters
-drop constraint if exists repeaters_callsign_freq_unique;
+alter column callsign drop not null;
 
-alter table public.repeaters
-drop constraint if exists repeaters_callsign_freq_mode_net_unique;
-
-alter table public.repeaters
-add constraint repeaters_callsign_freq_mode_unique
-unique (callsign, frequency_hz, mode);
-
-
+-- 2) Drop di constraint vecchi (se esistono)
 alter table public.repeaters
 drop constraint if exists repeaters_callsign_freq_unique;
 
@@ -18,8 +12,14 @@ drop constraint if exists repeaters_callsign_freq_mode_unique;
 alter table public.repeaters
 drop constraint if exists repeaters_callsign_freq_mode_net_unique;
 
--- questo DEVE esistere per usare on_conflict="callsign,frequency_hz,mode,locator"
 alter table public.repeaters
-add constraint repeaters_callsign_freq_mode_locator_unique
-unique (callsign, frequency_hz, mode, locator);
+drop constraint if exists repeaters_callsign_freq_mode_locator_unique;
+
+-- 3) Drop di indici UNIQUE vecchi (se esistono)
+drop index if exists public.repeaters_callsign_freq_uq;
+
+-- 4) Vincolo definitivo (identità reale)
+alter table public.repeaters
+add constraint repeaters_freq_mode_locator_unique
+unique (frequency_hz, mode, locator);
 
