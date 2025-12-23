@@ -12,3 +12,4 @@ where mode = 'FM'::public.repeater_mode;
 alter table public.repeaters
 alter column mode set default 'Analog'::public.repeater_mode;
 
+
