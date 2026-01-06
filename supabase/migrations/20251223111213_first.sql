@@ -155,22 +155,6 @@ as $$
 declare
   g geography;
 begin
-  -- Normalizza callsign
-  if new.callsign is not null then
-    new.callsign := nullif(upper(trim(new.callsign)), '');
-  end if;
-
-  -- CTCSS da tone_raw se manca
-  if new.ctcss_hz is null and new.tone_raw is not null then
-    new.ctcss_hz := public.try_parse_ctcss(new.tone_raw);
-  end if;
-
-  -- shift_hz da shift_raw se manca
-  if new.shift_hz is null and new.shift_raw is not null then
-    new.shift_hz := public.parse_shift_hz(new.shift_raw);
-  end if;
-
-  -- geom da lat/lon o locator
   if new.lat is not null and new.lon is not null then
     new.geom := st_setsrid(st_makepoint(new.lon, new.lat), 4326)::geography;
   elsif new.locator is not null then
