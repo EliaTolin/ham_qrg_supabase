@@ -241,7 +241,7 @@ create index repeater_feedback_user_created_idx
 create index repeater_feedback_geom_gix
   on public.repeater_feedback using gist (geom);
 
-create or replace view public.v_repeater_feedback_stats as
+create or replace view public.v_repeater_feedback_stats with (security_invoker = on) as
 select
   rf.repeater_id,
   count(*) filter (where rf.type = 'like')::int as likes_total,
