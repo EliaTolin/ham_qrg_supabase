@@ -1,7 +1,8 @@
 {
   "permissions": {
     "allow": [
-      "Bash(supabase migration new:*)"
+      "Bash(supabase migration new:*)",
+      "Bash(supabase db diff:*)"
     ]
   }
 }
