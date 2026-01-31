@@ -47,3 +47,5 @@ create index if not exists repeaters_locator_trgm_idx
 
 create index if not exists repeaters_manager_trgm_idx
   on public.repeaters using gin (manager gin_trgm_ops);
+
+

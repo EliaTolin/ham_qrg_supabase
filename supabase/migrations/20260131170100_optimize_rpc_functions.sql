@@ -151,3 +151,10 @@ begin
   order by m.dist_m;
 end;
 $$;
+
+ALTER TABLE public.repeaters
+DROP COLUMN mode;
+DROP TYPE public.repeater_mode;
+
+ALTER TYPE public.access_mode
+ADD VALUE 'NXDN';
