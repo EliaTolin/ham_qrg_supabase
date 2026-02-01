@@ -1,32 +1,74 @@
-// Follow this setup guide to integrate the Deno language server with your editor:
-// https://deno.land/manual/getting_started/setup_your_environment
-// This enables autocomplete, go to definition, etc.
+import "@supabase/functions-js/edge-runtime.d.ts";
+import { createClient } from "@supabase/supabase-js";
 
-// Setup type definitions for built-in Supabase Runtime APIs
-import "jsr:@supabase/functions-js/edge-runtime.d.ts"
+import { HamQRGClient } from "./api/hamqrg-client.ts";
+import { RepeaterRepository } from "./repository/repeater-repository.ts";
+import { AccessRepository } from "./repository/access-repository.ts";
+import { NetworkRepository } from "./repository/network-repository.ts";
+import { FetchRepeatersFromIZ8WNHUseCase } from "./usecase/fetch-repeaters-iz8wnh.ts";
+import { MapApiRecordToRepeaterUseCase } from "./usecase/map-api-record-to-repeater.ts";
+import { PersistRepeaterToDatabaseUseCase } from "./usecase/persist-repeater-to-database.ts";
+import { SyncController } from "./controller/sync-controller.ts";
 
-console.log("Hello from Functions!")
+const supabase = createClient(
+  Deno.env.get("SUPABASE_URL")!,
+  Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!,
+);
+
+const apiClient = new HamQRGClient(
+  Deno.env.get("HAMQRG_USR")!,
+  Deno.env.get("HAMQRG_PSW")!,
+  Deno.env.get("HAMQRG_TOKEN")!,
+);
+
+const repeaterRepo = new RepeaterRepository(supabase);
+const accessRepo = new AccessRepository(supabase);
+const networkRepo = new NetworkRepository(supabase);
+
+const fetchRepeatersUseCase = new FetchRepeatersFromIZ8WNHUseCase(apiClient);
+const mapApiRecordUseCase = new MapApiRecordToRepeaterUseCase(networkRepo);
+const persistRepeaterUseCase = new PersistRepeaterToDatabaseUseCase(
+  repeaterRepo,
+  accessRepo,
+);
+
+const controller = new SyncController(
+  fetchRepeatersUseCase,
+  mapApiRecordUseCase,
+  persistRepeaterUseCase,
+);
 
 Deno.serve(async (req) => {
-  const { name } = await req.json()
-  const data = {
-    message: `Hello ${name}!`,
+  try {
+    const { dry_run } = await req.json();
+    const dryRun = dry_run === true;
+    console.log("[Index] dry_run:", dryRun);
+    const stats = await controller.handle(dryRun);
+
+    return new Response(
+      JSON.stringify({
+        success: true,
+        stats,
+        timestamp: new Date().toISOString(),
+      }),
+      {
+        headers: { "Content-Type": "application/json" },
+        status: 200,
+      },
+    );
+  } catch (error) {
+    console.error("Sync failed:", error);
+
+    return new Response(
+      JSON.stringify({
+        success: false,
+        error: error instanceof Error ? error.message : "Unknown error",
+        timestamp: new Date().toISOString(),
+      }),
+      {
+        headers: { "Content-Type": "application/json" },
+        status: 500,
+      },
+    );
   }
-
-  return new Response(
-    JSON.stringify(data),
-    { headers: { "Content-Type": "application/json" } },
-  )
-})
-
-/* To invoke locally:
-
-  1. Run `supabase start` (see: https://supabase.com/docs/reference/cli/supabase-start)
-  2. Make an HTTP request:
-
-  curl -i --location --request POST 'http://127.0.0.1:54321/functions/v1/sync_repeater_iz8wnh' \
-    --header 'Authorization: Bearer eyJhbGciOiJFUzI1NiIsImtpZCI6ImI4MTI2OWYxLTIxZDgtNGYyZS1iNzE5LWMyMjQwYTg0MGQ5MCIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZS1kZW1vIiwicm9sZSI6ImFub24iLCJleHAiOjIwODUyNDI5MTJ9.IMKIUTxPFjKTbJ3Ey2OqRUg514vvoRH4yDPFeyKOn7WzsPAdgGhgUzo4pdDG3nZ3ot0biD3eIuMWKqMqX-Q8OA' \
-    --header 'Content-Type: application/json' \
-    --data '{"name":"Functions"}'
-
-*/
+});

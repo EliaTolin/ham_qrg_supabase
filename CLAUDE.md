@@ -42,7 +42,7 @@ The schema uses PostgreSQL with PostGIS for geographic queries.
 
 **Key Enums:**
 - `repeater_mode`: Analog, Digital, Mixed
-- `access_mode`: ANALOG, DMR, C4FM, DSTAR, ECHOLINK, SVX, APRS, BEACON, ATV
+- `access_mode`: ANALOG, DMR, C4FM, DSTAR, ECHOLINK, SVX, APRS, BEACON, ATV, NXDN, ALLSTAR, WINLINK
 - `network_kind`: dmr, c4fm, dstar, voip, mixed, other
 
 ### Geographic Functions
@@ -58,10 +58,49 @@ Both functions return repeater data with aggregated `accesses` JSONB containing 
 
 All tables use RLS. Only authenticated users can read data. Users can only modify their own feedback entries.
 
+### Edge Functions Architecture
+
+Edge functions follow a **clean architecture** pattern with constructor-based dependency injection:
+
+```
+function_name/
+├── index.ts              # DI wiring + HTTP response handling
+├── controller/           # Orchestrates use cases, contains flow logic
+├── usecase/              # Atomic, single-action business operations
+├── repository/           # Database access (Supabase client)
+├── api/                  # External API clients
+├── types.ts              # Shared interfaces
+├── constants.ts          # Static mappings and config values
+└── utils.ts              # Pure utility functions
+```
+
+**Layering rules:**
+- `index.ts` → builds dependencies, passes them to controller, handles HTTP response/error wrapping
+- `controller` → orchestrates the flow calling use cases, contains business logic decisions
+- `usecase` → each class does ONE atomic action, reusable and independently testable
+- `repository` → raw database operations via Supabase client
+- `api` → external HTTP clients
+
+**Naming conventions:**
+- UseCase classes: `{ActionDescription}UseCase` (e.g. `FetchRepeatersFromIZ8WNHUseCase`, `MapApiRecordToRepeaterUseCase`, `PersistRepeaterToDatabaseUseCase`)
+- Repository classes: `{Entity}Repository`
+- Controller classes: `{Domain}Controller`
+- API clients: `{Service}Client`
+- Files: kebab-case matching the class name (e.g. `fetch-repeaters-iz8wnh.ts`)
+- Variables in controller: `{shortName}UseCase` (e.g. `fetchRepeatersUseCase`, `mapApiRecordUseCase`)
+
+### Migration Patterns
+
+- Timestamped SQL files in `supabase/migrations/`
+- Safe enum extensions: `ALTER TYPE ... ADD VALUE IF NOT EXISTS`
+- Partial unique indexes: `CREATE UNIQUE INDEX IF NOT EXISTS ... WHERE column IS NOT NULL`
+- Idempotent seeding: `INSERT ... ON CONFLICT DO NOTHING`
+
 ## Conventions
 
-- Migrations are timestamped SQL files in `supabase/migrations/`
 - The `geom` column is auto-generated from lat/lon coordinates
 - Maidenhead locators are automatically converted to coordinates if lat/lon not provided
 - Frequencies are stored in Hz (`frequency_hz`), shifts in Hz (`shift_hz`)
 - CTCSS tones stored as numeric(6,1) in Hz
+- Deno runtime for edge functions with JSR imports (`jsr:@supabase/*`)
+- External sync records tracked via `external_id` + `last_seen_at` columns

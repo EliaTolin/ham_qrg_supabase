@@ -2,7 +2,15 @@
   "permissions": {
     "allow": [
       "Bash(supabase migration new:*)",
-      "Bash(supabase db diff:*)"
+      "Bash(supabase db diff:*)",
+      "mcp__ide__getDiagnostics",
+      "Bash(supabase db reset:*)",
+      "Bash(tree:*)",
+      "Bash(git -C /Users/eliatolin/Desktop/Aurora/Progetti/HamQRG/ham_qrg_supabase log --oneline)",
+      "Bash(git -C /Users/eliatolin/Desktop/Aurora/Progetti/HamQRG/ham_qrg_supabase show HEAD:.claude/settings.local.json)",
+      "Bash(supabase status:*)",
+      "Bash(printf:*)",
+      "Bash(PGPASSWORD=postgres psql:*)"
     ]
   }
 }
