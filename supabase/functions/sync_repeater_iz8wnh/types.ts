@@ -73,3 +73,19 @@ export interface SyncStats {
   missing_networks: string[];
   elapsed_seconds: number;
 }
+
+/** Payload messaggio coda */
+export interface GridMessage {
+  run_id: string;
+  grid: string;
+  lat: number;
+  lon: number;
+  dry_run: boolean;
+}
+
+/** Risposta dispatcher */
+export interface DispatchResult {
+  run_id: string;
+  total_grids: number;
+  dry_run: boolean;
+}

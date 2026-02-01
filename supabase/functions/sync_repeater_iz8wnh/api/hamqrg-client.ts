@@ -13,16 +13,8 @@ export class HamQRGClient {
     this.token = token;
   }
 
-  async fetchFromGrid(grid: string): Promise<HamQRGRecord[]> {
-    const coords = locatorToLatLon(grid);
-    if (!coords) {
-      console.warn(`[API] Grid ${grid}: invalid locator, skipped`);
-      return [];
-    }
-
-    console.log(
-      `[API] Grid ${grid}: fetching (lat=${coords.lat}, lon=${coords.lon})`,
-    );
+  async fetchFromCoords(lat: number, lon: number): Promise<HamQRGRecord[]> {
+    console.log(`[API] Fetching (lat=${lat}, lon=${lon})`);
 
     const response = await fetch(API_URL, {
       method: "POST",
@@ -32,22 +24,34 @@ export class HamQRGClient {
         "TOKEN": this.token,
         "Content-Type": "application/x-www-form-urlencoded",
       },
-      body: `lat=${coords.lat}&lng=${coords.lon}&range=150`,
+      body: `lat=${lat}&lng=${lon}&range=150`,
     });
 
     if (!response.ok) {
       throw new Error(
-        `API error for grid ${grid}: ${response.status} ${response.statusText}`,
+        `API error for coords (${lat}, ${lon}): ${response.status} ${response.statusText}`,
       );
     }
 
     const data = await response.json();
     if (!Array.isArray(data)) {
-      console.warn(`[API] Grid ${grid}: response is not an array, skipped`);
+      console.warn(
+        `[API] Coords (${lat}, ${lon}): response is not an array, skipped`,
+      );
       return [];
     }
 
-    console.log(`[API] Grid ${grid}: ${data.length} records`);
+    console.log(`[API] Coords (${lat}, ${lon}): ${data.length} records`);
     return data;
+  }
+
+  fetchFromGrid(grid: string): Promise<HamQRGRecord[]> {
+    const coords = locatorToLatLon(grid);
+    if (!coords) {
+      console.warn(`[API] Grid ${grid}: invalid locator, skipped`);
+      return Promise.resolve([]);
+    }
+
+    return this.fetchFromCoords(coords.lat, coords.lon);
   }
 }

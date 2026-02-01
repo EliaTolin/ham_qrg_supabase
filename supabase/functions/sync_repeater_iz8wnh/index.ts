@@ -1,12 +1,9 @@
 import { getSupabaseServiceClient } from "../_shared/supabase-client.ts";
-import { HamQRGClient } from "./api/hamqrg-client.ts";
-import { RepeaterRepository } from "./repository/repeater-repository.ts";
-import { AccessRepository } from "./repository/access-repository.ts";
-import { NetworkRepository } from "./repository/network-repository.ts";
-import { FetchRepeatersFromIZ8WNHUseCase } from "./usecase/fetch-repeaters-iz8wnh.ts";
-import { MapApiRecordToRepeaterUseCase } from "./usecase/map-api-record-to-repeater.ts";
-import { PersistRepeaterToDatabaseUseCase } from "./usecase/persist-repeater-to-database.ts";
-import { SyncController } from "./controller/sync-controller.ts";
+import { QueueRepository } from "./repository/queue-repository.ts";
+import { SyncRunRepository } from "./repository/sync-run-repository.ts";
+import { CreateSyncRunUseCase } from "./usecase/create-sync-run.ts";
+import { EnqueueGridsUseCase } from "./usecase/enqueue-grids.ts";
+import { DispatchController } from "./controller/dispatch-controller.ts";
 
 Deno.serve(async (req) => {
   try {
@@ -14,38 +11,23 @@ Deno.serve(async (req) => {
     const dryRun = dry_run === true;
     console.log("[Index] dry_run:", dryRun);
 
-    const apiClient = new HamQRGClient(
-      Deno.env.get("HAMQRG_USR")!,
-      Deno.env.get("HAMQRG_PSW")!,
-      Deno.env.get("HAMQRG_TOKEN")!,
-    );
-
     const supabaseClient = getSupabaseServiceClient();
-    const repeaterRepo = new RepeaterRepository(supabaseClient);
-    const accessRepo = new AccessRepository(supabaseClient);
-    const networkRepo = new NetworkRepository(supabaseClient);
+    const queueRepo = new QueueRepository(supabaseClient);
+    const syncRunRepo = new SyncRunRepository(supabaseClient);
 
-    const fetchRepeatersUseCase = new FetchRepeatersFromIZ8WNHUseCase(
-      apiClient,
-    );
-    const mapApiRecordUseCase = new MapApiRecordToRepeaterUseCase(networkRepo);
-    const persistRepeaterUseCase = new PersistRepeaterToDatabaseUseCase(
-      repeaterRepo,
-      accessRepo,
-    );
+    const createSyncRunUseCase = new CreateSyncRunUseCase(syncRunRepo);
+    const enqueueGridsUseCase = new EnqueueGridsUseCase(queueRepo);
 
-    const controller = new SyncController(
-      fetchRepeatersUseCase,
-      mapApiRecordUseCase,
-      persistRepeaterUseCase,
-      networkRepo,
+    const controller = new DispatchController(
+      createSyncRunUseCase,
+      enqueueGridsUseCase,
     );
-    const stats = await controller.handle(dryRun);
+    const result = await controller.handle(dryRun);
 
     return new Response(
       JSON.stringify({
         success: true,
-        stats,
+        ...result,
         timestamp: new Date().toISOString(),
       }),
       {
@@ -54,7 +36,7 @@ Deno.serve(async (req) => {
       },
     );
   } catch (error) {
-    console.error("Sync failed:", error);
+    console.error("Dispatch failed:", error);
 
     return new Response(
       JSON.stringify({
