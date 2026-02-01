@@ -11,7 +11,6 @@ export class RepeaterRepository {
       .upsert(
         {
           ...data,
-          ds: 32,
           source: "iz8wnh",
           last_seen_at: new Date().toISOString(),
         },

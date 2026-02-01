@@ -13,7 +13,8 @@
       "Bash(PGPASSWORD=postgres psql:*)",
       "Bash(ls:*)",
       "Bash(grep:*)",
-      "Bash(deno task:*)"
+      "Bash(deno task:*)",
+      "WebFetch(domain:supabase.com)"
     ]
   }
 }

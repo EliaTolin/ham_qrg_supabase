@@ -1,4 +1,4 @@
-import { createSupabaseClient } from "../_shared/supabase-client.ts";
+import { getSupabaseServiceClient } from "../_shared/supabase-client.ts";
 import { HamQRGClient } from "./api/hamqrg-client.ts";
 import { RepeaterRepository } from "./repository/repeater-repository.ts";
 import { AccessRepository } from "./repository/access-repository.ts";
@@ -20,9 +20,7 @@ Deno.serve(async (req) => {
       Deno.env.get("HAMQRG_TOKEN")!,
     );
 
-    const supabaseClient = createSupabaseClient(
-      Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!,
-    );
+    const supabaseClient = getSupabaseServiceClient();
     const repeaterRepo = new RepeaterRepository(supabaseClient);
     const accessRepo = new AccessRepository(supabaseClient);
     const networkRepo = new NetworkRepository(supabaseClient);
