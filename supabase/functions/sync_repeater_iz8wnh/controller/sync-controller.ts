@@ -1,9 +1,9 @@
-import { ITALY_GRID_SQUARES } from "../constants.ts";
 import type { SyncStats } from "../types.ts";
 import type { NetworkRepository } from "../repository/network-repository.ts";
 import type { FetchRepeatersFromIZ8WNHUseCase } from "../usecase/fetch-repeaters-iz8wnh.ts";
 import type { MapApiRecordToRepeaterUseCase } from "../usecase/map-api-record-to-repeater.ts";
 import type { PersistRepeaterToDatabaseUseCase } from "../usecase/persist-repeater-to-database.ts";
+import { EU_GRIDS_UNIQUE } from "../locators.ts";
 
 export class SyncController {
   constructor(
@@ -18,7 +18,7 @@ export class SyncController {
     const startTime = Date.now();
 
     const { records, errors: fetchErrors } = await this.fetchRepeatersUseCase
-      .execute(ITALY_GRID_SQUARES);
+      .execute(EU_GRIDS_UNIQUE);
 
     console.log(
       `[Sync] Fetch complete: ${records.size} unique records, ${fetchErrors} errors`,
@@ -81,7 +81,7 @@ export class SyncController {
 
     return {
       dry_run: dryRun,
-      grids_queried: ITALY_GRID_SQUARES.length,
+      grids_queried: EU_GRIDS_UNIQUE.length,
       fetch_errors: fetchErrors,
       api_records: records.size,
       repeaters_processed: repeatersProcessed,

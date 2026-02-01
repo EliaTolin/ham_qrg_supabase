@@ -35,7 +35,7 @@ export interface MappedAccess {
   external_id: string;
   mode: string;
   network_id: string | null;
-  ctcss_tx_hz: number | null;
+  ctcss_hz: number | null;
   color_code: number | null;
   talkgroup: number | null;
 }

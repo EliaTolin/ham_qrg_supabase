@@ -33,7 +33,7 @@ export class MapApiRecordToRepeaterUseCase {
     const networkId = await this.networkRepo.resolveNetworkId(rec.Rete);
 
     const ctcssVal = parseFloat(rec.Tono);
-    const ctcssTxHz = ctcssVal > 0 && ctcssVal <= 300 ? ctcssVal : null;
+    const ctcssHz = ctcssVal > 0 && ctcssVal <= 300 ? ctcssVal : null;
 
     let colorCode: number | null = null;
     if (mode === "DMR" && rec.ColorCode) {
@@ -53,7 +53,7 @@ export class MapApiRecordToRepeaterUseCase {
         external_id: rec.ID,
         mode,
         network_id: networkId,
-        ctcss_tx_hz: ctcssTxHz,
+        ctcss_hz: ctcssHz,
         color_code: colorCode,
         talkgroup,
       },

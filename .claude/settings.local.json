@@ -10,7 +10,10 @@
       "Bash(git -C /Users/eliatolin/Desktop/Aurora/Progetti/HamQRG/ham_qrg_supabase show HEAD:.claude/settings.local.json)",
       "Bash(supabase status:*)",
       "Bash(printf:*)",
-      "Bash(PGPASSWORD=postgres psql:*)"
+      "Bash(PGPASSWORD=postgres psql:*)",
+      "Bash(ls:*)",
+      "Bash(grep:*)",
+      "Bash(deno task:*)"
     ]
   }
 }
