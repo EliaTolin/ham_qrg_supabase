@@ -56,7 +56,6 @@ export interface FetchResult {
 /** Esito sync di un singolo record */
 export interface SyncRecordResult {
   repeaterOk: boolean;
-  repeaterCreated: boolean;
   accessOk: boolean;
 }
 
@@ -66,8 +65,7 @@ export interface SyncStats {
   grids_queried: number;
   fetch_errors: number;
   api_records: number;
-  repeaters_created: number;
-  repeaters_updated: number;
+  repeaters_processed: number;
   access_processed: number;
   sync_errors: number;
   unknown_networks: string[];

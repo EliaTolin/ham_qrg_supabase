@@ -37,7 +37,6 @@ const controller = new SyncController(
   mapApiRecordUseCase,
   persistRepeaterUseCase,
   networkRepo,
-  repeaterRepo,
 );
 
 Deno.serve(async (req) => {
