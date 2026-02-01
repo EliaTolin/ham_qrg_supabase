@@ -22,7 +22,12 @@ ALTER TABLE public.repeater_access
 ALTER TABLE public.repeater_access
   ADD CONSTRAINT repeater_access_external_id_unique UNIQUE (external_id);
 
--- 4) Seed networks used by the HamQRG API
+-- 4) Rename dmr_id to talkgroup (more universal: DMR TG, EchoLink Node, Wires-X Room, AllStar Node)
+ALTER TABLE public.repeater_access RENAME COLUMN dmr_id TO talkgroup;
+COMMENT ON COLUMN public.repeater_access.talkgroup IS
+  'Virtual room/channel ID: DMR Talkgroup, EchoLink Node, Wires-X Room, AllStar Node';
+
+-- 5) Seed networks used by the HamQRG API
 INSERT INTO public.networks (name, kind) VALUES
   ('BrandMeister', 'dmr'),
   ('EchoLink', 'voip'),

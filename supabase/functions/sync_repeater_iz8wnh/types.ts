@@ -35,10 +35,9 @@ export interface MappedAccess {
   external_id: string;
   mode: string;
   network_id: string | null;
-  ctcss_hz: number | null;
+  ctcss_tx_hz: number | null;
   color_code: number | null;
-  dmr_id: number | null;
-  notes: string | null;
+  talkgroup: number | null;
 }
 
 /** Risultato del mapping di un singolo record API */

@@ -33,7 +33,7 @@ export class MapApiRecordToRepeaterUseCase {
     const networkId = await this.networkRepo.resolveNetworkId(rec.Rete);
 
     const ctcssVal = parseFloat(rec.Tono);
-    const ctcssHz = ctcssVal > 0 && ctcssVal <= 300 ? ctcssVal : null;
+    const ctcssTxHz = ctcssVal > 0 && ctcssVal <= 300 ? ctcssVal : null;
 
     let colorCode: number | null = null;
     if (mode === "DMR" && rec.ColorCode) {
@@ -41,18 +41,10 @@ export class MapApiRecordToRepeaterUseCase {
       if (cc >= 0 && cc <= 15) colorCode = cc;
     }
 
-    let dmrId: number | null = null;
-    let notes: string | null = null;
+    let talkgroup: number | null = null;
     if (rec.Stanza) {
-      if (mode === "DMR") {
-        dmrId = parseInt(rec.Stanza) || null;
-      } else if (["ECHOLINK", "C4FM", "ALLSTAR"].includes(mode)) {
-        notes = `Node: ${rec.Stanza}`;
-      }
-    }
-
-    if (rec.Tipologia === "LN") {
-      notes = ((notes || "") + " [Link Node]").trim();
+      const parsed = parseInt(rec.Stanza);
+      if (!isNaN(parsed)) talkgroup = parsed;
     }
 
     return {
@@ -61,10 +53,9 @@ export class MapApiRecordToRepeaterUseCase {
         external_id: rec.ID,
         mode,
         network_id: networkId,
-        ctcss_hz: ctcssHz,
+        ctcss_tx_hz: ctcssTxHz,
         color_code: colorCode,
-        dmr_id: dmrId,
-        notes: notes || null,
+        talkgroup,
       },
     };
   }
