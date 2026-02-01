@@ -1,15 +1,13 @@
-import { SupabaseClient } from "@supabase/supabase-js";
+import type { SupabaseClient } from "supabase";
+import type { Database } from "../../_shared/database.types.ts";
 import { RETE_MAP, RETE_SKIP } from "../constants.ts";
 
 export class NetworkRepository {
-  private supabase: SupabaseClient;
   private cache = new Map<string, string | null>();
   private _unknownRete = new Set<string>();
   private _missingNetworks = new Set<string>();
 
-  constructor(supabase: SupabaseClient) {
-    this.supabase = supabase;
-  }
+  constructor(private supabase: SupabaseClient<Database>) {}
 
   get unknownRete(): string[] {
     return [...this._unknownRete];

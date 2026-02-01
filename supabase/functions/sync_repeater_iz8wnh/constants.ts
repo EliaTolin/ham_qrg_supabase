@@ -1,7 +1,11 @@
+import type { Database } from "../_shared/database.types.ts";
+
+type AccessMode = Database["public"]["Enums"]["access_mode"];
+
 export const API_URL =
   "https://www.iz8wnh.it/rpts/privateAPI/HamQRG/HamQRG.php";
 
-export const TIPOLOGIA_MAP: Record<string, string | null> = {
+export const TIPOLOGIA_MAP: Record<string, AccessMode | null> = {
   "FM": "ANALOG",
   "fm": "ANALOG",
   "DMR": "DMR",

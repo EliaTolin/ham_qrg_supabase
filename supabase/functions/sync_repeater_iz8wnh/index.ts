@@ -1,6 +1,4 @@
-import "@supabase/functions-js/edge-runtime.d.ts";
-import { createClient } from "@supabase/supabase-js";
-
+import { createSupabaseClient } from "../_shared/supabase-client.ts";
 import { HamQRGClient } from "./api/hamqrg-client.ts";
 import { RepeaterRepository } from "./repository/repeater-repository.ts";
 import { AccessRepository } from "./repository/access-repository.ts";
@@ -10,40 +8,40 @@ import { MapApiRecordToRepeaterUseCase } from "./usecase/map-api-record-to-repea
 import { PersistRepeaterToDatabaseUseCase } from "./usecase/persist-repeater-to-database.ts";
 import { SyncController } from "./controller/sync-controller.ts";
 
-const supabase = createClient(
-  Deno.env.get("SUPABASE_URL")!,
-  Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!,
-);
-
-const apiClient = new HamQRGClient(
-  Deno.env.get("HAMQRG_USR")!,
-  Deno.env.get("HAMQRG_PSW")!,
-  Deno.env.get("HAMQRG_TOKEN")!,
-);
-
-const repeaterRepo = new RepeaterRepository(supabase);
-const accessRepo = new AccessRepository(supabase);
-const networkRepo = new NetworkRepository(supabase);
-
-const fetchRepeatersUseCase = new FetchRepeatersFromIZ8WNHUseCase(apiClient);
-const mapApiRecordUseCase = new MapApiRecordToRepeaterUseCase(networkRepo);
-const persistRepeaterUseCase = new PersistRepeaterToDatabaseUseCase(
-  repeaterRepo,
-  accessRepo,
-);
-
-const controller = new SyncController(
-  fetchRepeatersUseCase,
-  mapApiRecordUseCase,
-  persistRepeaterUseCase,
-  networkRepo,
-);
-
 Deno.serve(async (req) => {
   try {
     const { dry_run } = await req.json();
     const dryRun = dry_run === true;
     console.log("[Index] dry_run:", dryRun);
+
+    const apiClient = new HamQRGClient(
+      Deno.env.get("HAMQRG_USR")!,
+      Deno.env.get("HAMQRG_PSW")!,
+      Deno.env.get("HAMQRG_TOKEN")!,
+    );
+
+    const supabaseClient = createSupabaseClient(
+      Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!,
+    );
+    const repeaterRepo = new RepeaterRepository(supabaseClient);
+    const accessRepo = new AccessRepository(supabaseClient);
+    const networkRepo = new NetworkRepository(supabaseClient);
+
+    const fetchRepeatersUseCase = new FetchRepeatersFromIZ8WNHUseCase(
+      apiClient,
+    );
+    const mapApiRecordUseCase = new MapApiRecordToRepeaterUseCase(networkRepo);
+    const persistRepeaterUseCase = new PersistRepeaterToDatabaseUseCase(
+      repeaterRepo,
+      accessRepo,
+    );
+
+    const controller = new SyncController(
+      fetchRepeatersUseCase,
+      mapApiRecordUseCase,
+      persistRepeaterUseCase,
+      networkRepo,
+    );
     const stats = await controller.handle(dryRun);
 
     return new Response(

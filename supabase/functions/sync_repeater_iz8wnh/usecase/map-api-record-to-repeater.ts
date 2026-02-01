@@ -53,7 +53,7 @@ export class MapApiRecordToRepeaterUseCase {
         external_id: rec.ID,
         mode,
         network_id: networkId,
-        ctcss_hz: ctcssHz,
+        ctcss_tx_hz: ctcssHz,
         color_code: colorCode,
         talkgroup,
       },

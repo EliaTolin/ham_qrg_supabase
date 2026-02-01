@@ -1,12 +1,9 @@
-import { SupabaseClient } from "@supabase/supabase-js";
+import type { SupabaseClient } from "supabase";
+import type { Database } from "../../_shared/database.types.ts";
 import type { MappedRepeater } from "../types.ts";
 
 export class RepeaterRepository {
-  private supabase: SupabaseClient;
-
-  constructor(supabase: SupabaseClient) {
-    this.supabase = supabase;
-  }
+  constructor(private supabase: SupabaseClient<Database>) {}
 
   async upsert(data: MappedRepeater): Promise<string | null> {
     const { data: repeater, error } = await this.supabase
@@ -14,6 +11,7 @@ export class RepeaterRepository {
       .upsert(
         {
           ...data,
+          ds: 32,
           source: "iz8wnh",
           last_seen_at: new Date().toISOString(),
         },

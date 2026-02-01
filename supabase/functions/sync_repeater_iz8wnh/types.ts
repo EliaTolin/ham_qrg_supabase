@@ -1,3 +1,5 @@
+import type { Database } from "../_shared/database.types.ts";
+
 /** Record restituito dall'API HamQRG */
 export interface HamQRGRecord {
   ID: string;
@@ -33,9 +35,9 @@ export interface MappedRepeater {
 /** Dati access mappati (senza repeater_id, assegnato in fase di sync) */
 export interface MappedAccess {
   external_id: string;
-  mode: string;
+  mode: Database["public"]["Enums"]["access_mode"];
   network_id: string | null;
-  ctcss_hz: number | null;
+  ctcss_tx_hz: number | null;
   color_code: number | null;
   talkgroup: number | null;
 }
