@@ -1,3 +1,4 @@
+import { API_URL } from "../constants.ts";
 import { locatorToLatLon } from "../utils.ts";
 import type { HamQRGRecord } from "../types.ts";
 
@@ -23,23 +24,16 @@ export class HamQRGClient {
       `[API] Grid ${grid}: fetching (lat=${coords.lat}, lon=${coords.lon})`,
     );
 
-    console.log("USER KEY", this.usr);
-    console.log("PSW KEY", this.psw);
-    console.log("TOKEN KEY", this.token);
-
-    const response = await fetch(
-      "https://www.iz8wnh.it/rpts/privateAPI/HamQRG/HamQRG.php",
-      {
-        method: "POST",
-        headers: {
-          "USR": this.usr,
-          "PSW": this.psw,
-          "TOKEN": this.token,
-          "Content-Type": "application/x-www-form-urlencoded",
-        },
-        body: `lat=${coords.lat}&lng=${coords.lon}&range=150`,
+    const response = await fetch(API_URL, {
+      method: "POST",
+      headers: {
+        "USR": this.usr,
+        "PSW": this.psw,
+        "TOKEN": this.token,
+        "Content-Type": "application/x-www-form-urlencoded",
       },
-    );
+      body: `lat=${coords.lat}&lng=${coords.lon}&range=150`,
+    });
 
     if (!response.ok) {
       throw new Error(
@@ -48,7 +42,6 @@ export class HamQRGClient {
     }
 
     const data = await response.json();
-    console.log(`[API] data ${grid}: ${JSON.stringify(data)}`);
     if (!Array.isArray(data)) {
       console.warn(`[API] Grid ${grid}: response is not an array, skipped`);
       return [];

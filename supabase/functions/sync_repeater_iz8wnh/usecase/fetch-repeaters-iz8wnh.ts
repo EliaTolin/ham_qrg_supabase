@@ -1,3 +1,4 @@
+import { sleep } from "../utils.ts";
 import type { FetchResult, HamQRGRecord } from "../types.ts";
 import type { HamQRGClient } from "../api/hamqrg-client.ts";
 
@@ -28,6 +29,7 @@ export class FetchRepeatersFromIZ8WNHUseCase {
         console.error(`[Fetch] Grid ${grid}: FAILED`, error);
         errors++;
       }
+      await sleep(50);
     }
 
     console.log(

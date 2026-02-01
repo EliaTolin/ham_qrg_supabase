@@ -1,3 +1,6 @@
+export const API_URL =
+  "https://www.iz8wnh.it/rpts/privateAPI/HamQRG/HamQRG.php";
+
 export const ITALY_GRID_SQUARES = [
   "JM39",
   "JM48",
