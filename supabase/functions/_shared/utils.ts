@@ -12,18 +12,18 @@ export function locatorToLatLon(
   lat += parseInt(loc[3]) * 1;
 
   if (loc.length >= 6) {
-    // Subsquare 6-char: centro del subsquare
-    lon += (loc.charCodeAt(4) - 65) * (2 / 24) + (2 / 24) / 2;
-    lat += (loc.charCodeAt(5) - 65) * (1 / 24) + (1 / 24) / 2;
+    lon += (loc.charCodeAt(4) - 65) * 5 / 60;   // 5' longitude slot
+    lat += (loc.charCodeAt(5) - 65) * 2.5 / 60; // 2.5' latitude slot
+    lon += 0.5 * 5 / 60;                         // centro del subsquare
+    lat += 0.5 * 2.5 / 60;
   } else {
-    // 4-char: centro del quadrato
-    lon += 1.0;
-    lat += 0.5;
+    lon += 0.5 * 2;                               // centro del quadrato 2°
+    lat += 0.5 * 1;                               // centro del quadrato 1°
   }
 
   return {
-    lat: Math.round(lat * 100000) / 100000,
-    lon: Math.round(lon * 100000) / 100000,
+    lat: Math.round(lat * 1000000) / 1000000,
+    lon: Math.round(lon * 1000000) / 1000000,
   };
 }
 
