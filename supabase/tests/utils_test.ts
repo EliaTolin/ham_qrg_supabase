@@ -6,34 +6,34 @@ import { locatorToLatLon } from "../functions/_shared/utils.ts";
 
 Deno.test("locatorToLatLon - JN58rj (N 48.396, E 11.458)", () => {
   const result = locatorToLatLon("JN58rj");
-  assertEquals(result, { lat: 48.39583, lon: 11.45833 });
+  assertEquals(result, { lat: 48.395833, lon: 11.458333 });
 });
 
 Deno.test("locatorToLatLon - KF29oh (S 30.688, E 25.208)", () => {
   const result = locatorToLatLon("KF29oh");
-  assertEquals(result, { lat: -30.6875, lon: 25.20833 });
+  assertEquals(result, { lat: -30.6875, lon: 25.208333 });
 });
 
 Deno.test("locatorToLatLon - FE62es (S 47.229, W 67.625)", () => {
   const result = locatorToLatLon("FE62es");
-  assertEquals(result, { lat: -47.22917, lon: -67.625 });
+  assertEquals(result, { lat: -47.229167, lon: -67.625 });
 });
 
 Deno.test("locatorToLatLon - DN15ga (N 45.021, W 117.458)", () => {
   const result = locatorToLatLon("DN15ga");
-  assertEquals(result, { lat: 45.02083, lon: -117.45833 });
+  assertEquals(result, { lat: 45.020833, lon: -117.458333 });
 });
 
 // Original test cases
 
 Deno.test("locatorToLatLon - 6-char locator JN54io", () => {
   const result = locatorToLatLon("JN54io");
-  assertEquals(result, { lat: 44.60417, lon: 10.70833 });
+  assertEquals(result, { lat: 44.604167, lon: 10.708333 });
 });
 
 Deno.test("locatorToLatLon - 6-char locator JM55IO", () => {
   const result = locatorToLatLon("JM55IO");
-  assertEquals(result, { lat: 35.60417, lon: 10.70833 });
+  assertEquals(result, { lat: 35.604167, lon: 10.708333 });
 });
 
 Deno.test("locatorToLatLon - 4-char locator GM54", () => {
