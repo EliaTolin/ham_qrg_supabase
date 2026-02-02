@@ -1,4 +1,4 @@
-import type { SyncRunRepository } from "../repository/sync-run-repository.ts";
+import type { SyncRunRepository } from "../../_shared/repository/sync-run-repository.ts";
 
 export class CreateSyncRunUseCase {
   constructor(private syncRunRepo: SyncRunRepository) {}

@@ -1,9 +1,9 @@
-import type { HamQRGClient } from "../../sync_repeater_iz8wnh/api/hamqrg-client.ts";
-import type { MapApiRecordToRepeaterUseCase } from "../../sync_repeater_iz8wnh/usecase/map-api-record-to-repeater.ts";
-import type { PersistRepeaterToDatabaseUseCase } from "../../sync_repeater_iz8wnh/usecase/persist-repeater-to-database.ts";
-import type { QueueRepository } from "../../sync_repeater_iz8wnh/repository/queue-repository.ts";
-import type { SyncRunRepository } from "../../sync_repeater_iz8wnh/repository/sync-run-repository.ts";
-import type { NetworkRepository } from "../../sync_repeater_iz8wnh/repository/network-repository.ts";
+import type { HamQRGClient } from "../../_shared/api/hamqrg-client.ts";
+import type { MapApiRecordToRepeaterUseCase } from "../../_shared/usecase/map-api-record-to-repeater.ts";
+import type { PersistRepeaterToDatabaseUseCase } from "../../_shared/usecase/persist-repeater-to-database.ts";
+import type { QueueRepository } from "../../_shared/repository/queue-repository.ts";
+import type { SyncRunRepository } from "../../_shared/repository/sync-run-repository.ts";
+import type { NetworkRepository } from "../../_shared/repository/network-repository.ts";
 
 const MAX_READ_CT = 3;
 

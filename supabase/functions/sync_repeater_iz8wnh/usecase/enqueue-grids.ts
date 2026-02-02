@@ -1,6 +1,6 @@
-import { locatorToLatLon } from "../utils.ts";
-import type { GridMessage } from "../types.ts";
-import type { QueueRepository } from "../repository/queue-repository.ts";
+import { locatorToLatLon } from "../../_shared/utils.ts";
+import type { GridMessage } from "../../_shared/types.ts";
+import type { QueueRepository } from "../../_shared/repository/queue-repository.ts";
 
 export class EnqueueGridsUseCase {
   constructor(private queueRepo: QueueRepository) {}

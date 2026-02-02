@@ -15,7 +15,12 @@
       "Bash(grep:*)",
       "Bash(deno task:*)",
       "WebFetch(domain:supabase.com)",
-      "Bash(wc:*)"
+      "Bash(wc:*)",
+      "Bash(deno cache:*)",
+      "Bash(echo:*)",
+      "Bash(deno check:*)",
+      "Bash(deno eval:*)",
+      "Bash(deno test:*)"
     ]
   }
 }

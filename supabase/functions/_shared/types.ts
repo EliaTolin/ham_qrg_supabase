@@ -1,4 +1,4 @@
-import type { Database } from "../_shared/database.types.ts";
+import type { Database } from "./database.types.ts";
 
 /** Record restituito dall'API HamQRG */
 export interface HamQRGRecord {
@@ -48,30 +48,10 @@ export interface MappedRecord {
   access: MappedAccess | null;
 }
 
-/** Risultato del fetch da tutte le grid */
-export interface FetchResult {
-  records: Map<string, HamQRGRecord>;
-  errors: number;
-}
-
 /** Esito sync di un singolo record */
 export interface SyncRecordResult {
   repeaterOk: boolean;
   accessOk: boolean;
-}
-
-/** Statistiche restituite al termine della sync */
-export interface SyncStats {
-  dry_run: boolean;
-  grids_queried: number;
-  fetch_errors: number;
-  api_records: number;
-  repeaters_processed: number;
-  access_processed: number;
-  sync_errors: number;
-  unknown_networks: string[];
-  missing_networks: string[];
-  elapsed_seconds: number;
 }
 
 /** Payload messaggio coda */
@@ -80,12 +60,5 @@ export interface GridMessage {
   grid: string;
   lat: number;
   lon: number;
-  dry_run: boolean;
-}
-
-/** Risposta dispatcher */
-export interface DispatchResult {
-  run_id: string;
-  total_grids: number;
   dry_run: boolean;
 }

@@ -11,14 +11,14 @@ export function locatorToLatLon(
   lon += parseInt(loc[2]) * 2;
   lat += parseInt(loc[3]) * 1;
 
-  // Centro del quadrato 4-char
-  lon += 1.0;
-  lat += 0.5;
-
-  // Subsquare 6-char (se presente)
   if (loc.length >= 6) {
-    lon += (loc.charCodeAt(4) - 65) * (2 / 24) + 1 / 24;
-    lat += (loc.charCodeAt(5) - 65) * (1 / 24) + 0.5 / 24;
+    // Subsquare 6-char: centro del subsquare
+    lon += (loc.charCodeAt(4) - 65) * (2 / 24) + (2 / 24) / 2;
+    lat += (loc.charCodeAt(5) - 65) * (1 / 24) + (1 / 24) / 2;
+  } else {
+    // 4-char: centro del quadrato
+    lon += 1.0;
+    lat += 0.5;
   }
 
   return {

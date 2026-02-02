@@ -118,22 +118,12 @@ export const LIECHTENSTEIN_GRIDS = ["JN47"];
 // SOUTHERN EUROPE
 // =============================================================================
 
-/** Italy */
 export const ITALY_GRIDS = [
   // North
-  "JN34", "JN35", "JN36", "JN44", "JN45", "JN46",
-  "JN54", "JN55", "JN56", "JN64", "JN65", "JN66",
-  // Central
-  "JN51", "JN52", "JN53", "JN61", "JN62", "JN63",
-  "JN60", "JN70", "JN71", "JN72",
-  // South
-  "JM78", "JM79", "JM88", "JM89",
-  "JM77", "JM87", "JM97",
-  "JN70", "JN80", "JN81",
-  // Sicily
-  "JM66", "JM67", "JM68", "JM76", "JM77", "JM78",
-  // Sardinia
-  "JM48", "JM49", "JN40", "JN41",
+  "JN33", "JN34", "JN35", "JN36", "JN40", "JN41", "JN43", "JN44", "JN45", "JN46",
+  "JN51", "JN52", "JN53", "JN54", "JN55", "JN56", "JN57", "JN60", "JN61", "JN62", "JN63", "JN64", "JN65", "JN66", "JN70", "JN71", "JN72", "JN80", "JN81", "JN90",
+  // South & Islands
+  "JM48", "JM49", "JM56", "JM65", "JM66", "JM67", "JM68", "JM76", "JM77", "JM78", "JM79", "JM87", "JM88", "JM89", "JM97", "JM99"
 ];
 
 /** San Marino */

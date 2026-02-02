@@ -1,12 +1,13 @@
 import { getSupabaseServiceClient } from "../_shared/supabase-client.ts";
-import { HamQRGClient } from "../sync_repeater_iz8wnh/api/hamqrg-client.ts";
-import { RepeaterRepository } from "../sync_repeater_iz8wnh/repository/repeater-repository.ts";
-import { AccessRepository } from "../sync_repeater_iz8wnh/repository/access-repository.ts";
-import { NetworkRepository } from "../sync_repeater_iz8wnh/repository/network-repository.ts";
-import { QueueRepository } from "../sync_repeater_iz8wnh/repository/queue-repository.ts";
-import { SyncRunRepository } from "../sync_repeater_iz8wnh/repository/sync-run-repository.ts";
-import { MapApiRecordToRepeaterUseCase } from "../sync_repeater_iz8wnh/usecase/map-api-record-to-repeater.ts";
-import { PersistRepeaterToDatabaseUseCase } from "../sync_repeater_iz8wnh/usecase/persist-repeater-to-database.ts";
+import { HamQRGClient } from "../_shared/api/hamqrg-client.ts";
+import { RepeaterRepository } from "../_shared/repository/repeater-repository.ts";
+import { AccessRepository } from "../_shared/repository/access-repository.ts";
+import { NetworkRepository } from "../_shared/repository/network-repository.ts";
+import { QueueRepository } from "../_shared/repository/queue-repository.ts";
+import { SyncRunRepository } from "../_shared/repository/sync-run-repository.ts";
+import { MapApiRecordToRepeaterUseCase } from "../_shared/usecase/map-api-record-to-repeater.ts";
+import { PersistRepeaterToDatabaseUseCase } from "../_shared/usecase/persist-repeater-to-database.ts";
+import { jsonError, jsonSuccess } from "../_shared/response.ts";
 import { WorkerController } from "./controller/worker-controller.ts";
 
 Deno.serve(async (req) => {
@@ -44,30 +45,9 @@ Deno.serve(async (req) => {
     );
     const result = await controller.handle(batchSize);
 
-    return new Response(
-      JSON.stringify({
-        success: true,
-        ...result,
-        timestamp: new Date().toISOString(),
-      }),
-      {
-        headers: { "Content-Type": "application/json" },
-        status: 200,
-      },
-    );
+    return jsonSuccess(result);
   } catch (error) {
     console.error("Worker failed:", error);
-
-    return new Response(
-      JSON.stringify({
-        success: false,
-        error: error instanceof Error ? error.message : "Unknown error",
-        timestamp: new Date().toISOString(),
-      }),
-      {
-        headers: { "Content-Type": "application/json" },
-        status: 500,
-      },
-    );
+    return jsonError(error);
   }
 });

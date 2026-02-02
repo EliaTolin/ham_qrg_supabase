@@ -1,4 +1,4 @@
-import type { SupabaseClient } from "supabase";
+import type { SupabaseClient } from "https://esm.sh/@supabase/supabase-js@2.49.4";
 
 export class SyncRunRepository {
   constructor(private supabase: SupabaseClient) {}

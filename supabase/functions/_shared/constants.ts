@@ -1,4 +1,4 @@
-import type { Database } from "../_shared/database.types.ts";
+import type { Database } from "./database.types.ts";
 
 type AccessMode = Database["public"]["Enums"]["access_mode"];
 

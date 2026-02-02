@@ -1,5 +1,5 @@
-import type { SupabaseClient } from "supabase";
-import type { Database } from "../../_shared/database.types.ts";
+import type { SupabaseClient } from "https://esm.sh/@supabase/supabase-js@2.49.4";
+import type { Database } from "../database.types.ts";
 import { RETE_MAP, RETE_SKIP } from "../constants.ts";
 
 export class NetworkRepository {

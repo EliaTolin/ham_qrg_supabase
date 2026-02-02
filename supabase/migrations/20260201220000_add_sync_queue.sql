@@ -4,6 +4,8 @@
 
 -- 1) Enable pgmq extension
 CREATE EXTENSION IF NOT EXISTS pgmq;
+CREATE EXTENSION IF NOT EXISTS pg_cron;
+CREATE EXTENSION IF NOT EXISTS pg_net;
 
 -- 2) Create the queue
 SELECT pgmq.create('sync_repeater_iz8wnh_queue');

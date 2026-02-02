@@ -1,7 +1,12 @@
-import type { DispatchResult } from "../types.ts";
 import type { CreateSyncRunUseCase } from "../usecase/create-sync-run.ts";
 import type { EnqueueGridsUseCase } from "../usecase/enqueue-grids.ts";
 import { EU_GRIDS_UNIQUE } from "../locators.ts";
+
+interface DispatchResult {
+  run_id: string;
+  total_grids: number;
+  dry_run: boolean;
+}
 
 export class DispatchController {
   constructor(
