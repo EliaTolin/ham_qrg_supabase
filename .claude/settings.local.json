@@ -20,7 +20,8 @@
       "Bash(echo:*)",
       "Bash(deno check:*)",
       "Bash(deno eval:*)",
-      "Bash(deno test:*)"
+      "Bash(deno test:*)",
+      "Bash(supabase db query:*)"
     ]
   }
 }
