@@ -1,4 +1,4 @@
-import { locatorToLatLon } from "../../_shared/utils.ts";
+import { LocatorUtils } from "../../_shared/locator-utils.ts";
 import type { GridMessage } from "../../_shared/types.ts";
 import type { QueueRepository } from "../../_shared/repository/queue-repository.ts";
 
@@ -13,7 +13,7 @@ export class EnqueueGridsUseCase {
     const messages: GridMessage[] = [];
 
     for (const grid of grids) {
-      const coords = locatorToLatLon(grid);
+      const coords = LocatorUtils.toLatLon(grid);
       if (!coords) {
         console.warn(`[Enqueue] Grid ${grid}: invalid locator, skipped`);
         continue;

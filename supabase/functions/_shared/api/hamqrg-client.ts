@@ -1,5 +1,5 @@
 import { API_URL } from "../constants.ts";
-import { locatorToLatLon } from "../utils.ts";
+import { LocatorUtils } from "../locator-utils.ts";
 import type { HamQRGRecord } from "../types.ts";
 
 export class HamQRGClient {
@@ -46,7 +46,7 @@ export class HamQRGClient {
   }
 
   fetchFromGrid(grid: string): Promise<HamQRGRecord[]> {
-    const coords = locatorToLatLon(grid);
+    const coords = LocatorUtils.toLatLon(grid);
     if (!coords) {
       console.warn(`[API] Grid ${grid}: invalid locator, skipped`);
       return Promise.resolve([]);

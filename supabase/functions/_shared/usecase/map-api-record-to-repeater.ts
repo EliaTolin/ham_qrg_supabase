@@ -1,5 +1,5 @@
 import { TIPOLOGIA_MAP } from "../constants.ts";
-import { locatorToLatLon } from "../utils.ts";
+import { LocatorUtils } from "../locator-utils.ts";
 import type { HamQRGRecord, MappedRecord } from "../types.ts";
 import type { NetworkRepository } from "../repository/network-repository.ts";
 
@@ -8,7 +8,7 @@ export class MapApiRecordToRepeaterUseCase {
 
   async execute(rec: HamQRGRecord): Promise<MappedRecord | null> {
     const freqHz = Math.round(parseFloat(rec.Frequenza) * 1_000_000);
-    const coords = locatorToLatLon(rec.Locator);
+    const coords = LocatorUtils.toLatLon(rec.Locator);
     const locality = rec.Localita?.replace(/\n/g, " ").trim() || null;
 
     const repeater = {
@@ -41,10 +41,10 @@ export class MapApiRecordToRepeaterUseCase {
       if (cc >= 0 && cc <= 15) colorCode = cc;
     }
 
-    let talkgroup: number | null = null;
+    let node_id: number | null = null;
     if (rec.Stanza) {
       const parsed = parseInt(rec.Stanza);
-      if (!isNaN(parsed)) talkgroup = parsed;
+      if (!isNaN(parsed)) node_id = parsed;
     }
 
     return {
@@ -55,7 +55,7 @@ export class MapApiRecordToRepeaterUseCase {
         network_id: networkId,
         ctcss_tx_hz: ctcssHz,
         color_code: colorCode,
-        talkgroup,
+        node_id,
       },
     };
   }

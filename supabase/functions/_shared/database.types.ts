@@ -122,6 +122,7 @@ export type Database = {
           last_seen_at: string | null
           mode: Database["public"]["Enums"]["access_mode"]
           network_id: string | null
+          node_id: number | null
           notes: string | null
           repeater_id: string
           source: string
@@ -140,6 +141,7 @@ export type Database = {
           last_seen_at?: string | null
           mode: Database["public"]["Enums"]["access_mode"]
           network_id?: string | null
+          node_id?: number | null
           notes?: string | null
           repeater_id: string
           source?: string
@@ -158,6 +160,7 @@ export type Database = {
           last_seen_at?: string | null
           mode?: Database["public"]["Enums"]["access_mode"]
           network_id?: string | null
+          node_id?: number | null
           notes?: string | null
           repeater_id?: string
           source?: string

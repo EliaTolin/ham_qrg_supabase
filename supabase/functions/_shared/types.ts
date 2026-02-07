@@ -39,7 +39,7 @@ export interface MappedAccess {
   network_id: string | null;
   ctcss_tx_hz: number | null;
   color_code: number | null;
-  talkgroup: number | null;
+  node_id: number | null;
 }
 
 /** Risultato del mapping di un singolo record API */
