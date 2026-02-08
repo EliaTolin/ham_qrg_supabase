@@ -1,31 +1,27 @@
-import { LocatorUtils } from "../../_shared/locator-utils.ts";
 import type { GridMessage } from "../../_shared/types.ts";
 import type { QueueRepository } from "../../_shared/repository/queue-repository.ts";
+
+export interface CoverageStation {
+  lat: number;
+  lon: number;
+  radius_km: number;
+}
 
 export class EnqueueGridsUseCase {
   constructor(private queueRepo: QueueRepository) {}
 
   async execute(
-    grids: string[],
+    stations: CoverageStation[],
     runId: string,
     dryRun: boolean,
   ): Promise<number> {
-    const messages: GridMessage[] = [];
-
-    for (const grid of grids) {
-      const coords = LocatorUtils.toLatLon(grid);
-      if (!coords) {
-        console.warn(`[Enqueue] Grid ${grid}: invalid locator, skipped`);
-        continue;
-      }
-      messages.push({
-        run_id: runId,
-        grid,
-        lat: coords.lat,
-        lon: coords.lon,
-        dry_run: dryRun,
-      });
-    }
+    const messages: GridMessage[] = stations.map((s) => ({
+      run_id: runId,
+      lat: s.lat,
+      lon: s.lon,
+      radius_km: s.radius_km,
+      dry_run: dryRun,
+    }));
 
     console.log(
       `[Enqueue] Sending ${messages.length} messages to queue`,

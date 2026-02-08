@@ -21,7 +21,10 @@
       "Bash(deno check:*)",
       "Bash(deno eval:*)",
       "Bash(deno test:*)",
-      "Bash(supabase db query:*)"
+      "Bash(supabase db query:*)",
+      "Bash(deno run:*)",
+      "Bash(find:*)",
+      "Bash(xargs cat:*)"
     ]
   }
 }

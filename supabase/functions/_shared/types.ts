@@ -10,6 +10,8 @@ export interface HamQRGRecord {
   ColorCode: string | null;
   Stanza: string | null;
   Rete: string | null;
+  Lat: string;
+  Long: string;
   Localita: string;
   Locator: string;
   Identificativo: string | null;
@@ -57,8 +59,8 @@ export interface SyncRecordResult {
 /** Payload messaggio coda */
 export interface GridMessage {
   run_id: string;
-  grid: string;
   lat: number;
   lon: number;
+  radius_km: number;
   dry_run: boolean;
 }

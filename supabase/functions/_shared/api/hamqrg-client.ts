@@ -1,5 +1,4 @@
 import { API_URL } from "../constants.ts";
-import { LocatorUtils } from "../locator-utils.ts";
 import type { HamQRGRecord } from "../types.ts";
 
 export class HamQRGClient {
@@ -13,8 +12,8 @@ export class HamQRGClient {
     this.token = token;
   }
 
-  async fetchFromCoords(lat: number, lon: number): Promise<HamQRGRecord[]> {
-    console.log(`[API] Fetching (lat=${lat}, lon=${lon})`);
+  async fetchFromCoords(lat: number, lon: number, radiusKm: number): Promise<HamQRGRecord[]> {
+    console.log(`[API] Fetching (lat=${lat}, lon=${lon}, range=${radiusKm})`);
 
     const response = await fetch(API_URL, {
       method: "POST",
@@ -24,7 +23,7 @@ export class HamQRGClient {
         "TOKEN": this.token,
         "Content-Type": "application/x-www-form-urlencoded",
       },
-      body: `lat=${lat}&lng=${lon}&range=150`,
+      body: `lat=${lat}&lng=${lon}&range=${radiusKm}`,
     });
 
     if (!response.ok) {
@@ -43,15 +42,5 @@ export class HamQRGClient {
 
     console.log(`[API] Coords (${lat}, ${lon}): ${data.length} records`);
     return data;
-  }
-
-  fetchFromGrid(grid: string): Promise<HamQRGRecord[]> {
-    const coords = LocatorUtils.toLatLon(grid);
-    if (!coords) {
-      console.warn(`[API] Grid ${grid}: invalid locator, skipped`);
-      return Promise.resolve([]);
-    }
-
-    return this.fetchFromCoords(coords.lat, coords.lon);
   }
 }

@@ -51,12 +51,12 @@ export class WorkerController {
     let totalSyncErrors = 0;
 
     for (const { msg_id, read_ct, message } of messages) {
-      const { run_id, grid, lat, lon, dry_run } = message;
+      const { run_id, lat, lon, radius_km, dry_run } = message;
 
       // Poison message: too many retries
       if (read_ct > MAX_READ_CT) {
         console.warn(
-          `[Worker] Poison message ${msg_id} (grid=${grid}, read_ct=${read_ct}), deleting`,
+          `[Worker] Poison message ${msg_id} (lat=${lat}, lon=${lon}, read_ct=${read_ct}), deleting`,
         );
         await this.queueRepo.delete(msg_id);
         await this.syncRunRepo.incrementStats(run_id, { fetch_errors: 1 });
@@ -70,10 +70,10 @@ export class WorkerController {
       let syncErrors = 0;
 
       try {
-        console.log(`[Worker] Processing grid ${grid} (lat=${lat}, lon=${lon})`);
+        console.log(`[Worker] Processing (lat=${lat}, lon=${lon})`);
 
-        const records = await this.apiClient.fetchFromCoords(lat, lon);
-        console.log(`[Worker] Grid ${grid}: ${records.length} records from API`);
+        const records = await this.apiClient.fetchFromCoords(lat, lon, radius_km);
+        console.log(`[Worker] (lat=${lat}, lon=${lon}): ${records.length} records from API`);
 
         for (const apiRecord of records) {
           try {
@@ -105,7 +105,7 @@ export class WorkerController {
           }
         }
       } catch (error) {
-        console.error(`[Worker] Grid ${grid}: fetch FAILED`, error);
+        console.error(`[Worker] (lat=${lat}, lon=${lon}): fetch FAILED`, error);
         fetchErrors = 1;
       }
 
@@ -126,7 +126,7 @@ export class WorkerController {
       totalSyncErrors += syncErrors;
 
       console.log(
-        `[Worker] Grid ${grid}: done (repeaters=${repeatersProcessed}, access=${accessProcessed})`,
+        `[Worker] (lat=${lat}, lon=${lon}): done (repeaters=${repeatersProcessed}, access=${accessProcessed})`,
       );
     }
 
