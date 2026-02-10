@@ -12,7 +12,7 @@ export class MapApiRecordToRepeaterUseCase {
     const locality = rec.Localita?.replace(/\n/g, " ").trim() || null;
 
     const repeater = {
-      external_id: `${freqHz}_${rec.Locator}`,
+      external_id: rec.ID,
       name: rec.Ripetitore || null,
       callsign: rec.Identificativo || null,
       frequency_hz: freqHz,

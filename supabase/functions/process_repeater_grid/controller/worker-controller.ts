@@ -1,5 +1,6 @@
 import type { HamQRGClient } from "../../_shared/api/hamqrg-client.ts";
 import type { MapApiRecordToRepeaterUseCase } from "../../_shared/usecase/map-api-record-to-repeater.ts";
+import type { MigrateExternalIdUseCase } from "../../_shared/usecase/migrate-external-id.ts";
 import type { PersistRepeaterToDatabaseUseCase } from "../../_shared/usecase/persist-repeater-to-database.ts";
 import type { QueueRepository } from "../../_shared/repository/queue-repository.ts";
 import type { SyncRunRepository } from "../../_shared/repository/sync-run-repository.ts";
@@ -11,6 +12,7 @@ export class WorkerController {
   constructor(
     private apiClient: HamQRGClient,
     private mapApiRecordUseCase: MapApiRecordToRepeaterUseCase,
+    private migrateExternalIdUseCase: MigrateExternalIdUseCase | null,
     private persistRepeaterUseCase: PersistRepeaterToDatabaseUseCase,
     private queueRepo: QueueRepository,
     private syncRunRepo: SyncRunRepository,
@@ -90,6 +92,11 @@ export class WorkerController {
               repeatersProcessed++;
               if (mapped.access) accessProcessed++;
               continue;
+            }
+
+            // One-shot: migrate old external_id format before upsert
+            if (this.migrateExternalIdUseCase) {
+              await this.migrateExternalIdUseCase.execute(apiRecord);
             }
 
             const result = await this.persistRepeaterUseCase.execute(mapped);

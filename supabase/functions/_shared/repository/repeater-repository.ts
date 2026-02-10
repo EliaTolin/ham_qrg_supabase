@@ -5,6 +5,27 @@ import type { MappedRepeater } from "../types.ts";
 export class RepeaterRepository {
   constructor(private supabase: SupabaseClient<Database>) {}
 
+  async migrateExternalId(
+    oldExternalId: string,
+    newExternalId: string,
+  ): Promise<boolean> {
+    const { error } = await this.supabase
+      .from("repeaters")
+      .update({ external_id: newExternalId })
+      .eq("external_id", oldExternalId);
+
+    if (error) {
+      // Ignore unique constraint violations (already migrated)
+      if (error.code === "23505") return true;
+      console.error(
+        `[MigrateExternalId] ${oldExternalId} → ${newExternalId}: FAILED`,
+        error,
+      );
+      return false;
+    }
+    return true;
+  }
+
   async upsert(data: MappedRepeater): Promise<string | null> {
     const { data: repeater, error } = await this.supabase
       .from("repeaters")

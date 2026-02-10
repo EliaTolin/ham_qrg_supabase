@@ -46,44 +46,63 @@ insert into public.role_permissions (role, permission) values
   -- viewer: no permissions (read-only via existing RLS)
 
 -- d) Custom Access Token Hook
-create or replace function public.custom_access_token_hook(event jsonb)
-returns jsonb
-language plpgsql
-stable
-as $$
-declare
+-- =========================================================
+-- Fix RBAC hook: add RLS policy for supabase_auth_admin
+-- and cast enum to text to avoid polymorphic type error
+-- =========================================================
+
+-- 1) RLS policy so supabase_auth_admin can read user_roles
+CREATE POLICY "Allow auth admin to read user roles"
+    ON public.user_roles
+    FOR SELECT TO supabase_auth_admin
+    USING (true);
+
+-- 2) Recreate hook: cast role to text before to_jsonb()
+CREATE OR REPLACE FUNCTION public.custom_access_token_hook(event jsonb)
+RETURNS jsonb
+LANGUAGE plpgsql
+STABLE
+AS $$
+DECLARE
   claims jsonb;
-  user_role public.app_role;
-begin
-  -- Fetch the user's role from user_roles
-  select role into user_role
-  from public.user_roles
-  where user_id = (event->>'user_id')::uuid
-  limit 1;
+  v_user_role text;
+BEGIN
+  -- Fetch the user role, cast enum to text
+  SELECT role::text INTO v_user_role
+  FROM public.user_roles
+  WHERE user_id = (event->>'user_id')::uuid
+  LIMIT 1;
 
   claims := event->'claims';
 
-  if user_role is not null then
-    -- Set the user_role claim
-    claims := jsonb_set(claims, '{user_role}', to_jsonb(user_role));
-  else
+  IF v_user_role IS NOT NULL THEN
+    claims := jsonb_set(claims, '{user_role}', to_jsonb(v_user_role));
+  ELSE
     claims := jsonb_set(claims, '{user_role}', '"viewer"');
-  end if;
+  END IF;
 
-  -- Update the claims in the event
   event := jsonb_set(event, '{claims}', claims);
 
-  return event;
-end;
+  RETURN event;
+END;
 $$;
 
--- Grant access to supabase_auth_admin
-grant usage on schema public to supabase_auth_admin;
-grant execute on function public.custom_access_token_hook to supabase_auth_admin;
-revoke execute on function public.custom_access_token_hook from authenticated, anon, public;
+-- Grant execute permission to supabase_auth_admin
+GRANT EXECUTE ON FUNCTION public.custom_access_token_hook TO supabase_auth_admin;
 
--- Grant select on user_roles to supabase_auth_admin so the hook can query it
-grant select on public.user_roles to supabase_auth_admin;
+-- Revoke from public for security
+REVOKE EXECUTE ON FUNCTION public.custom_access_token_hook FROM PUBLIC;
+REVOKE EXECUTE ON FUNCTION public.custom_access_token_hook FROM anon;
+REVOKE EXECUTE ON FUNCTION public.custom_access_token_hook FROM authenticated;
+
+-- Grant usage on user_profile and driver to supabase_auth_admin (needed by the hook)
+GRANT USAGE ON SCHEMA public TO supabase_auth_admin;
+
+-- 4) RLS policy for role_permissions (SELECT for auth admin)
+CREATE POLICY "Allow auth admin to read role permissions"
+    ON public.role_permissions
+    FOR SELECT TO supabase_auth_admin
+    USING (true);
 
 -- e) Authorize function
 create or replace function public.authorize(requested_permission public.app_permission)

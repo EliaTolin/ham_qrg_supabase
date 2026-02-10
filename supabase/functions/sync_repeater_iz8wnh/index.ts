@@ -8,8 +8,8 @@ import { DispatchController } from "./controller/dispatch-controller.ts";
 
 Deno.serve(async (req) => {
   try {
-    const { dry_run } = await req.json();
-    const dryRun = dry_run === true;
+    const body = await req.json();
+    const dryRun = body.dry_run ?? false;
     console.log("[Index] dry_run:", dryRun);
 
     const supabaseClient = getSupabaseServiceClient();

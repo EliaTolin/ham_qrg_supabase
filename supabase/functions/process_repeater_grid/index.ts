@@ -6,6 +6,7 @@ import { NetworkRepository } from "../_shared/repository/network-repository.ts";
 import { QueueRepository } from "../_shared/repository/queue-repository.ts";
 import { SyncRunRepository } from "../_shared/repository/sync-run-repository.ts";
 import { MapApiRecordToRepeaterUseCase } from "../_shared/usecase/map-api-record-to-repeater.ts";
+import { MigrateExternalIdUseCase } from "../_shared/usecase/migrate-external-id.ts";
 import { PersistRepeaterToDatabaseUseCase } from "../_shared/usecase/persist-repeater-to-database.ts";
 import { jsonError, jsonSuccess } from "../_shared/response.ts";
 import { WorkerController } from "./controller/worker-controller.ts";
@@ -30,6 +31,8 @@ Deno.serve(async (req) => {
     const syncRunRepo = new SyncRunRepository(supabaseClient);
 
     const mapApiRecordUseCase = new MapApiRecordToRepeaterUseCase(networkRepo);
+    // TODO: remove after first successful full sync
+    const migrateExternalIdUseCase = new MigrateExternalIdUseCase(repeaterRepo);
     const persistRepeaterUseCase = new PersistRepeaterToDatabaseUseCase(
       repeaterRepo,
       accessRepo,
@@ -38,6 +41,7 @@ Deno.serve(async (req) => {
     const controller = new WorkerController(
       apiClient,
       mapApiRecordUseCase,
+      migrateExternalIdUseCase,
       persistRepeaterUseCase,
       queueRepo,
       syncRunRepo,
