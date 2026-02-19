@@ -55,12 +55,14 @@ export class WorkerController {
     for (const { msg_id, read_ct, message } of messages) {
       const { run_id, lat, lon, radius_km, dry_run } = message;
 
+      // Delete immediately to prevent duplicate processing by other workers
+      await this.queueRepo.delete(msg_id);
+
       // Poison message: too many retries
       if (read_ct > MAX_READ_CT) {
         console.warn(
-          `[Worker] Poison message ${msg_id} (lat=${lat}, lon=${lon}, read_ct=${read_ct}), deleting`,
+          `[Worker] Poison message ${msg_id} (lat=${lat}, lon=${lon}, read_ct=${read_ct})`,
         );
-        await this.queueRepo.delete(msg_id);
         await this.syncRunRepo.incrementStats(run_id, { fetch_errors: 1 });
         messagesPoisoned++;
         continue;
@@ -116,7 +118,7 @@ export class WorkerController {
         fetchErrors = 1;
       }
 
-      // Update stats and delete message
+      // Update stats
       await this.syncRunRepo.incrementStats(run_id, {
         repeaters_processed: repeatersProcessed,
         access_processed: accessProcessed,
@@ -124,7 +126,6 @@ export class WorkerController {
         sync_errors: syncErrors,
       });
 
-      await this.queueRepo.delete(msg_id);
       messagesProcessed++;
 
       totalRepeatersProcessed += repeatersProcessed;

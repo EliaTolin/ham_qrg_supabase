@@ -1,6 +1,6 @@
+import type { CoverageStationRepository } from "../../_shared/repository/coverage-station-repository.ts";
 import type { CreateSyncRunUseCase } from "../usecase/create-sync-run.ts";
 import type { EnqueueGridsUseCase } from "../usecase/enqueue-grids.ts";
-import type { CoverageStation } from "../usecase/enqueue-grids.ts";
 
 interface DispatchResult {
   run_id: string;
@@ -10,12 +10,13 @@ interface DispatchResult {
 
 export class DispatchController {
   constructor(
+    private coverageStationRepo: CoverageStationRepository,
     private createSyncRunUseCase: CreateSyncRunUseCase,
     private enqueueGridsUseCase: EnqueueGridsUseCase,
   ) {}
 
   async handle(dryRun: boolean): Promise<DispatchResult> {
-    const stations = await loadCoverageStations();
+    const stations = await this.coverageStationRepo.findAll();
     console.log(
       `[Dispatch] Starting dispatch for ${stations.length} stations (dry_run=${dryRun})`,
     );
@@ -41,20 +42,4 @@ export class DispatchController {
       dry_run: dryRun,
     };
   }
-}
-
-async function loadCoverageStations(): Promise<CoverageStation[]> {
-  const csv = await Deno.readTextFile(
-    new URL("../points_to_sync.csv", import.meta.url),
-  );
-  const lines = csv.trim().split("\n");
-  // Skip header: area,id,lat,lon,radius_km
-  return lines.slice(1).map((line) => {
-    const [, , lat, lon, radius_km] = line.split(",");
-    return {
-      lat: parseFloat(lat),
-      lon: parseFloat(lon),
-      radius_km: parseInt(radius_km),
-    };
-  });
 }
