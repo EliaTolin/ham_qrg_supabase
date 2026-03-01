@@ -15,7 +15,8 @@ export class SendPushNotificationUseCase {
       headings: request.headings,
       contents: request.contents,
       ...(request.include_external_user_ids && {
-        include_external_user_ids: request.include_external_user_ids,
+        include_aliases: { external_id: request.include_external_user_ids },
+        target_channel: "push",
       }),
       ...(request.included_segments && {
         included_segments: request.included_segments,
@@ -24,9 +25,7 @@ export class SendPushNotificationUseCase {
       ...(request.url && { url: request.url }),
     });
 
-    console.log(
-      `[SendPushNotification] Done: id=${result.id}, recipients=${result.recipients}`,
-    );
+    console.log(`[SendPushNotification] Done: id=${result.id}`);
 
     return result;
   }

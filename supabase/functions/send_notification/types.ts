@@ -3,7 +3,7 @@ export type LocalizedText = Record<string, string>;
 
 /** Richiesta di invio notifica push */
 export interface NotificationRequest {
-  /** ID utenti Supabase a cui inviare (auth.uid) */
+  /** ID utenti Supabase a cui inviare (auth.uid) tramite include_aliases */
   include_external_user_ids?: string[];
   /** Segmenti OneSignal (es. "All", "Active Users") */
   included_segments?: string[];
@@ -20,5 +20,4 @@ export interface NotificationRequest {
 /** Risultato dell'invio notifica */
 export interface NotificationResult {
   id: string;
-  recipients: number;
 }

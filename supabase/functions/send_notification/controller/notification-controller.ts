@@ -19,9 +19,7 @@ export class NotificationController {
 
     const result = await this.sendPushNotificationUseCase.execute(body);
 
-    console.log(
-      `[Notification] Done: id=${result.id}, recipients=${result.recipients}`,
-    );
+    console.log(`[Notification] Done: id=${result.id}`);
 
     return result;
   }

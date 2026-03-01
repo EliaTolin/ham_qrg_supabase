@@ -4,22 +4,22 @@ export interface OneSignalNotificationPayload {
   contents: Record<string, string>;
   data?: Record<string, string>;
   url?: string;
-  include_external_user_ids?: string[];
+  target_channel?: string;
+  include_aliases?: { external_id: string[] };
   included_segments?: string[];
 }
 
 export interface OneSignalResponse {
   id: string;
-  recipients: number;
 }
 
 export class OneSignalClient {
   private appId: string;
-  private restApiKey: string;
+  private apiKey: string;
 
-  constructor(appId: string, restApiKey: string) {
+  constructor(appId: string, apiKey: string) {
     this.appId = appId;
-    this.restApiKey = restApiKey;
+    this.apiKey = apiKey;
   }
 
   async sendNotification(
@@ -28,11 +28,11 @@ export class OneSignalClient {
     console.log("[OneSignal] Sending notification...");
 
     const response = await fetch(
-      "https://api.onesignal.com/api/v1/notifications",
+      "https://api.onesignal.com/notifications?c=push",
       {
         method: "POST",
         headers: {
-          "Authorization": `Basic ${this.restApiKey}`,
+          "Authorization": `Key ${this.apiKey}`,
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
@@ -50,9 +50,7 @@ export class OneSignalClient {
     }
 
     const data = await response.json();
-    console.log(
-      `[OneSignal] Notification sent: id=${data.id}, recipients=${data.recipients}`,
-    );
-    return { id: data.id, recipients: data.recipients };
+    console.log(`[OneSignal] Response body: ${JSON.stringify(data)}`);
+    return { id: data.id };
   }
 }

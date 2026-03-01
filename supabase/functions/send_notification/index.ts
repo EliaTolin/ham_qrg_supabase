@@ -1,5 +1,5 @@
 import { OneSignalClient } from "../_shared/api/onesignal-client.ts";
-import { getAuthToken, verifySupabaseJWT } from "../_shared/auth.ts";
+import { getAuthToken } from "../_shared/auth.ts";
 import { corsHeaders } from "../_shared/cors.ts";
 import { jsonError, jsonSuccess } from "../_shared/response.ts";
 import { SendPushNotificationUseCase } from "./usecase/send-push-notification.ts";
@@ -12,14 +12,20 @@ Deno.serve(async (req) => {
   }
 
   try {
-    // Verify auth: accept service_role key (internal/trigger calls) or user JWT
+    console.log("[send_notification] Request received, method:", req.method);
+
+    // Solo chiamate interne con service_role key
     const token = getAuthToken(req);
     const serviceRoleKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY");
+    console.log(`[send_notification] token: ${token}`);
+    console.log(`[send_notification] env:   ${serviceRoleKey}`);
     if (token !== serviceRoleKey) {
-      await verifySupabaseJWT(token);
+      console.warn("[send_notification] Unauthorized: token mismatch");
+      return jsonError("Unauthorized", 401);
     }
 
     const body = await req.json();
+    console.log("[send_notification] Body parsed:", JSON.stringify(body));
 
     const appId = Deno.env.get("ONESIGNAL_APP_ID");
     const restApiKey = Deno.env.get("ONESIGNAL_REST_API_KEY");
