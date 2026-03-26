@@ -4,10 +4,16 @@ import type { CoverageStation } from "../../sync_repeater_iz8wnh/usecase/enqueue
 export class CoverageStationRepository {
   constructor(private supabase: SupabaseClient) {}
 
-  async findAll(): Promise<CoverageStation[]> {
-    const { data, error } = await this.supabase
+  async findAll(area?: string): Promise<CoverageStation[]> {
+    let query = this.supabase
       .from("iz8wnh_points_to_sync")
       .select("lat, lon, radius_km");
+
+    if (area) {
+      query = query.eq("area", area);
+    }
+
+    const { data, error } = await query;
 
     if (error) {
       throw new Error(`Failed to load coverage stations: ${error.message}`);

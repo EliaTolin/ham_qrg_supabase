@@ -15,8 +15,8 @@ export class DispatchController {
     private enqueueGridsUseCase: EnqueueGridsUseCase,
   ) {}
 
-  async handle(dryRun: boolean): Promise<DispatchResult> {
-    const stations = await this.coverageStationRepo.findAll();
+  async handle(dryRun: boolean, area?: string): Promise<DispatchResult> {
+    const stations = await this.coverageStationRepo.findAll(area);
     console.log(
       `[Dispatch] Starting dispatch for ${stations.length} stations (dry_run=${dryRun})`,
     );

@@ -10,13 +10,15 @@ import { DispatchController } from "./controller/dispatch-controller.ts";
 Deno.serve(async (req) => {
   try {
     let dryRun = false;
+    let area: string | undefined;
     try {
       const body = await req.json();
       dryRun = body.dry_run ?? false;
+      area = body.area ?? undefined;
     } catch {
       // No body or invalid JSON — use defaults
     }
-    console.log("[Index] dry_run:", dryRun);
+    console.log("[Index] dry_run:", dryRun, "area:", area ?? "all");
 
     const supabaseClient = getSupabaseServiceClient();
     const queueRepo = new QueueRepository(supabaseClient);
@@ -31,7 +33,7 @@ Deno.serve(async (req) => {
       createSyncRunUseCase,
       enqueueGridsUseCase,
     );
-    const result = await controller.handle(dryRun);
+    const result = await controller.handle(dryRun, area);
 
     return jsonSuccess(result);
   } catch (error) {
