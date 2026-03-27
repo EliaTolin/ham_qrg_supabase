@@ -5,6 +5,9 @@ type AccessMode = Database["public"]["Enums"]["access_mode"];
 export const API_URL =
   "https://www.iz8wnh.it/rpts/privateAPI/HamQRG/HamQRG.php";
 
+export const UPDATES_API_URL =
+  "https://www.iz8wnh.it/rpts/privateAPI/HamQRG/lastUpdatesOutgoing.php";
+
 export const TIPOLOGIA_MAP: Record<string, AccessMode | null> = {
   "FM": "ANALOG",
   "fm": "ANALOG",

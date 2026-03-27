@@ -24,7 +24,8 @@
       "Bash(supabase db query:*)",
       "Bash(deno run:*)",
       "Bash(find:*)",
-      "Bash(xargs cat:*)"
+      "Bash(xargs cat:*)",
+      "Read(//Users/eliatolin/Desktop/Aurora/Progetti/HamQRG/**)"
     ]
   }
 }

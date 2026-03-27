@@ -56,6 +56,24 @@ export interface SyncRecordResult {
   accessOk: boolean;
 }
 
+/** Record dall'API lastUpdatesOutgoing (estende HamQRGRecord con campi attivazione) */
+export interface HamQRGUpdateRecord extends HamQRGRecord {
+  AutoON: string;   // "0" or "1"
+  ManualON: string; // "0" or "1"
+}
+
+/** Dati per una pending change da inserire */
+export interface PendingChangeInsert {
+  repeater_id: string | null;
+  external_id: string;
+  change_type: "update" | "new" | "deactivate" | "reactivate";
+  remote_data: HamQRGUpdateRecord;
+  diff: Record<string, { local: unknown; remote: unknown }>;
+  remote_updated_at: string | null;
+  local_updated_at: string | null;
+  suggested_winner: "remote" | "local" | "unknown";
+}
+
 /** Payload messaggio coda */
 export interface GridMessage {
   run_id: string;
@@ -63,4 +81,5 @@ export interface GridMessage {
   lon: number;
   radius_km: number;
   dry_run: boolean;
+  area?: string;
 }

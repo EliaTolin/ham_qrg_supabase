@@ -7,7 +7,7 @@ export class CoverageStationRepository {
   async findAll(area?: string): Promise<CoverageStation[]> {
     let query = this.supabase
       .from("iz8wnh_points_to_sync")
-      .select("lat, lon, radius_km");
+      .select("lat, lon, radius_km, area");
 
     if (area) {
       query = query.eq("area", area);

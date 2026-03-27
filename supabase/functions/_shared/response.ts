@@ -1,3 +1,5 @@
+import { corsHeaders } from "./cors.ts";
+
 export function jsonSuccess(
   // deno-lint-ignore no-explicit-any
   data: Record<string, any>,
@@ -10,7 +12,7 @@ export function jsonSuccess(
       timestamp: new Date().toISOString(),
     }),
     {
-      headers: { "Content-Type": "application/json" },
+      headers: { "Content-Type": "application/json", ...corsHeaders },
       status,
     },
   );
@@ -27,7 +29,7 @@ export function jsonError(
       timestamp: new Date().toISOString(),
     }),
     {
-      headers: { "Content-Type": "application/json" },
+      headers: { "Content-Type": "application/json", ...corsHeaders },
       status,
     },
   );

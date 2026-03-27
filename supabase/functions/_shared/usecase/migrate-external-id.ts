@@ -2,11 +2,11 @@ import type { RepeaterRepository } from "../repository/repeater-repository.ts";
 import type { HamQRGRecord } from "../types.ts";
 
 /**
- * One-shot use case: migrates repeaters.external_id from the old
- * composite format ({freqHz}_{locator}) to the API's native ID.
+ * Migrates repeaters.external_id to the API's native ID.
  *
- * Safe to call multiple times – skips records already migrated.
- * Remove this use case once the first full sync succeeds.
+ * Strategy:
+ * 1. Try matching the old composite format ({freqHz}_{locator})
+ * 2. Fallback: match by frequency_hz + locator directly in DB
  */
 export class MigrateExternalIdUseCase {
   constructor(private repeaterRepo: RepeaterRepository) {}
@@ -16,6 +16,19 @@ export class MigrateExternalIdUseCase {
     const oldExternalId = `${freqHz}_${rec.Locator}`;
     const newExternalId = rec.ID;
 
-    await this.repeaterRepo.migrateExternalId(oldExternalId, newExternalId);
+    // 1) Try old composite format
+    const migrated = await this.repeaterRepo.migrateExternalId(
+      oldExternalId,
+      newExternalId,
+    );
+
+    if (migrated) return;
+
+    // 2) Fallback: match by frequency_hz + locator
+    await this.repeaterRepo.migrateByFreqLocator(
+      freqHz,
+      rec.Locator,
+      newExternalId,
+    );
   }
 }

@@ -7,6 +7,7 @@ import type { SyncRunRepository } from "../../_shared/repository/sync-run-reposi
 import type { NetworkRepository } from "../../_shared/repository/network-repository.ts";
 
 const MAX_READ_CT = 3;
+const FULL_SYNC_AREAS = ["Canary Islands"];
 
 export class WorkerController {
   constructor(
@@ -53,7 +54,7 @@ export class WorkerController {
     let totalSyncErrors = 0;
 
     for (const { msg_id, read_ct, message } of messages) {
-      const { run_id, lat, lon, radius_km, dry_run } = message;
+      const { run_id, lat, lon, radius_km, dry_run, area } = message;
 
       // Delete immediately to prevent duplicate processing by other workers
       await this.queueRepo.delete(msg_id);
@@ -73,14 +74,33 @@ export class WorkerController {
       let fetchErrors = 0;
       let syncErrors = 0;
 
+      const isFullSyncArea = area != null && FULL_SYNC_AREAS.includes(area);
+
       try {
-        console.log(`[Worker] Processing (lat=${lat}, lon=${lon})`);
+        console.log(`[Worker] Processing (lat=${lat}, lon=${lon}, area=${area ?? "unknown"})`);
 
         const records = await this.apiClient.fetchFromCoords(lat, lon, radius_km);
         console.log(`[Worker] (lat=${lat}, lon=${lon}): ${records.length} records from API`);
 
         for (const apiRecord of records) {
           try {
+            if (dry_run) {
+              repeatersProcessed++;
+              continue;
+            }
+
+            // Always migrate external_id (aligns old format to API ID)
+            if (this.migrateExternalIdUseCase) {
+              await this.migrateExternalIdUseCase.execute(apiRecord);
+            }
+
+            // Only full upsert for full-sync areas (e.g. Canary Islands)
+            // Other areas: external_id alignment only, updates go through pending changes
+            if (!isFullSyncArea) {
+              repeatersProcessed++;
+              continue;
+            }
+
             const mapped = await this.mapApiRecordUseCase.execute(apiRecord);
             if (!mapped) {
               console.warn(
@@ -88,17 +108,6 @@ export class WorkerController {
               );
               syncErrors++;
               continue;
-            }
-
-            if (dry_run) {
-              repeatersProcessed++;
-              if (mapped.access) accessProcessed++;
-              continue;
-            }
-
-            // One-shot: migrate old external_id format before upsert
-            if (this.migrateExternalIdUseCase) {
-              await this.migrateExternalIdUseCase.execute(apiRecord);
             }
 
             const result = await this.persistRepeaterUseCase.execute(mapped);

@@ -1,4 +1,5 @@
 import { getSupabaseServiceClient } from "../_shared/supabase-client.ts";
+import { corsHeaders } from "../_shared/cors.ts";
 import { HamQRGClient } from "../_shared/api/hamqrg-client.ts";
 import { RepeaterRepository } from "../_shared/repository/repeater-repository.ts";
 import { AccessRepository } from "../_shared/repository/access-repository.ts";
@@ -12,6 +13,10 @@ import { jsonError, jsonSuccess } from "../_shared/response.ts";
 import { WorkerController } from "./controller/worker-controller.ts";
 
 Deno.serve(async (req) => {
+  if (req.method === "OPTIONS") {
+    return new Response("ok", { headers: corsHeaders });
+  }
+
   try {
     const body = await req.json().catch(() => ({}));
     const batchSize = body.batch_size ?? 5;

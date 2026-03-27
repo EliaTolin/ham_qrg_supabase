@@ -3,11 +3,16 @@ import { QueueRepository } from "../_shared/repository/queue-repository.ts";
 import { SyncRunRepository } from "../_shared/repository/sync-run-repository.ts";
 import { CoverageStationRepository } from "../_shared/repository/coverage-station-repository.ts";
 import { jsonError, jsonSuccess } from "../_shared/response.ts";
+import { corsHeaders } from "../_shared/cors.ts";
 import { CreateSyncRunUseCase } from "./usecase/create-sync-run.ts";
 import { EnqueueGridsUseCase } from "./usecase/enqueue-grids.ts";
 import { DispatchController } from "./controller/dispatch-controller.ts";
 
 Deno.serve(async (req) => {
+  if (req.method === "OPTIONS") {
+    return new Response("ok", { headers: corsHeaders });
+  }
+
   try {
     let dryRun = false;
     let area: string | undefined;

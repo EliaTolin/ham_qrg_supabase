@@ -1,5 +1,5 @@
-import { API_URL } from "../constants.ts";
-import type { HamQRGRecord } from "../types.ts";
+import { API_URL, UPDATES_API_URL } from "../constants.ts";
+import type { HamQRGRecord, HamQRGUpdateRecord } from "../types.ts";
 
 export class HamQRGClient {
   private usr: string;
@@ -41,6 +41,35 @@ export class HamQRGClient {
     }
 
     console.log(`[API] Coords (${lat}, ${lon}): ${data.length} records`);
+    return data;
+  }
+
+  async fetchLatestUpdates(): Promise<HamQRGUpdateRecord[]> {
+    console.log("[API] Fetching latest updates from iz8wnh");
+
+    const response = await fetch(UPDATES_API_URL, {
+      method: "POST",
+      headers: {
+        "USR": this.usr,
+        "PSW": this.psw,
+        "TOKEN": this.token,
+        "Content-Type": "application/x-www-form-urlencoded",
+      },
+    });
+
+    if (!response.ok) {
+      throw new Error(
+        `Updates API error: ${response.status} ${response.statusText}`,
+      );
+    }
+
+    const data = await response.json();
+    if (!Array.isArray(data)) {
+      console.warn("[API] Updates response is not an array, returning empty");
+      return [];
+    }
+
+    console.log(`[API] Latest updates: ${data.length} records`);
     return data;
   }
 }

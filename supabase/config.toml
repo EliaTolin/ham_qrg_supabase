@@ -342,3 +342,15 @@ enabled = true
 verify_jwt = false
 import_map = "./functions/send_notification/deno.json"
 entrypoint = "./functions/send_notification/index.ts"
+
+[functions.fetch_iz8wnh_updates]
+enabled = true
+verify_jwt = false
+import_map = "./functions/fetch_iz8wnh_updates/deno.json"
+entrypoint = "./functions/fetch_iz8wnh_updates/index.ts"
+
+[functions.apply_pending_change]
+enabled = true
+verify_jwt = false
+import_map = "./functions/apply_pending_change/deno.json"
+entrypoint = "./functions/apply_pending_change/index.ts"

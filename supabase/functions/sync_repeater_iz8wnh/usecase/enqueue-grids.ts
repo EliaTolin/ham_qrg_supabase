@@ -5,6 +5,7 @@ export interface CoverageStation {
   lat: number;
   lon: number;
   radius_km: number;
+  area: string;
 }
 
 export class EnqueueGridsUseCase {
@@ -21,6 +22,7 @@ export class EnqueueGridsUseCase {
       lon: s.lon,
       radius_km: s.radius_km,
       dry_run: dryRun,
+      area: s.area,
     }));
 
     console.log(

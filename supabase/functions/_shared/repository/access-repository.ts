@@ -5,6 +5,30 @@ import type { MappedAccess } from "../types.ts";
 export class AccessRepository {
   constructor(private supabase: SupabaseClient<Database>) {}
 
+  async findByRepeaterId(repeaterId: string) {
+    const { data, error } = await this.supabase
+      .from("repeater_access")
+      .select("*")
+      .eq("repeater_id", repeaterId);
+
+    if (error) {
+      console.error(`[AccessRepo] findByRepeaterId ${repeaterId}: FAILED`, error);
+      return [];
+    }
+    return data ?? [];
+  }
+
+  async findByExternalId(externalId: string) {
+    const { data, error } = await this.supabase
+      .from("repeater_access")
+      .select("*")
+      .eq("external_id", externalId)
+      .maybeSingle();
+
+    if (error) return null;
+    return data;
+  }
+
   async upsert(
     data: MappedAccess & { repeater_id: string },
   ): Promise<boolean> {
