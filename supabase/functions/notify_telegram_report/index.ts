@@ -4,14 +4,12 @@ import { jsonError, jsonSuccess } from "../_shared/response.ts";
 
 const TELEGRAM_CHAT_ID = "-1003880485089";
 
-interface ReportPayload {
-  id: string;
-  repeater_id: string;
-  user_id: string;
-  description: string;
-  status: string;
-  created_at: string;
-  repeater_label: string;
+interface WebhookPayload {
+  type: "INSERT" | "UPDATE" | "DELETE";
+  table: string;
+  schema: string;
+  record: Record<string, unknown>;
+  old_record: Record<string, unknown> | null;
 }
 
 async function sendTelegramMessage(
@@ -36,6 +34,61 @@ async function sendTelegramMessage(
   }
 }
 
+function formatReportMessage(record: Record<string, unknown>): string {
+  const label = record.repeater_label as string ?? "Ripetitore";
+  const description = record.description as string ?? "";
+  const status = record.status as string ?? "pending";
+  const createdAt = record.created_at
+    ? new Date(record.created_at as string).toLocaleString("it-IT", {
+      timeZone: "Europe/Rome",
+    })
+    : "";
+
+  return (
+    `<b>🚨 Nuovo report</b>\n\n` +
+    `<b>Ripetitore:</b> ${label}\n` +
+    `<b>Descrizione:</b> ${description}\n` +
+    `<b>Stato:</b> ${status}\n` +
+    `<b>Data:</b> ${createdAt}`
+  );
+}
+
+function formatSubmissionMessage(record: Record<string, unknown>): string {
+  const label = (record.callsign as string) ??
+    (record.name as string) ?? "Sconosciuto";
+  const frequencyHz = record.frequency_hz as number;
+  const frequency = frequencyHz
+    ? `${(frequencyHz / 1_000_000).toFixed(4)} MHz`
+    : "N/D";
+  const locality = record.locality as string ?? "";
+  const region = record.region as string ?? "";
+  const location = [locality, region].filter(Boolean).join(", ") || "N/D";
+  const accesses = Array.isArray(record.accesses) ? record.accesses : [];
+  const modes = accesses.map((a: Record<string, unknown>) => a.mode).join(
+    ", ",
+  ) || "N/D";
+  const notes = record.notes as string ?? "";
+  const createdAt = record.created_at
+    ? new Date(record.created_at as string).toLocaleString("it-IT", {
+      timeZone: "Europe/Rome",
+    })
+    : "";
+
+  let message =
+    `<b>📡 Nuovo ripetitore segnalato</b>\n\n` +
+    `<b>Nome/Callsign:</b> ${label}\n` +
+    `<b>Frequenza:</b> ${frequency}\n` +
+    `<b>Località:</b> ${location}\n` +
+    `<b>Accessi:</b> ${modes}\n` +
+    `<b>Data:</b> ${createdAt}`;
+
+  if (notes) {
+    message += `\n<b>Note:</b> ${notes}`;
+  }
+
+  return message;
+}
+
 Deno.serve(async (req) => {
   if (req.method === "OPTIONS") {
     return new Response("ok", { headers: corsHeaders });
@@ -49,19 +102,25 @@ Deno.serve(async (req) => {
       return jsonError("Unauthorized", 401);
     }
 
-    const body: ReportPayload = await req.json();
+    const body: WebhookPayload = await req.json();
 
     const botToken = Deno.env.get("TELEGRAM_BOT_TOKEN");
     if (!botToken) {
       throw new Error("Missing TELEGRAM_BOT_TOKEN environment variable");
     }
 
-    const message =
-      `<b>🚨 Nuovo report</b>\n\n` +
-      `<b>Ripetitore:</b> ${body.repeater_label}\n` +
-      `<b>Descrizione:</b> ${body.description}\n` +
-      `<b>Stato:</b> ${body.status}\n` +
-      `<b>Data:</b> ${new Date(body.created_at).toLocaleString("it-IT")}`;
+    let message: string;
+
+    switch (body.table) {
+      case "repeater_reports":
+        message = formatReportMessage(body.record);
+        break;
+      case "repeater_submissions":
+        message = formatSubmissionMessage(body.record);
+        break;
+      default:
+        throw new Error(`Unknown table: ${body.table}`);
+    }
 
     await sendTelegramMessage(botToken, TELEGRAM_CHAT_ID, message);
 
