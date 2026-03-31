@@ -354,3 +354,9 @@ enabled = true
 verify_jwt = false
 import_map = "./functions/apply_pending_change/deno.json"
 entrypoint = "./functions/apply_pending_change/index.ts"
+
+[functions.notify_telegram_report]
+enabled = true
+verify_jwt = false
+import_map = "./functions/notify_telegram_report/deno.json"
+entrypoint = "./functions/notify_telegram_report/index.ts"
