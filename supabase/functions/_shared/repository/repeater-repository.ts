@@ -139,6 +139,26 @@ export class RepeaterRepository {
     return true;
   }
 
+  async updateFields(
+    repeaterId: string,
+    fields: Record<string, unknown>,
+  ): Promise<boolean> {
+    const { error } = await this.supabase
+      .from("repeaters")
+      .update(fields)
+      .eq("id", repeaterId);
+
+    if (error) {
+      console.error(`[RepeaterRepo] updateFields ${repeaterId}: FAILED`, error);
+      return false;
+    }
+    return true;
+  }
+
+  async setActive(repeaterId: string, active: boolean): Promise<boolean> {
+    return this.updateFields(repeaterId, { is_active: active });
+  }
+
   async upsert(data: MappedRepeater): Promise<string | null> {
     const { data: repeater, error } = await this.supabase
       .from("repeaters")

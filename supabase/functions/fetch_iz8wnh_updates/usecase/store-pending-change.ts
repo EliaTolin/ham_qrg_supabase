@@ -10,4 +10,8 @@ export class StorePendingChangeUseCase {
     );
     return await this.pendingChangeRepo.insert(change);
   }
+
+  getLastInsertedId(): string | null {
+    return this.pendingChangeRepo.getLastInsertedId();
+  }
 }

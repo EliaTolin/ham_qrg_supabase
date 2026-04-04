@@ -19,7 +19,19 @@ Deno.serve(async (req) => {
   }
 
   try {
+    let autoApply = false;
+    try {
+      const body = await req.json();
+      autoApply = body.auto_apply ?? false;
+    } catch {
+      // No body or invalid JSON — defaults
+    }
+
+    console.log("[Index] auto_apply:", autoApply);
+
     const supabaseClient = getSupabaseServiceClient();
+    const supabaseUrl = Deno.env.get("SUPABASE_URL")!;
+    const serviceRoleKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
 
     const apiClient = new HamQRGClient(
       Deno.env.get("HAMQRG_USR")!,
@@ -50,9 +62,11 @@ Deno.serve(async (req) => {
       compareWithLocalUseCase,
       evaluateActivationStatusUseCase,
       storePendingChangeUseCase,
+      supabaseUrl,
+      serviceRoleKey,
     );
 
-    const result = await controller.handle();
+    const result = await controller.handle(autoApply);
     return jsonSuccess(result);
   } catch (error) {
     console.error("fetch_iz8wnh_updates failed:", error);

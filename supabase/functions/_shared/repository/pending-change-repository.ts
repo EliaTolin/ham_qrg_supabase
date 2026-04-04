@@ -2,10 +2,16 @@ import type { SupabaseClient } from "https://esm.sh/@supabase/supabase-js@2.49.4
 import type { PendingChangeInsert } from "../types.ts";
 
 export class PendingChangeRepository {
+  private lastInsertedId: string | null = null;
+
   constructor(private supabase: SupabaseClient) {}
 
-  async insert(change: PendingChangeInsert): Promise<boolean> {
-    const { error } = await this.supabase
+  getLastInsertedId(): string | null {
+    return this.lastInsertedId;
+  }
+
+  async insert(change: PendingChangeInsert, status = "pending"): Promise<boolean> {
+    const { data, error } = await this.supabase
       .from("sync_pending_changes" as never)
       .insert({
         repeater_id: change.repeater_id,
@@ -16,23 +22,28 @@ export class PendingChangeRepository {
         remote_updated_at: change.remote_updated_at,
         local_updated_at: change.local_updated_at,
         suggested_winner: change.suggested_winner,
-      } as never);
+        status,
+      } as never)
+      .select("id")
+      .single();
 
     if (error) {
-      // Unique constraint violation = already pending for this external_id
       if (error.code === "23505") {
         console.log(
           `[PendingChangeRepo] Already pending for ${change.external_id}, skipped`,
         );
+        this.lastInsertedId = null;
         return false;
       }
       console.error(
         `[PendingChangeRepo] Insert failed for ${change.external_id}:`,
         error,
       );
+      this.lastInsertedId = null;
       return false;
     }
 
+    this.lastInsertedId = (data as { id: string })?.id ?? null;
     return true;
   }
 }
