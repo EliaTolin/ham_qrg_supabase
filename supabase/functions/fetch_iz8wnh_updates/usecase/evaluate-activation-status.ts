@@ -60,9 +60,11 @@ export class EvaluateActivationStatusUseCase {
     // Remote says inactive — find matching access
     const remoteMode = TIPOLOGIA_MAP[record.Tipologia] ?? null;
 
-    const hasThisAccess = remoteMode
-      ? accesses.some((a: LocalAccess) => a.mode === remoteMode)
-      : accesses.some((a: LocalAccess) => a.external_id === record.ID);
+    const hasThisAccess =
+      accesses.some((a: LocalAccess) => a.external_id === record.ID) ||
+      (remoteMode
+        ? accesses.some((a: LocalAccess) => a.mode === remoteMode)
+        : false);
 
     if (!hasThisAccess) {
       return null;

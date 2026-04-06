@@ -61,7 +61,7 @@ export class AccessRepository {
   async insertAccess(data: Record<string, unknown>): Promise<boolean> {
     const { error } = await this.supabase
       .from("repeater_access")
-      .insert(data);
+      .insert(data as never);
 
     if (error) {
       if (error.code === "23505") return false;
