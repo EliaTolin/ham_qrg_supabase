@@ -64,6 +64,7 @@ export class AccessRepository {
       .insert(data);
 
     if (error) {
+      if (error.code === "23505") return false;
       console.error(`[AccessRepo] insertAccess: FAILED`, error);
       return false;
     }

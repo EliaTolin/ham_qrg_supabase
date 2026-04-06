@@ -5,8 +5,6 @@ export class FetchLatestUpdatesUseCase {
   constructor(private apiClient: HamQRGClient) {}
 
   async execute(): Promise<HamQRGUpdateRecord[]> {
-    const records = await this.apiClient.fetchLatestUpdates();
-    console.log(`[FetchLatestUpdates] Got ${records.length} records from API`);
-    return records;
+    return await this.apiClient.fetchLatestUpdates();
   }
 }

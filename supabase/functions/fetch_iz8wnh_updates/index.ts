@@ -48,7 +48,6 @@ Deno.serve(async (req) => {
     const mapApiRecordUseCase = new MapApiRecordToRepeaterUseCase(networkRepo);
     const compareWithLocalUseCase = new CompareWithLocalUseCase(
       mapApiRecordUseCase,
-      accessRepo,
     );
     const evaluateActivationStatusUseCase =
       new EvaluateActivationStatusUseCase(accessRepo);

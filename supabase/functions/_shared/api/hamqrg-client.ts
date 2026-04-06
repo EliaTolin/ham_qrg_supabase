@@ -13,8 +13,6 @@ export class HamQRGClient {
   }
 
   async fetchFromCoords(lat: number, lon: number, radiusKm: number): Promise<HamQRGRecord[]> {
-    console.log(`[API] Fetching (lat=${lat}, lon=${lon}, range=${radiusKm})`);
-
     const response = await fetch(API_URL, {
       method: "POST",
       headers: {
@@ -33,20 +31,11 @@ export class HamQRGClient {
     }
 
     const data = await response.json();
-    if (!Array.isArray(data)) {
-      console.warn(
-        `[API] Coords (${lat}, ${lon}): response is not an array, skipped`,
-      );
-      return [];
-    }
-
-    console.log(`[API] Coords (${lat}, ${lon}): ${data.length} records`);
+    if (!Array.isArray(data)) return [];
     return data;
   }
 
   async fetchLatestUpdates(): Promise<HamQRGUpdateRecord[]> {
-    console.log("[API] Fetching latest updates from iz8wnh");
-
     const response = await fetch(UPDATES_API_URL, {
       method: "POST",
       headers: {
@@ -64,12 +53,7 @@ export class HamQRGClient {
     }
 
     const data = await response.json();
-    if (!Array.isArray(data)) {
-      console.warn("[API] Updates response is not an array, returning empty");
-      return [];
-    }
-
-    console.log(`[API] Latest updates: ${data.length} records`);
+    if (!Array.isArray(data)) return [];
     return data;
   }
 }

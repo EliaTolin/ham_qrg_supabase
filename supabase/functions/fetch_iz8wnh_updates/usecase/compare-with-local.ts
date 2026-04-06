@@ -1,7 +1,5 @@
 import type { MapApiRecordToRepeaterUseCase } from "../../_shared/usecase/map-api-record-to-repeater.ts";
-import type { AccessRepository } from "../../_shared/repository/access-repository.ts";
 import type { HamQRGUpdateRecord, PendingChangeInsert } from "../../_shared/types.ts";
-import { TIPOLOGIA_MAP } from "../../_shared/constants.ts";
 
 // deno-lint-ignore no-explicit-any
 type LocalRepeater = Record<string, any>;
@@ -28,12 +26,17 @@ const ACCESS_COMPARE_FIELDS = [
 export class CompareWithLocalUseCase {
   constructor(
     private mapApiRecordUseCase: MapApiRecordToRepeaterUseCase,
-    private accessRepo: AccessRepository,
   ) {}
 
+  /**
+   * Compare a remote record with local data.
+   * @param accesses - preloaded accesses for this repeater (avoids DB query)
+   */
   async execute(
     record: HamQRGUpdateRecord,
     localRepeater: LocalRepeater | null,
+    accesses: LocalAccess[] = [],
+    skipTimestampCheck = false,
   ): Promise<PendingChangeInsert | null> {
     // New repeater: not in our DB yet
     if (!localRepeater) {
@@ -57,14 +60,11 @@ export class CompareWithLocalUseCase {
     const remoteUpdatedAt = this.parseUltimaModifica(record.Ultima_Modifica);
     const localUpdatedAt = localRepeater.updated_at;
 
-    // If local is more recent, skip (no pending change)
-    if (remoteUpdatedAt && localUpdatedAt) {
+    // If local is more recent, skip (unless forced by activation change)
+    if (!skipTimestampCheck && remoteUpdatedAt && localUpdatedAt) {
       const remoteDate = new Date(remoteUpdatedAt);
       const localDate = new Date(localUpdatedAt);
       if (localDate > remoteDate) {
-        console.log(
-          `[Compare] ${record.ID}: local is newer (${localUpdatedAt} > ${remoteUpdatedAt}), skipping`,
-        );
         return null;
       }
     }
@@ -84,22 +84,16 @@ export class CompareWithLocalUseCase {
       }
     }
 
-    // --- Access diff ---
+    // --- Access diff (using preloaded accesses) ---
     if (mapped.access) {
       const remoteMode = mapped.access.mode;
 
-      // Try to find matching local access: first by external_id, then by mode
-      let localAccess: LocalAccess | null = null;
+      // Find matching local access: by external_id first, then by mode
+      let localAccess: LocalAccess | null =
+        accesses.find((a) => a.external_id === record.ID) ?? null;
 
-      const accessByExtId = await this.accessRepo.findByExternalId(record.ID);
-      if (accessByExtId) {
-        localAccess = accessByExtId;
-      } else {
-        // Find by mode among this repeater's accesses
-        const allAccesses = await this.accessRepo.findByRepeaterId(localRepeater.id);
-        localAccess = allAccesses.find(
-          (a: LocalAccess) => a.mode === remoteMode
-        ) ?? null;
+      if (!localAccess) {
+        localAccess = accesses.find((a) => a.mode === remoteMode) ?? null;
       }
 
       if (!localAccess) {
@@ -124,7 +118,6 @@ export class CompareWithLocalUseCase {
           }
         }
 
-        // Compare mode change
         if (localAccess.mode !== remoteMode) {
           diff["access.mode"] = { local: localAccess.mode, remote: remoteMode };
         }
@@ -133,7 +126,6 @@ export class CompareWithLocalUseCase {
 
     // No effective differences
     if (Object.keys(diff).length === 0) {
-      console.log(`[Compare] ${record.ID}: no diff, skipping`);
       return null;
     }
 

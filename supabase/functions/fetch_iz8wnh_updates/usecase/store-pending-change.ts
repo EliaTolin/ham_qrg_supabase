@@ -5,9 +5,6 @@ export class StorePendingChangeUseCase {
   constructor(private pendingChangeRepo: PendingChangeRepository) {}
 
   async execute(change: PendingChangeInsert): Promise<boolean> {
-    console.log(
-      `[StorePendingChange] Storing ${change.change_type} for ${change.external_id}`,
-    );
     return await this.pendingChangeRepo.insert(change);
   }
 

@@ -5,6 +5,58 @@ import type { MappedRepeater } from "../types.ts";
 export class RepeaterRepository {
   constructor(private supabase: SupabaseClient<Database>) {}
 
+  /** Fetch all repeaters (paginated to avoid PostgREST limit) */
+  async fetchAll() {
+    // deno-lint-ignore no-explicit-any
+    const all: any[] = [];
+    let from = 0;
+    const PAGE = 1000;
+
+    while (true) {
+      const { data, error } = await this.supabase
+        .from("repeaters")
+        .select("*")
+        .range(from, from + PAGE - 1);
+
+      if (error) {
+        console.error("[RepeaterRepo] fetchAll failed:", error);
+        break;
+      }
+      if (!data || data.length === 0) break;
+      all.push(...data);
+      if (data.length < PAGE) break;
+      from += PAGE;
+    }
+
+    return all;
+  }
+
+  /** Fetch all accesses (paginated) */
+  async fetchAllAccesses() {
+    // deno-lint-ignore no-explicit-any
+    const all: any[] = [];
+    let from = 0;
+    const PAGE = 1000;
+
+    while (true) {
+      const { data, error } = await this.supabase
+        .from("repeater_access")
+        .select("id, repeater_id, external_id, mode, ctcss_tx_hz, color_code, node_id, network_id")
+        .range(from, from + PAGE - 1);
+
+      if (error) {
+        console.error("[RepeaterRepo] fetchAllAccesses failed:", error);
+        break;
+      }
+      if (!data || data.length === 0) break;
+      all.push(...data);
+      if (data.length < PAGE) break;
+      from += PAGE;
+    }
+
+    return all;
+  }
+
   async findByExternalId(externalId: string) {
     const { data, error } = await this.supabase
       .from("repeaters")
@@ -149,6 +201,10 @@ export class RepeaterRepository {
       .eq("id", repeaterId);
 
     if (error) {
+      if (error.code === "23505") {
+        // Duplicate key — another repeater already has this freq+locator combo
+        return false;
+      }
       console.error(`[RepeaterRepo] updateFields ${repeaterId}: FAILED`, error);
       return false;
     }

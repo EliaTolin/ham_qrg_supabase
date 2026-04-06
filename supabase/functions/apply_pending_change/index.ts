@@ -228,7 +228,40 @@ Deno.serve(async (req) => {
           applyResult = { error: "repeater_id missing for reactivate" };
           break;
         }
-        await repeaterRepo.setActive(pc.repeater_id, true);
+        // Reactivate + apply any merged data changes
+        const reactDiff = pc.diff as Record<string, { local: unknown; remote: unknown }>;
+        const reactUpdates: Record<string, unknown> = { is_active: true };
+        for (const [field, values] of Object.entries(reactDiff)) {
+          if (field === "scope" || field === "is_active" || field === "AutoON" || field === "ManualON") continue;
+          if (field.startsWith("access")) continue;
+          reactUpdates[field] = values.remote;
+        }
+        await repeaterRepo.updateFields(pc.repeater_id, reactUpdates);
+
+        // Apply access changes if any
+        for (const [field, values] of Object.entries(reactDiff)) {
+          if (field.startsWith("access.")) {
+            await accessRepo.updateByExternalId(
+              pc.external_id,
+              { [field.replace("access.", "")]: values.remote },
+            );
+          } else if (field.startsWith("access_")) {
+            const accessData = values.remote as Record<string, unknown>;
+            if (accessData) {
+              await accessRepo.insertAccess({
+                repeater_id: pc.repeater_id,
+                external_id: pc.external_id,
+                mode: accessData.mode,
+                ctcss_tx_hz: accessData.ctcss_tx_hz ?? null,
+                color_code: accessData.color_code ?? null,
+                node_id: accessData.node_id ?? null,
+                network_id: accessData.network_id ?? null,
+                source: "iz8wnh",
+                last_seen_at: new Date().toISOString(),
+              });
+            }
+          }
+        }
         break;
       }
 
@@ -496,7 +529,38 @@ async function applySingleChange(
 
     case "reactivate": {
       if (!pc.repeater_id) return false;
-      await repeaterRepo.setActive(pc.repeater_id, true);
+      const reactDiff = pc.diff as Record<string, { local: unknown; remote: unknown }>;
+      const reactUpdates: Record<string, unknown> = { is_active: true };
+      for (const [field, values] of Object.entries(reactDiff)) {
+        if (field === "scope" || field === "is_active" || field === "AutoON" || field === "ManualON") continue;
+        if (field.startsWith("access")) continue;
+        reactUpdates[field] = values.remote;
+      }
+      await repeaterRepo.updateFields(pc.repeater_id, reactUpdates);
+
+      for (const [field, values] of Object.entries(reactDiff)) {
+        if (field.startsWith("access.")) {
+          await accessRepo.updateByExternalId(
+            pc.external_id,
+            { [field.replace("access.", "")]: values.remote },
+          );
+        } else if (field.startsWith("access_")) {
+          const accessData = values.remote as Record<string, unknown>;
+          if (accessData) {
+            await accessRepo.insertAccess({
+              repeater_id: pc.repeater_id,
+              external_id: pc.external_id,
+              mode: accessData.mode,
+              ctcss_tx_hz: accessData.ctcss_tx_hz ?? null,
+              color_code: accessData.color_code ?? null,
+              node_id: accessData.node_id ?? null,
+              network_id: accessData.network_id ?? null,
+              source: "iz8wnh",
+              last_seen_at: new Date().toISOString(),
+            });
+          }
+        }
+      }
       return true;
     }
 
