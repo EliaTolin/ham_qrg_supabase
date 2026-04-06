@@ -5,6 +5,8 @@ import { AccessRepository } from "../_shared/repository/access-repository.ts";
 import { NetworkRepository } from "../_shared/repository/network-repository.ts";
 import { PendingChangeRepository } from "../_shared/repository/pending-change-repository.ts";
 import { MapApiRecordToRepeaterUseCase } from "../_shared/usecase/map-api-record-to-repeater.ts";
+import { PersistRepeaterToDatabaseUseCase } from "../_shared/usecase/persist-repeater-to-database.ts";
+import { ApplyChangeUseCase } from "../_shared/usecase/apply-change.ts";
 import { jsonError, jsonSuccess } from "../_shared/response.ts";
 import { corsHeaders } from "../_shared/cors.ts";
 import { FetchLatestUpdatesUseCase } from "./usecase/fetch-latest-updates.ts";
@@ -24,14 +26,10 @@ Deno.serve(async (req) => {
       const body = await req.json();
       autoApply = body.auto_apply ?? false;
     } catch {
-      // No body or invalid JSON — defaults
+      // defaults
     }
 
-    console.log("[Index] auto_apply:", autoApply);
-
     const supabaseClient = getSupabaseServiceClient();
-    const supabaseUrl = Deno.env.get("SUPABASE_URL")!;
-    const serviceRoleKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
 
     const apiClient = new HamQRGClient(
       Deno.env.get("HAMQRG_USR")!,
@@ -46,6 +44,10 @@ Deno.serve(async (req) => {
 
     const fetchLatestUpdatesUseCase = new FetchLatestUpdatesUseCase(apiClient);
     const mapApiRecordUseCase = new MapApiRecordToRepeaterUseCase(networkRepo);
+    const persistRepeaterUseCase = new PersistRepeaterToDatabaseUseCase(
+      repeaterRepo,
+      accessRepo,
+    );
     const compareWithLocalUseCase = new CompareWithLocalUseCase(
       mapApiRecordUseCase,
     );
@@ -54,6 +56,12 @@ Deno.serve(async (req) => {
     const storePendingChangeUseCase = new StorePendingChangeUseCase(
       pendingChangeRepo,
     );
+    const applyChangeUseCase = new ApplyChangeUseCase(
+      repeaterRepo,
+      accessRepo,
+      mapApiRecordUseCase,
+      persistRepeaterUseCase,
+    );
 
     const controller = new FetchUpdatesController(
       repeaterRepo,
@@ -61,8 +69,8 @@ Deno.serve(async (req) => {
       compareWithLocalUseCase,
       evaluateActivationStatusUseCase,
       storePendingChangeUseCase,
-      supabaseUrl,
-      serviceRoleKey,
+      pendingChangeRepo,
+      applyChangeUseCase,
     );
 
     const result = await controller.handle(autoApply);

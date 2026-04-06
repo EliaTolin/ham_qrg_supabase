@@ -46,4 +46,14 @@ export class PendingChangeRepository {
     this.lastInsertedId = (data as { id: string })?.id ?? null;
     return true;
   }
+
+  async markApproved(changeId: string): Promise<void> {
+    await this.supabase
+      .from("sync_pending_changes" as never)
+      .update({
+        status: "approved",
+        reviewed_at: new Date().toISOString(),
+      } as never)
+      .eq("id", changeId);
+  }
 }

@@ -1,4 +1,6 @@
 import type { RepeaterRepository } from "../../_shared/repository/repeater-repository.ts";
+import type { ApplyChangeUseCase } from "../../_shared/usecase/apply-change.ts";
+import type { PendingChangeRepository } from "../../_shared/repository/pending-change-repository.ts";
 import type { FetchLatestUpdatesUseCase } from "../usecase/fetch-latest-updates.ts";
 import type { CompareWithLocalUseCase } from "../usecase/compare-with-local.ts";
 import type { EvaluateActivationStatusUseCase } from "../usecase/evaluate-activation-status.ts";
@@ -38,8 +40,8 @@ export class FetchUpdatesController {
     private compareWithLocalUseCase: CompareWithLocalUseCase,
     private evaluateActivationStatusUseCase: EvaluateActivationStatusUseCase,
     private storePendingChangeUseCase: StorePendingChangeUseCase,
-    private supabaseUrl: string,
-    private serviceRoleKey: string,
+    private pendingChangeRepo: PendingChangeRepository,
+    private applyChangeUseCase: ApplyChangeUseCase,
   ) {}
 
   async handle(autoApply = false): Promise<FetchUpdatesResult> {
@@ -55,7 +57,6 @@ export class FetchUpdatesController {
       errors: 0,
     };
 
-    // Step 1: Fetch from iz8wnh API
     console.log("[Sync] Step 1/4: Fetching updates from iz8wnh...");
     const records = await this.fetchLatestUpdatesUseCase.execute();
     result.total_fetched = records.length;
@@ -63,14 +64,12 @@ export class FetchUpdatesController {
 
     if (records.length === 0) return result;
 
-    // Step 2: Build in-memory index
     console.log("[Sync] Step 2/4: Building local cache...");
     const index = await this.buildIndex();
     console.log(
       `[Sync] Cache ready: ${index.byExtId.size} repeaters, ${index.byAccessExtId.size} accesses`,
     );
 
-    // Step 3: Compare and create pending changes
     console.log(`[Sync] Step 3/4: Comparing ${records.length} records...`);
     for (const record of records) {
       try {
@@ -82,7 +81,6 @@ export class FetchUpdatesController {
         const activationChange = this.evaluateActivationStatusUseCase
           .executeInMemory(record, localRepeater, accesses);
 
-        // Always run data compare (skip timestamp check if activation changed)
         const dataChange = await this.compareWithLocalUseCase.execute(
           record,
           localRepeater,
@@ -91,11 +89,9 @@ export class FetchUpdatesController {
         );
 
         if (activationChange && dataChange) {
-          // Merge data diff into the activation change so user sees everything
-          const mergedDiff = { ...activationChange.diff, ...dataChange.diff };
           const merged: PendingChangeInsert = {
             ...activationChange,
-            diff: mergedDiff,
+            diff: { ...activationChange.diff, ...dataChange.diff },
           };
           await this.processChange(merged, autoApply, result);
         } else if (activationChange) {
@@ -111,11 +107,56 @@ export class FetchUpdatesController {
       }
     }
 
-    // Step 4: Done
     console.log(
       `[Sync] Step 4/4: Done — new=${result.new_repeaters} updates=${result.updates} deact=${result.deactivations} react=${result.reactivations} skip=${result.skipped_no_diff} applied=${result.auto_applied} errors=${result.errors}`,
     );
     return result;
+  }
+
+  private async processChange(
+    change: PendingChangeInsert,
+    autoApply: boolean,
+    result: FetchUpdatesResult,
+  ): Promise<void> {
+    const stored = await this.storePendingChangeUseCase.execute(change);
+
+    if (!stored) {
+      result.already_pending++;
+      return;
+    }
+
+    this.incrementResultCounter(change, result);
+
+    if (autoApply) {
+      const changeId = this.storePendingChangeUseCase.getLastInsertedId();
+      if (!changeId) return;
+
+      try {
+        const pc = {
+          id: changeId,
+          repeater_id: change.repeater_id,
+          external_id: change.external_id,
+          change_type: change.change_type,
+          remote_data: change.remote_data,
+          diff: change.diff,
+        };
+
+        const ok = await this.applyChangeUseCase.execute(pc);
+
+        if (ok) {
+          await this.pendingChangeRepo.markApproved(changeId);
+          result.auto_applied++;
+        } else {
+          result.errors++;
+        }
+      } catch (error) {
+        console.error(
+          `[Sync] Auto-apply failed for ${change.external_id}:`,
+          error,
+        );
+        result.errors++;
+      }
+    }
   }
 
   private async buildIndex(): Promise<RepeaterIndex> {
@@ -171,50 +212,15 @@ export class FetchUpdatesController {
     const freqHz = Math.round(parseFloat(record.Frequenza) * 1_000_000);
     const key = `${freqHz}_${record.Locator}`;
 
-    const byExtId = index.byExtId.get(key);
-    if (byExtId) return byExtId;
-
-    const byFreqLoc = index.byFreqLocator.get(key);
-    if (byFreqLoc) return byFreqLoc;
-
-    if (record.Identificativo) {
-      const byCallLoc = index.byCallsignLocator.get(
-        `${record.Identificativo}_${record.Locator}`,
-      );
-      if (byCallLoc) return byCallLoc;
-
-      const byCall = index.byCallsign.get(record.Identificativo);
-      if (byCall) return byCall;
-    }
-
-    return null;
-  }
-
-  private async processChange(
-    change: PendingChangeInsert,
-    autoApply: boolean,
-    result: FetchUpdatesResult,
-  ): Promise<void> {
-    const stored = await this.storePendingChangeUseCase.execute(change);
-
-    if (!stored) {
-      result.already_pending++;
-      return;
-    }
-
-    this.incrementResultCounter(change, result);
-
-    if (autoApply) {
-      const changeId = this.storePendingChangeUseCase.getLastInsertedId();
-      if (changeId) {
-        const applied = await this.callApplyEdgeFunction(changeId);
-        if (applied) {
-          result.auto_applied++;
-        } else {
-          result.errors++;
-        }
-      }
-    }
+    return (
+      index.byExtId.get(key) ??
+      index.byFreqLocator.get(key) ??
+      (record.Identificativo
+        ? index.byCallsignLocator.get(
+            `${record.Identificativo}_${record.Locator}`,
+          ) ?? index.byCallsign.get(record.Identificativo) ?? null
+        : null)
+    );
   }
 
   private incrementResultCounter(
@@ -226,32 +232,6 @@ export class FetchUpdatesController {
       case "update": result.updates++; break;
       case "deactivate": result.deactivations++; break;
       case "reactivate": result.reactivations++; break;
-    }
-  }
-
-  private async callApplyEdgeFunction(changeId: string): Promise<boolean> {
-    try {
-      const response = await fetch(
-        `${this.supabaseUrl}/functions/v1/apply_pending_change`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${this.serviceRoleKey}`,
-          },
-          body: JSON.stringify({ change_id: changeId, action: "approve" }),
-        },
-      );
-
-      if (!response.ok) {
-        const body = await response.text();
-        console.error(`[Sync] Auto-apply failed for ${changeId}: ${response.status} ${body}`);
-        return false;
-      }
-      return true;
-    } catch (error) {
-      console.error(`[Sync] Auto-apply error for ${changeId}:`, error);
-      return false;
     }
   }
 }
