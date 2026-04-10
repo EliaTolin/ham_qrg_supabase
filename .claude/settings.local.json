@@ -27,5 +27,9 @@
       "Bash(xargs cat:*)",
       "Read(//Users/eliatolin/Desktop/Aurora/Progetti/HamQRG/**)"
     ]
-  }
+  },
+  "enabledMcpjsonServers": [
+    "supabase"
+  ],
+  "enableAllProjectMcpServers": true
 }
