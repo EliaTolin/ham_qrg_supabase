@@ -104,3 +104,10 @@ function_name/
 - CTCSS tones stored as numeric(6,1) in Hz
 - Deno runtime for edge functions with JSR imports (`jsr:@supabase/*`)
 - External sync records tracked via `external_id` + `last_seen_at` columns
+
+## Active Technologies
+- PostgreSQL 15+ (Supabase managed) per lo schema; SQL/PLpgSQL per RPC e trigger. Nessun edge function nuovo: la pipeline push riusa le edge function Deno/JSR esistenti (`send_notification`). + Supabase Postgres + PostGIS (riusato), `pg_net` per HTTP outbound dai trigger (già configurato), Vault per i secret di edge function (già configurato), Realtime publication `supabase_realtime` (esistente). (001-cluster-spots)
+- PostgreSQL — nuova tabella `public.repeater_spots`; due `ALTER TABLE` su tabelle esistenti (`profiles`, `user_favorite_repeaters`); una `UNIQUE` aggiuntiva su `public.repeater_access(id, repeater_id)` per supportare la composite FK. (001-cluster-spots)
+
+## Recent Changes
+- 001-cluster-spots: Added PostgreSQL 15+ (Supabase managed) per lo schema; SQL/PLpgSQL per RPC e trigger. Nessun edge function nuovo: la pipeline push riusa le edge function Deno/JSR esistenti (`send_notification`). + Supabase Postgres + PostGIS (riusato), `pg_net` per HTTP outbound dai trigger (già configurato), Vault per i secret di edge function (già configurato), Realtime publication `supabase_realtime` (esistente).

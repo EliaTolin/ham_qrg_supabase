@@ -18,6 +18,22 @@ export class AccessRepository {
     return data ?? [];
   }
 
+  /** Check if an access exists and belongs to a specific repeater. */
+  async findByIdAndRepeater(accessId: string, repeaterId: string) {
+    const { data, error } = await this.supabase
+      .from("repeater_access")
+      .select("id")
+      .eq("id", accessId)
+      .eq("repeater_id", repeaterId)
+      .maybeSingle();
+
+    if (error) {
+      console.error(`[AccessRepo] findByIdAndRepeater ${accessId}/${repeaterId}: FAILED`, error);
+      return null;
+    }
+    return data;
+  }
+
   async findByExternalId(externalId: string) {
     const { data, error } = await this.supabase
       .from("repeater_access")

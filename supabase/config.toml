@@ -360,3 +360,15 @@ enabled = true
 verify_jwt = false
 import_map = "./functions/notify_telegram_report/deno.json"
 entrypoint = "./functions/notify_telegram_report/index.ts"
+
+[functions.create-spot]
+enabled = true
+verify_jwt = false
+import_map = "./functions/create-spot/deno.json"
+entrypoint = "./functions/create-spot/index.ts"
+
+[functions.close-spot]
+enabled = true
+verify_jwt = false
+import_map = "./functions/close-spot/deno.json"
+entrypoint = "./functions/close-spot/index.ts"
