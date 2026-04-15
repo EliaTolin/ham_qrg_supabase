@@ -26,8 +26,7 @@ export class CreateSpotController {
     const isOtherSpot = !!request.spotted_callsign?.trim();
 
     // 1. Validate caller's callsign → captures snapshot
-    const callsignSnapshot =
-      await this.validateCallsignUseCase.execute(userId);
+    const callsignSnapshot = await this.validateCallsignUseCase.execute(userId);
 
     // 2. Validate duration (required for self-spot, forbidden for other-spot)
     this.validateDurationUseCase.execute(
@@ -55,14 +54,12 @@ export class CreateSpotController {
     );
 
     // 6. Notify favorites (push notifications)
-    // TODO: Decommentare quando si vuole attivare le notifiche push.
-    //       Basta rimuovere il commento sotto e fare deploy.
-    // try {
-    //   const sent = await this.notifyFavoritesUseCase.execute(spot);
-    //   console.log(`[create-spot] Notified ${sent} favorites`);
-    // } catch (err) {
-    //   console.error("[create-spot] Notification fan-out failed:", err);
-    // }
+    try {
+      const sent = await this.notifyFavoritesUseCase.execute(spot);
+      console.log(`[create-spot] Notified ${sent} favorites`);
+    } catch (err) {
+      console.error("[create-spot] Notification fan-out failed:", err);
+    }
 
     return spot;
   }
