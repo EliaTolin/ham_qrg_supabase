@@ -10,6 +10,48 @@ interface WebhookPayload {
   schema: string;
   record: Record<string, unknown>;
   old_record: Record<string, unknown> | null;
+  repeater?: Record<string, unknown> | null;
+}
+
+function formatFrequency(hz: unknown): string {
+  if (typeof hz !== "number" || !Number.isFinite(hz) || hz <= 0) return "N/D";
+  return `${(hz / 1_000_000).toFixed(4)} MHz`;
+}
+
+function formatShift(hz: unknown): string | null {
+  if (typeof hz !== "number" || !Number.isFinite(hz) || hz === 0) return null;
+  const mhz = hz / 1_000_000;
+  const sign = mhz > 0 ? "+" : "";
+  return `${sign}${mhz.toFixed(3)} MHz`;
+}
+
+function formatAccess(access: Record<string, unknown>): string {
+  const parts: string[] = [];
+  const mode = access.mode as string | undefined;
+  if (mode) parts.push(mode);
+
+  const ctcss = access.ctcss_hz;
+  if (typeof ctcss === "number" && ctcss > 0) {
+    parts.push(`CTCSS ${ctcss.toFixed(1)} Hz`);
+  } else if (typeof ctcss === "string" && ctcss.length > 0) {
+    parts.push(`CTCSS ${ctcss} Hz`);
+  }
+
+  const dcs = access.dcs_code;
+  if (typeof dcs === "number") parts.push(`DCS ${dcs}`);
+
+  const cc = access.color_code;
+  if (typeof cc === "number") parts.push(`CC${cc}`);
+
+  return parts.join(" · ");
+}
+
+function formatAccesses(accesses: unknown): string {
+  if (!Array.isArray(accesses) || accesses.length === 0) return "N/D";
+  return accesses
+    .map((a) => formatAccess(a as Record<string, unknown>))
+    .filter((s) => s.length > 0)
+    .join("\n  • ");
 }
 
 async function sendTelegramMessage(
@@ -34,8 +76,20 @@ async function sendTelegramMessage(
   }
 }
 
-function formatReportMessage(record: Record<string, unknown>): string {
-  const label = record.repeater_label as string ?? "Ripetitore";
+function formatReportMessage(
+  record: Record<string, unknown>,
+  repeater: Record<string, unknown> | null | undefined,
+): string {
+  const callsign = (repeater?.callsign as string | null) ?? null;
+  const name = (repeater?.name as string | null) ?? null;
+  const label = callsign ?? name ?? "Sconosciuto";
+  const frequency = formatFrequency(repeater?.frequency_hz);
+  const shift = formatShift(repeater?.shift_hz);
+  const locality = (repeater?.locality as string | null) ?? "";
+  const region = (repeater?.region as string | null) ?? "";
+  const location = [locality, region].filter(Boolean).join(", ");
+  const accesses = formatAccesses(repeater?.accesses);
+
   const description = record.description as string ?? "";
   const status = record.status as string ?? "pending";
   const createdAt = record.created_at
@@ -44,9 +98,21 @@ function formatReportMessage(record: Record<string, unknown>): string {
     })
     : "";
 
+  const repeaterLines = [`<b>Nominativo:</b> ${label}`];
+  if (callsign && name && callsign !== name) {
+    repeaterLines.push(`<b>Nome:</b> ${name}`);
+  }
+  repeaterLines.push(`<b>Frequenza:</b> ${frequency}${shift ? ` (${shift})` : ""}`);
+  if (location) repeaterLines.push(`<b>Località:</b> ${location}`);
+  repeaterLines.push(
+    `<b>Accessi:</b>${
+      accesses === "N/D" ? ` ${accesses}` : `\n  • ${accesses}`
+    }`,
+  );
+
   return (
     `<b>🚨 Nuovo report</b>\n\n` +
-    `<b>Ripetitore:</b> ${label}\n` +
+    `<b>Ripetitore</b>\n${repeaterLines.join("\n")}\n\n` +
     `<b>Descrizione:</b> ${description}\n` +
     `<b>Stato:</b> ${status}\n` +
     `<b>Data:</b> ${createdAt}`
@@ -113,7 +179,7 @@ Deno.serve(async (req) => {
 
     switch (body.table) {
       case "repeater_reports":
-        message = formatReportMessage(body.record);
+        message = formatReportMessage(body.record, body.repeater);
         break;
       case "repeater_submissions":
         message = formatSubmissionMessage(body.record);
