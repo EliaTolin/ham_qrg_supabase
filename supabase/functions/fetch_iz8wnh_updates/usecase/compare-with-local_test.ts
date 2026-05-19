@@ -260,6 +260,58 @@ Deno.test("Both timestamps null → suggested_winner 'unknown'", async () => {
   assertEquals(result!.suggested_winner, "unknown");
 });
 
+Deno.test("Hidden remote (AutoON=0, ManualON=1), no local repeater → null", async () => {
+  const uc = createUseCase();
+  const result = await uc.execute(
+    makeRecord({ AutoON: "0", ManualON: "1" }),
+    null,
+  );
+
+  assertEquals(result, null);
+});
+
+Deno.test("Hidden remote (AutoON=1, ManualON=0), no local repeater → null", async () => {
+  const uc = createUseCase();
+  const result = await uc.execute(
+    makeRecord({ AutoON: "1", ManualON: "0" }),
+    null,
+  );
+
+  assertEquals(result, null);
+});
+
+Deno.test("Hidden remote, local repeater exists, no local access → no access_* diff", async () => {
+  const uc = createUseCase();
+  // This is the bug case: a hidden record must not be enrolled as a new access
+  const result = await uc.execute(
+    makeRecord({ AutoON: "0", ManualON: "1", Ultima_Modifica: "2026-04-06" }),
+    makeLocalRepeater({ updated_at: "2026-03-01T00:00:00Z" }),
+    [], // no local accesses
+  );
+
+  // No diff at all (no repeater fields changed, and access not enrolled) → null
+  assertEquals(result, null);
+});
+
+Deno.test("Hidden remote with repeater field change → update WITHOUT access_* entry", async () => {
+  const uc = createUseCase();
+  const result = await uc.execute(
+    makeRecord({
+      AutoON: "0",
+      ManualON: "1",
+      Localita: "Changed",
+      Ultima_Modifica: "2026-04-06",
+    }),
+    makeLocalRepeater({ updated_at: "2026-03-01T00:00:00Z" }),
+    [], // no local accesses — must NOT trigger access_ANALOG enrollment
+  );
+
+  assertNotEquals(result, null);
+  assertEquals(result!.change_type, "update");
+  assertEquals(result!.diff["access_ANALOG"], undefined);
+  assertNotEquals(result!.diff.locality, undefined);
+});
+
 Deno.test("Access matched by external_id, not mode", async () => {
   const uc = createUseCase();
   // Access has different mode but same external_id as record

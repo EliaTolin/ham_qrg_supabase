@@ -25,11 +25,12 @@
       "Bash(deno run:*)",
       "Bash(find:*)",
       "Bash(xargs cat:*)",
-      "Read(//Users/eliatolin/Desktop/Aurora/Progetti/HamQRG/**)"
+      "Read(//Users/eliatolin/Desktop/Aurora/Progetti/HamQRG/**)",
+      "Read(//Users/eliatolin's Desktop/Aurora/Progetti/HamQRG/ham_qrg_supabase/supabase/functions/notify_telegram_report/**)"
     ]
   },
+  "enableAllProjectMcpServers": true,
   "enabledMcpjsonServers": [
     "supabase"
-  ],
-  "enableAllProjectMcpServers": true
+  ]
 }

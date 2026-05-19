@@ -23,6 +23,10 @@ const ACCESS_COMPARE_FIELDS = [
   "node_id",
 ] as const;
 
+function isRemoteVisible(record: HamQRGUpdateRecord): boolean {
+  return record.AutoON === "1" && record.ManualON === "1";
+}
+
 export class CompareWithLocalUseCase {
   constructor(
     private mapApiRecordUseCase: MapApiRecordToRepeaterUseCase,
@@ -38,8 +42,12 @@ export class CompareWithLocalUseCase {
     accesses: LocalAccess[] = [],
     skipTimestampCheck = false,
   ): Promise<PendingChangeInsert | null> {
-    // New repeater: not in our DB yet
+    const remoteVisible = isRemoteVisible(record);
+
+    // New repeater: not in our DB yet. Only create if remote is visible
+    // (AutoON=ManualON=1); otherwise the upstream considers it hidden.
     if (!localRepeater) {
+      if (!remoteVisible) return null;
       const mapped = await this.mapApiRecordUseCase.execute(record);
       if (!mapped) return null;
 
@@ -97,17 +105,22 @@ export class CompareWithLocalUseCase {
       }
 
       if (!localAccess) {
-        // New access mode for this repeater
-        diff[`access_${remoteMode}`] = {
-          local: null,
-          remote: {
-            mode: remoteMode,
-            ctcss_tx_hz: mapped.access.ctcss_tx_hz,
-            color_code: mapped.access.color_code,
-            node_id: mapped.access.node_id,
-            network_id: mapped.access.network_id,
-          },
-        };
+        // New access mode for this repeater — only enroll if remote is visible
+        // (AutoON=ManualON=1). Hidden remote records must not create accesses:
+        // evaluate-activation-status handles removal of existing accesses when
+        // the remote flips to hidden; there is nothing to enroll here.
+        if (remoteVisible) {
+          diff[`access_${remoteMode}`] = {
+            local: null,
+            remote: {
+              mode: remoteMode,
+              ctcss_tx_hz: mapped.access.ctcss_tx_hz,
+              color_code: mapped.access.color_code,
+              node_id: mapped.access.node_id,
+              network_id: mapped.access.network_id,
+            },
+          };
+        }
       } else {
         // Compare access fields
         for (const field of ACCESS_COMPARE_FIELDS) {
