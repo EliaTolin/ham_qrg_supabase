@@ -30,11 +30,19 @@ function formatAccess(access: Record<string, unknown>): string {
   const mode = access.mode as string | undefined;
   if (mode) parts.push(mode);
 
-  const ctcss = access.ctcss_hz;
-  if (typeof ctcss === "number" && ctcss > 0) {
-    parts.push(`CTCSS ${ctcss.toFixed(1)} Hz`);
-  } else if (typeof ctcss === "string" && ctcss.length > 0) {
-    parts.push(`CTCSS ${ctcss} Hz`);
+  const ctcssTx = access.ctcss_tx_hz ?? access.ctcss_hz;
+  const ctcssRx = access.ctcss_rx_hz;
+  const formattedTx = formatTone(ctcssTx);
+  const formattedRx = formatTone(ctcssRx);
+  if (
+    formattedTx != null && formattedRx != null && formattedTx !== formattedRx
+  ) {
+    parts.push(`CTCSS TX ${formattedTx} Hz`);
+    parts.push(`RX ${formattedRx} Hz`);
+  } else if (formattedTx != null) {
+    parts.push(`CTCSS ${formattedTx} Hz`);
+  } else if (formattedRx != null) {
+    parts.push(`CTCSS RX ${formattedRx} Hz`);
   }
 
   const dcs = access.dcs_code;
@@ -44,6 +52,12 @@ function formatAccess(access: Record<string, unknown>): string {
   if (typeof cc === "number") parts.push(`CC${cc}`);
 
   return parts.join(" · ");
+}
+
+function formatTone(value: unknown): string | null {
+  if (typeof value === "number" && value > 0) return value.toFixed(1);
+  if (typeof value === "string" && value.length > 0) return value;
+  return null;
 }
 
 function formatAccesses(accesses: unknown): string {
@@ -102,7 +116,9 @@ function formatReportMessage(
   if (callsign && name && callsign !== name) {
     repeaterLines.push(`<b>Nome:</b> ${name}`);
   }
-  repeaterLines.push(`<b>Frequenza:</b> ${frequency}${shift ? ` (${shift})` : ""}`);
+  repeaterLines.push(
+    `<b>Frequenza:</b> ${frequency}${shift ? ` (${shift})` : ""}`,
+  );
   if (location) repeaterLines.push(`<b>Località:</b> ${location}`);
   repeaterLines.push(
     `<b>Accessi:</b>${
@@ -140,8 +156,7 @@ function formatSubmissionMessage(record: Record<string, unknown>): string {
     })
     : "";
 
-  let message =
-    `<b>📡 Nuovo ripetitore segnalato</b>\n\n` +
+  let message = `<b>📡 Nuovo ripetitore segnalato</b>\n\n` +
     `<b>Nome/Callsign:</b> ${label}\n` +
     `<b>Frequenza:</b> ${frequency}\n` +
     `<b>Località:</b> ${location}\n` +
