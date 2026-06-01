@@ -58,8 +58,10 @@ export interface SyncRecordResult {
 
 /** Record dall'API lastUpdatesOutgoing (estende HamQRGRecord con campi attivazione) */
 export interface HamQRGUpdateRecord extends HamQRGRecord {
-  AutoON: string;   // "0" or "1"
-  ManualON: string; // "0" or "1"
+  // L'API restituisce questi campi come numeri JSON (0/1), non stringhe.
+  // Tenuti string | number e confrontati via String(...) per robustezza.
+  AutoON: string | number; // 0 or 1
+  ManualON: string | number; // 0 or 1
 }
 
 /** Dati per una pending change da inserire */

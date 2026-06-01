@@ -73,6 +73,42 @@ Deno.test("Remote active, local active → null (skip)", () => {
   assertEquals(result, null);
 });
 
+// Regressione: l'API restituisce AutoON/ManualON come NUMERI (1/0), non stringhe.
+// Con il confronto stretto `=== "1"` venivano generati falsi deactivate per
+// ripetitori attivi. Il fix normalizza con String().
+Deno.test("Numeric AutoON=1 ManualON=1 → active (no deactivate)", () => {
+  const uc = createUseCase();
+  const result = uc.executeInMemory(
+    makeRecord({ AutoON: 1, ManualON: 1 }),
+    makeLocalRepeater({ is_active: true }),
+    [makeAccess()],
+  );
+
+  assertEquals(result, null);
+});
+
+Deno.test("Numeric AutoON=1 ManualON=1, local inactive → reactivate", () => {
+  const uc = createUseCase();
+  const result = uc.executeInMemory(
+    makeRecord({ AutoON: 1, ManualON: 1 }),
+    makeLocalRepeater({ is_active: false }),
+    [makeAccess()],
+  );
+
+  assertEquals(result?.change_type, "reactivate");
+});
+
+Deno.test("Numeric AutoON=0 → deactivate access", () => {
+  const uc = createUseCase();
+  const result = uc.executeInMemory(
+    makeRecord({ AutoON: 0, ManualON: 1 }),
+    makeLocalRepeater({ is_active: true }),
+    [makeAccess()],
+  );
+
+  assertEquals(result?.change_type, "deactivate");
+});
+
 Deno.test("Remote active, local inactive → reactivate", () => {
   const uc = createUseCase();
   const result = uc.executeInMemory(

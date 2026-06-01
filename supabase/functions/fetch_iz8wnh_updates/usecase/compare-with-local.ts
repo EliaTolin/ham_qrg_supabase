@@ -24,7 +24,8 @@ const ACCESS_COMPARE_FIELDS = [
 ] as const;
 
 function isRemoteVisible(record: HamQRGUpdateRecord): boolean {
-  return record.AutoON === "1" && record.ManualON === "1";
+  // AutoON/ManualON arrivano come numeri (1/0): confronto via String().
+  return String(record.AutoON) === "1" && String(record.ManualON) === "1";
 }
 
 export class CompareWithLocalUseCase {

@@ -35,7 +35,10 @@ export class EvaluateActivationStatusUseCase {
     localRepeater: LocalRepeater,
     accesses: LocalAccess[],
   ): PendingChangeInsert | null {
-    const remoteActive = record.AutoON === "1" && record.ManualON === "1";
+    // L'API restituisce AutoON/ManualON come numeri (1/0): confronto via String()
+    // per evitare che `1 === "1"` sia sempre falso e generi falsi deactivate.
+    const remoteActive = String(record.AutoON) === "1" &&
+      String(record.ManualON) === "1";
 
     // Remote says active
     if (remoteActive) {
