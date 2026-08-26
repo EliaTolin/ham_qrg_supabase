@@ -361,6 +361,14 @@ verify_jwt = false
 import_map = "./functions/notify_telegram_report/deno.json"
 entrypoint = "./functions/notify_telegram_report/index.ts"
 
+# RevenueCat → Supabase webhook. verify_jwt = false because RevenueCat sends its
+# own Authorization secret (REVENUECAT_WEBHOOK_AUTH), not a Supabase JWT.
+[functions.revenuecat_webhook]
+enabled = true
+verify_jwt = false
+import_map = "./functions/revenuecat_webhook/deno.json"
+entrypoint = "./functions/revenuecat_webhook/index.ts"
+
 [functions.create-spot]
 enabled = true
 verify_jwt = false
