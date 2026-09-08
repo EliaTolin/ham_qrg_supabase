@@ -979,6 +979,8 @@ export type Database = {
         | "NXDN"
         | "ALLSTAR"
         | "WINLINK"
+        | "P25"
+        | "IRLP"
       app_permission:
         | "repeaters.write"
         | "repeaters.delete"

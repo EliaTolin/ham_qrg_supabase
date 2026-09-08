@@ -42,7 +42,7 @@ The schema uses PostgreSQL with PostGIS for geographic queries.
 
 **Key Enums:**
 - `repeater_mode`: Analog, Digital, Mixed
-- `access_mode`: ANALOG, DMR, C4FM, DSTAR, ECHOLINK, SVX, APRS, BEACON, ATV, NXDN, ALLSTAR, WINLINK
+- `access_mode`: ANALOG, DMR, C4FM, DSTAR, ECHOLINK, SVX, APRS, BEACON, ATV, NXDN, ALLSTAR, WINLINK, P25, IRLP
 - `network_kind`: dmr, c4fm, dstar, voip, mixed, other
 
 ### Geographic Functions
