@@ -3,9 +3,16 @@
 -- repeaters: 17541 | access: 30431
 -- RICHIEDE: migration 20260908120000_add_access_modes_p25_irlp.sql gia applicata
 
-begin;
+-- NB: supabase db push esegue ogni migration dentro una transazione,
+-- quindi qui NON si apre un begin/commit esplicito (sarebbe annidato
+-- e il commit chiuderebbe in anticipo la transazione del CLI).
 
-set local statement_timeout = '30min';
+-- PostGIS in Supabase vive nello schema extensions: senza questo
+-- search_path la colonna generata repeaters.geom non risolve il tipo
+-- geography e l'insert fallisce (SQLSTATE 42704).
+set search_path = public, extensions;
+
+set statement_timeout = '30min';
 
 -- guardia: P25 e IRLP devono esistere nell'enum
 do $$ begin
@@ -23,7 +30,7 @@ create temp table _imp_rep (
   region text, province_code text, locality text, locator text,
   lat double precision, lon double precision, is_active boolean,
   external_id text
-) on commit drop;
+);
 
 insert into _imp_rep values
 ('LU1DBQ','LU1DBQ',NULL,53110000,-1000000,NULL,'Argentina','AR','Moron','GF05QI',-34.66149902,-58.59740067,true,'hq_4e845d520754fe11173a'),
@@ -17589,7 +17596,7 @@ create temp table _imp_acc (
   frequency_hz bigint, locator text, mode public.access_mode,
   ctcss_hz numeric(6,1), color_code smallint, talkgroup bigint,
   node_id integer, notes text
-) on commit drop;
+);
 
 insert into _imp_acc values
 (53110000,'GF05QI','ANALOG'::public.access_mode,94.8,NULL,NULL,NULL,NULL),
@@ -48079,4 +48086,5 @@ join public.repeaters r
   on r.frequency_hz = a.frequency_hz and r.locator = a.locator
 on conflict do nothing;
 
-commit;
+drop table _imp_rep;
+drop table _imp_acc;

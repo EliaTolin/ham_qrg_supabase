@@ -43,25 +43,65 @@ Ogni repeater ha un `external_id` nella forma `hq_<20 hex>`, ottenuto come
 La corrispondenza `external_id` → riga sorgente è mantenuta **fuori dal repo**
 (`external_id_map.csv`, non versionato).
 
-## Idempotenza
+## Idempotenza e transazione
 
-Transazione unica, `on conflict do nothing` su entrambe le tabelle. La
-deduplicazione si appoggia agli indici esistenti:
+`supabase db push` esegue già ogni migration dentro una transazione, quindi il
+file **non** apre un `begin`/`commit` esplicito: sarebbe annidato e il commit
+chiuderebbe in anticipo la transazione del CLI. Le tabelle di staging sono
+create senza `on commit drop` e rimosse esplicitamente in coda.
+
+`on conflict do nothing` su entrambe le tabelle. La deduplicazione si appoggia
+agli indici esistenti:
 
 - `repeaters_frequency_locator_unique (frequency_hz, locator)`
 - `repeaters_external_id_unique (external_id)`
 - `repeater_access_dedup_unique (repeater_id, mode, network_id, ctcss_hz, dcs_code, color_code, talkgroup, dg_id)`
 
+## search_path
+
+In Supabase PostGIS è installato nello schema `extensions`, non in `public`.
+Senza `set search_path = public, extensions` la colonna generata
+`repeaters.geom` non riesce a risolvere il tipo `geography` e l'insert fallisce
+con `SQLSTATE 42704`. La migration lo imposta esplicitamente.
+
 ## Verifica eseguita
 
-Postgres 17.6 + PostGIS 3.5.3 in Docker, schema ricostruito applicando tutte
-le 67 migration del repo:
+Postgres 17.6 + PostGIS 3.5.3 in Docker, con **PostGIS nello schema
+`extensions`** per replicare la configurazione Supabase, schema ricostruito
+applicando tutte le migration del repo:
 
-- primo run: `INSERT 17541` + `INSERT 30431`, commit in **15,6 s**
-- secondo run: `INSERT 0` + `INSERT 0`, conteggi invariati → **idempotente**
-- 0 access orfani, 0 `geom` nulli, 0 `external_id` nulli
-- RPC `repeaters_nearby` e `repeaters_in_bounds` interrogate con esito positivo,
-  compresi i filtri `P25` e `IRLP`
+- primo run su DB vuoto: 17.541 repeaters + 30.431 access
+- secondo run: conteggi invariati → **idempotente**
+- terzo run con 2 ponti preesistenti di altra sorgente (`source='iz8wnh'`):
+  righe altrui **intatte** per source, external_id e CTCSS
+- 0 access orfani, 0 `geom` nulli, 0 tabelle di staging residue
+- RPC verificate: `repeaters_nearby` (anche coi filtri `P25` e `IRLP`),
+  `repeaters_in_bounds`, `search_repeaters`
+
+## Completezza dei dati
+
+Coordinate, locator, shift, località e regione sono presenti sul 100% delle
+righe. 6.520 ponti condividono le coordinate con altri: non è un errore, è la
+posizione approssimata alla città pubblicata dalle directory per i ponti privati.
+
+I dati di accesso sono invece parziali, perché il dump USA di partenza non
+espone le colonne dei node (ha solo `system_links` come testo libero):
+
+| Modo | Access | Senza dato d'accesso |
+|---|---|---|
+| ANALOG | 17.222 | 2.858 (16,6%) — accesso libero, legittimo |
+| ECHOLINK | 3.766 | 3.610 (95,9%) |
+| ALLSTAR | 3.440 | 3.401 (98,9%) |
+| IRLP | 2.612 | 2.569 (98,4%) |
+| C4FM | 1.969 | 1.929 (98,0%) |
+| P25 | 469 | 444 (94,7%) |
+| DMR | 627 | 94 (15,0%) |
+| DSTAR / NXDN / ATV | 326 | 0 |
+
+Gli access di link privi di `node_id` sono stati **mantenuti**: segnalano che il
+ponte offre quella modalità, anche se il numero per collegarsi va reperito
+altrove. Da valutare lato client se distinguerli visivamente.
+
 
 ## Note sui dati
 
