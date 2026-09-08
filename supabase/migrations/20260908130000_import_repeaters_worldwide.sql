@@ -48074,84 +48074,116 @@ on conflict do nothing;
 
 -- 2) access (risolve repeater_id via chiave naturale)
 --
--- NB: lo schema di repeater_access e' andato in drift rispetto alle
--- migration versionate. In produzione il CTCSS e' splittato in
--- ctcss_tx_hz/ctcss_rx_hz e il DMR ID e' rinominato talkgroup, ma le
--- migration corrispondenti non sono nel repo. L'insert e' quindi
--- costruito dinamicamente sulle colonne realmente presenti.
+-- ATTENZIONE: lo schema di repeater_access in produzione e' andato in
+-- drift rispetto alle migration versionate (colonne rinominate o
+-- assenti: ctcss_hz -> ctcss_tx_hz/ctcss_rx_hz, dmr_id -> talkgroup,
+-- tone_scope/tone_direction non sempre presenti). Per non dipendere da
+-- ipotesi sullo schema, OGNI colonna opzionale viene inclusa solo se
+-- esiste davvero: si leggono le colonne reali da information_schema e
+-- si costruisce l'insert su quelle.
 --
 -- Il tono RX conta: negli USA 231 ponti hanno TX != RX e 33 hanno il
--- tono solo in RX. Sullo schema splittato vengono importati entrambi;
--- su quello a colonna singola si tiene il TX (fallback sul RX).
+-- tono solo in RX. Sullo schema splittato si importano entrambi; su
+-- quello a colonna singola si usa coalesce(tx, rx).
 do $$
 declare
-  v_split    boolean;
-  v_single   boolean;
-  v_dmr      text;
-  v_has_node boolean;
-  v_cols     text;
-  v_vals     text;
-  v_sql      text;
+  v_cols text := 'repeater_id, mode';
+  v_vals text := 'r.id, a.mode';
+  v_sql  text;
+  v_split boolean;
+  v_n    bigint;
 begin
-  select exists (select 1 from information_schema.columns
-                 where table_schema='public' and table_name='repeater_access'
-                   and column_name='ctcss_tx_hz') into v_split;
-  select exists (select 1 from information_schema.columns
-                 where table_schema='public' and table_name='repeater_access'
-                   and column_name='ctcss_hz') into v_single;
-  select case
-           when exists (select 1 from information_schema.columns
-                        where table_schema='public' and table_name='repeater_access'
-                          and column_name='talkgroup') then 'talkgroup'
-           when exists (select 1 from information_schema.columns
-                        where table_schema='public' and table_name='repeater_access'
-                          and column_name='dmr_id') then 'dmr_id'
-           else null end into v_dmr;
-  select exists (select 1 from information_schema.columns
-                 where table_schema='public' and table_name='repeater_access'
-                   and column_name='node_id') into v_has_node;
+  v_split := exists (select 1 from information_schema.columns
+                     where table_schema='public' and table_name='repeater_access'
+                       and column_name='ctcss_tx_hz');
 
-  if not v_split and not v_single then
+  -- CTCSS: schema splittato oppure colonna singola
+  if v_split then
+    v_cols := v_cols || ', ctcss_tx_hz';
+    v_vals := v_vals || ', a.ctcss_tx_hz';
+    if exists (select 1 from information_schema.columns
+               where table_schema='public' and table_name='repeater_access'
+                 and column_name='ctcss_rx_hz') then
+      v_cols := v_cols || ', ctcss_rx_hz';
+      v_vals := v_vals || ', a.ctcss_rx_hz';
+    end if;
+  elsif exists (select 1 from information_schema.columns
+                where table_schema='public' and table_name='repeater_access'
+                  and column_name='ctcss_hz') then
+    v_cols := v_cols || ', ctcss_hz';
+    v_vals := v_vals || ', coalesce(a.ctcss_tx_hz, a.ctcss_rx_hz)';
+  else
     raise exception 'repeater_access: nessuna colonna CTCSS riconosciuta';
   end if;
 
-  v_cols := 'repeater_id, mode, color_code, notes, source, tone_scope, tone_direction';
-  v_vals := 'r.id, a.mode, a.color_code, a.notes, ' || quote_literal('import') || ', '
-         || 'case when a.ctcss_tx_hz is not null or a.ctcss_rx_hz is not null '
-         || '     then ''local''::public.tone_scope else ''unknown''::public.tone_scope end, '
-         || 'case when a.ctcss_tx_hz is not null and a.ctcss_rx_hz is not null then ''both''::public.tone_direction '
-         || '     when a.ctcss_tx_hz is not null then ''tx''::public.tone_direction '
-         || '     when a.ctcss_rx_hz is not null then ''rx''::public.tone_direction '
-         || '     else ''unknown''::public.tone_direction end';
-
-  if v_split then
-    v_cols := v_cols || ', ctcss_tx_hz, ctcss_rx_hz';
-    v_vals := v_vals || ', a.ctcss_tx_hz, a.ctcss_rx_hz';
-  else
-    v_cols := v_cols || ', ctcss_hz';
-    v_vals := v_vals || ', coalesce(a.ctcss_tx_hz, a.ctcss_rx_hz)';
-  end if;
-
-  if v_dmr is not null then
-    v_cols := v_cols || ', ' || quote_ident(v_dmr);
+  -- DMR id: talkgroup (nuovo) oppure dmr_id (vecchio)
+  if exists (select 1 from information_schema.columns
+             where table_schema='public' and table_name='repeater_access'
+               and column_name='talkgroup') then
+    v_cols := v_cols || ', talkgroup';
+    v_vals := v_vals || ', a.talkgroup';
+  elsif exists (select 1 from information_schema.columns
+                where table_schema='public' and table_name='repeater_access'
+                  and column_name='dmr_id') then
+    v_cols := v_cols || ', dmr_id';
     v_vals := v_vals || ', a.talkgroup';
   end if;
 
-  if v_has_node then
-    v_cols := v_cols || ', node_id';
-    v_vals := v_vals || ', a.node_id';
+  -- colonne opzionali semplici: incluse solo se esistono
+  if exists (select 1 from information_schema.columns
+             where table_schema='public' and table_name='repeater_access'
+               and column_name='color_code') then
+    v_cols := v_cols || ', color_code';  v_vals := v_vals || ', a.color_code';
+  end if;
+
+  if exists (select 1 from information_schema.columns
+             where table_schema='public' and table_name='repeater_access'
+               and column_name='node_id') then
+    v_cols := v_cols || ', node_id';  v_vals := v_vals || ', a.node_id';
+  end if;
+
+  if exists (select 1 from information_schema.columns
+             where table_schema='public' and table_name='repeater_access'
+               and column_name='notes') then
+    v_cols := v_cols || ', notes';  v_vals := v_vals || ', a.notes';
+  end if;
+
+  if exists (select 1 from information_schema.columns
+             where table_schema='public' and table_name='repeater_access'
+               and column_name='source') then
+    v_cols := v_cols || ', source';
+    v_vals := v_vals || ', ' || quote_literal('import');
+  end if;
+
+  if exists (select 1 from information_schema.columns
+             where table_schema='public' and table_name='repeater_access'
+               and column_name='tone_scope') then
+    v_cols := v_cols || ', tone_scope';
+    v_vals := v_vals || ', case when a.ctcss_tx_hz is not null or a.ctcss_rx_hz is not null'
+           || ' then ''local''::public.tone_scope else ''unknown''::public.tone_scope end';
+  end if;
+
+  if exists (select 1 from information_schema.columns
+             where table_schema='public' and table_name='repeater_access'
+               and column_name='tone_direction') then
+    v_cols := v_cols || ', tone_direction';
+    v_vals := v_vals || ', case when a.ctcss_tx_hz is not null and a.ctcss_rx_hz is not null then ''both''::public.tone_direction'
+           || ' when a.ctcss_tx_hz is not null then ''tx''::public.tone_direction'
+           || ' when a.ctcss_rx_hz is not null then ''rx''::public.tone_direction'
+           || ' else ''unknown''::public.tone_direction end';
   end if;
 
   v_sql := 'insert into public.repeater_access (' || v_cols || ') '
         || 'select ' || v_vals || ' '
         || 'from _imp_acc a '
-        || 'join public.repeaters r on r.frequency_hz = a.frequency_hz and r.locator = a.locator '
+        || 'join public.repeaters r on r.frequency_hz = a.frequency_hz '
+        || '  and r.locator = a.locator '
         || 'on conflict do nothing';
 
-  raise notice 'repeater_access -> ctcss=%, dmr=%, node_id=%',
-    case when v_split then 'tx/rx separati' else 'colonna singola' end,
-    coalesce(v_dmr,'assente'), v_has_node;
+  raise notice 'repeater_access colonne usate: %', v_cols;
   execute v_sql;
+  get diagnostics v_n = row_count;
+  raise notice 'repeater_access inseriti: %', v_n;
 end $$;
 
 drop table _imp_rep;
