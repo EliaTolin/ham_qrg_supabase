@@ -43,6 +43,37 @@ Ogni repeater ha un `external_id` nella forma `hq_<20 hex>`, ottenuto come
 La corrispondenza `external_id` → riga sorgente è mantenuta **fuori dal repo**
 (`external_id_map.csv`, non versionato).
 
+## CTCSS: tono TX e RX
+
+Negli USA il tono di downlink è spesso diverso da quello di uplink. Nel dataset:
+
+- **7.436 righe** hanno entrambi i toni, di cui **231 con TX ≠ RX** (229 USA)
+- **33 righe** hanno il tono **solo in RX**: importando il solo TX sparirebbero
+- 7.004 hanno solo TX, 3.068 nessuno dei due
+
+Entrambi i toni vengono quindi importati.
+
+## Schema adattivo
+
+Lo schema di `repeater_access` in produzione è andato in **drift** rispetto alle
+migration versionate: il CTCSS è splittato in `ctcss_tx_hz`/`ctcss_rx_hz` e il
+DMR ID è rinominato `talkgroup`, ma le migration corrispondenti non sono nel
+repo. Ricostruendo il DB dalle sole migration si ottiene `ctcss_hz`, e un insert
+statico fallisce con `SQLSTATE 42703`.
+
+L'insert degli access è perciò costruito a runtime leggendo
+`information_schema.columns`:
+
+| Schema rilevato | Comportamento |
+|---|---|
+| `ctcss_tx_hz` + `ctcss_rx_hz` (produzione) | importa entrambi i toni |
+| `ctcss_hz` (repo) | usa `coalesce(tx, rx)`, così i 33 solo-RX non si perdono |
+| `talkgroup` / `dmr_id` | rileva il nome corretto |
+| `node_id` assente | colonna omessa |
+
+`tone_direction` viene valorizzato di conseguenza: `both`, `tx`, `rx` o
+`unknown`. La migration stampa una `NOTICE` con lo schema rilevato.
+
 ## Idempotenza e transazione
 
 `supabase db push` esegue già ogni migration dentro una transazione, quindi il
@@ -67,16 +98,29 @@ con `SQLSTATE 42704`. La migration lo imposta esplicitamente.
 ## Verifica eseguita
 
 Postgres 17.6 + PostGIS 3.5.3 in Docker, con **PostGIS nello schema
-`extensions`** per replicare la configurazione Supabase, schema ricostruito
-applicando tutte le migration del repo:
+`extensions`** per replicare la configurazione Supabase.
 
-- primo run su DB vuoto: 17.541 repeaters + 30.431 access
-- secondo run: conteggi invariati → **idempotente**
-- terzo run con 2 ponti preesistenti di altra sorgente (`source='iz8wnh'`):
-  righe altrui **intatte** per source, external_id e CTCSS
+Su schema **splittato** (come produzione):
+
+- 17.541 repeaters + 30.431 access
+- 14.362 access con tono TX, **7.459 con tono RX**
+- 231 con TX ≠ RX, 33 con solo RX
+- `tone_direction`: 7.426 `both`, 6.936 `tx`, 33 `rx`, 16.036 `unknown`
+- verifica puntuale: `K4TNS` → tx=100.0 rx=203.5 `both`
+
+Su schema **a colonna singola** (come da repo):
+
+- stessi conteggi di righe, 14.395 access con CTCSS
+- i 33 solo-RX recuperati via `coalesce`
+
+In entrambi i casi:
+
+- run ripetuto → conteggi invariati, **idempotente**
+- ponti preesistenti di altra sorgente **intatti**
 - 0 access orfani, 0 `geom` nulli, 0 tabelle di staging residue
-- RPC verificate: `repeaters_nearby` (anche coi filtri `P25` e `IRLP`),
-  `repeaters_in_bounds`, `search_repeaters`
+- RPC `repeaters_nearby` (anche con filtri `P25`/`IRLP`), `repeaters_in_bounds`
+  e `search_repeaters` verificate
+
 
 ## Completezza dei dati
 
