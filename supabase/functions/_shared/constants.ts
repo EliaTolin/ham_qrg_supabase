@@ -25,8 +25,8 @@ export const TIPOLOGIA_MAP: Record<string, AccessMode | null> = {
   "NXDN": "NXDN",
   "AllStar": "ALLSTAR",
   "Winlink": "WINLINK",
-  // Modi introdotti con l'import internazionale.
-  // "P-25" e' la grafia usata da fonte esterna, "P25" quella dell'enum.
+  // Modi introdotti con l import internazionale.
+  // "P-25" e la grafia usata da alcune directory, "P25" quella dell enum.
   "P25": "P25",
   "P-25": "P25",
   "IRLP": "IRLP",

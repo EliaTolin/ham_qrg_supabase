@@ -1,4 +1,4 @@
--- Nuovi access_mode per l'import internazionale (fonte esterna).
+-- Nuovi access_mode per l import internazionale.
 -- Volumi attesi al primo import: IRLP 2.612, P25 469.
 -- M17 (16) e TETRA (1) scartati: troppo pochi per giustificare l'enum.
 --
