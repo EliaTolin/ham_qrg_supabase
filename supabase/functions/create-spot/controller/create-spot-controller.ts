@@ -3,6 +3,7 @@ import { ValidateCallsignUseCase } from "../usecase/validate-callsign-usecase.ts
 import { ValidateDurationUseCase } from "../usecase/validate-duration-usecase.ts";
 import { ValidateRepeaterUseCase } from "../usecase/validate-repeater-usecase.ts";
 import { ValidateAccessUseCase } from "../usecase/validate-access-usecase.ts";
+import { ValidateTalkgroupUseCase } from "../usecase/validate-talkgroup-usecase.ts";
 import { NotifyFavoritesUseCase } from "../usecase/notify-favorites-usecase.ts";
 import { SpotRepository } from "../../_shared/repository/spot-repository.ts";
 import type { CreateSpotRequest } from "../types.ts";
@@ -15,6 +16,7 @@ export class CreateSpotController {
     private validateDurationUseCase: ValidateDurationUseCase,
     private validateRepeaterUseCase: ValidateRepeaterUseCase,
     private validateAccessUseCase: ValidateAccessUseCase,
+    private validateTalkgroupUseCase: ValidateTalkgroupUseCase,
     private notifyFavoritesUseCase: NotifyFavoritesUseCase,
     private spotRepo: SpotRepository,
   ) {}
@@ -37,13 +39,19 @@ export class CreateSpotController {
     // 3. Validate repeater exists
     await this.validateRepeaterUseCase.execute(request.repeater_id);
 
-    // 4. Validate access belongs to repeater (if provided)
-    await this.validateAccessUseCase.execute(
+    // 4. Validate access belongs to repeater (if provided) → gives its mode
+    const accessMode = await this.validateAccessUseCase.execute(
       request.access_id ?? null,
       request.repeater_id,
     );
 
-    // 5. Atomic operation (self-spot: close-previous + insert; other-spot: insert only)
+    // 5. Validate talkgroup — allowed on DMR accesses only
+    const talkgroup = this.validateTalkgroupUseCase.execute(
+      request.talkgroup ?? null,
+      accessMode,
+    );
+
+    // 6. Atomic operation (self-spot: close-previous + insert; other-spot: insert only)
     const spot = await this.spotRepo.createSpotAtomic(
       userId,
       request.repeater_id,
@@ -51,9 +59,10 @@ export class CreateSpotController {
       callsignSnapshot,
       isOtherSpot ? null : request.duration_minutes!,
       isOtherSpot ? request.spotted_callsign!.trim() : null,
+      talkgroup,
     );
 
-    // 6. Notify favorites (push notifications)
+    // 7. Notify favorites (push notifications)
     try {
       const sent = await this.notifyFavoritesUseCase.execute(spot);
       console.log(`[create-spot] Notified ${sent} favorites`);

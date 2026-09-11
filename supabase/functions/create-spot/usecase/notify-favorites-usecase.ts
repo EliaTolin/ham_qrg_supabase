@@ -31,7 +31,10 @@ export class NotifyFavoritesUseCase {
 
     if (recipients.length === 0) return 0;
 
-    // 3. Build notification rows
+    // 3. Build notification rows.
+    //    The talkgroup, when declared, is the most actionable part of the
+    //    push: it tells the reader where to point the radio, not just when.
+    const tgSuffix = spot.talkgroup != null ? ` \u00b7 TG ${spot.talkgroup}` : "";
     const rows = recipients.map((r) => ({
       user_id: r.user_id,
       headings: {
@@ -40,15 +43,18 @@ export class NotifyFavoritesUseCase {
       },
       contents: {
         en:
-          `${spot.callsign_snapshot} is listening for ${spot.duration_minutes} min`,
+          `${spot.callsign_snapshot} is listening for ${spot.duration_minutes} min${tgSuffix}`,
         it:
-          `${spot.callsign_snapshot} è in ascolto per ${spot.duration_minutes} min`,
+          `${spot.callsign_snapshot} è in ascolto per ${spot.duration_minutes} min${tgSuffix}`,
       },
       data: {
         type: "new_cluster_spot",
         spot_id: spot.id,
         repeater_id: spot.repeater_id,
         spotter_user_id: spot.user_id,
+        ...(spot.talkgroup != null
+          ? { talkgroup: String(spot.talkgroup) }
+          : {}),
       },
     }));
 

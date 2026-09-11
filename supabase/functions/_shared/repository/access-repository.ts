@@ -22,7 +22,7 @@ export class AccessRepository {
   async findByIdAndRepeater(accessId: string, repeaterId: string) {
     const { data, error } = await this.supabase
       .from("repeater_access")
-      .select("id")
+      .select("id, mode")
       .eq("id", accessId)
       .eq("repeater_id", repeaterId)
       .maybeSingle();

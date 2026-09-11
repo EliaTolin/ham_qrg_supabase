@@ -14,6 +14,7 @@ export class SpotRepository {
     callsignSnapshot: string,
     durationMinutes: number | null,
     spottedCallsign: string | null = null,
+    talkgroup: number | null = null,
   ): Promise<RepeaterSpot> {
     const { data, error } = await this.supabase.rpc("_create_spot_atomic", {
       p_user_id: userId,
@@ -22,6 +23,7 @@ export class SpotRepository {
       p_callsign_snapshot: callsignSnapshot,
       p_duration_minutes: durationMinutes,
       p_spotted_callsign: spottedCallsign,
+      p_talkgroup: talkgroup ?? undefined,
     });
 
     if (error) throw error;

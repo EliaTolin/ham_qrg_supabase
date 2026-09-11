@@ -12,6 +12,7 @@ import { ValidateCallsignUseCase } from "./usecase/validate-callsign-usecase.ts"
 import { ValidateDurationUseCase } from "./usecase/validate-duration-usecase.ts";
 import { ValidateRepeaterUseCase } from "./usecase/validate-repeater-usecase.ts";
 import { ValidateAccessUseCase } from "./usecase/validate-access-usecase.ts";
+import { ValidateTalkgroupUseCase } from "./usecase/validate-talkgroup-usecase.ts";
 import { NotifyFavoritesUseCase } from "./usecase/notify-favorites-usecase.ts";
 import { CreateSpotController } from "./controller/create-spot-controller.ts";
 import type { CreateSpotRequest } from "./types.ts";
@@ -53,6 +54,7 @@ Deno.serve(async (req) => {
       new ValidateDurationUseCase(),
       new ValidateRepeaterUseCase(repeaterRepo),
       new ValidateAccessUseCase(accessRepo),
+      new ValidateTalkgroupUseCase(),
       new NotifyFavoritesUseCase(repeaterRepo, favoriteRepo, notificationRepo),
       spotRepo,
     );

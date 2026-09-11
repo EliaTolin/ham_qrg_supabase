@@ -418,6 +418,7 @@ export type Database = {
           repeater_id: string
           spotted_callsign: string | null
           started_at: string
+          talkgroup: number | null
           user_id: string
         }
         Insert: {
@@ -432,6 +433,7 @@ export type Database = {
           repeater_id: string
           spotted_callsign?: string | null
           started_at?: string
+          talkgroup?: number | null
           user_id: string
         }
         Update: {
@@ -446,6 +448,7 @@ export type Database = {
           repeater_id?: string
           spotted_callsign?: string | null
           started_at?: string
+          talkgroup?: number | null
           user_id?: string
         }
         Relationships: [
@@ -820,66 +823,38 @@ export type Database = {
       }
     }
     Functions: {
-      _create_spot_atomic:
-        | {
-            Args: {
-              p_access_id: string
-              p_callsign_snapshot: string
-              p_duration_minutes: number
-              p_repeater_id: string
-              p_user_id: string
-            }
-            Returns: {
-              access_id: string | null
-              callsign_snapshot: string
-              closed_at: string | null
-              closed_by: string | null
-              created_at: string
-              duration_minutes: number | null
-              expires_at: string | null
-              id: string
-              repeater_id: string
-              spotted_callsign: string | null
-              started_at: string
-              user_id: string
-            }
-            SetofOptions: {
-              from: "*"
-              to: "repeater_spots"
-              isOneToOne: true
-              isSetofReturn: false
-            }
-          }
-        | {
-            Args: {
-              p_access_id: string
-              p_callsign_snapshot: string
-              p_duration_minutes: number
-              p_repeater_id: string
-              p_spotted_callsign?: string
-              p_user_id: string
-            }
-            Returns: {
-              access_id: string | null
-              callsign_snapshot: string
-              closed_at: string | null
-              closed_by: string | null
-              created_at: string
-              duration_minutes: number | null
-              expires_at: string | null
-              id: string
-              repeater_id: string
-              spotted_callsign: string | null
-              started_at: string
-              user_id: string
-            }
-            SetofOptions: {
-              from: "*"
-              to: "repeater_spots"
-              isOneToOne: true
-              isSetofReturn: false
-            }
-          }
+      _create_spot_atomic: {
+        Args: {
+          p_access_id: string
+          p_callsign_snapshot: string
+          p_duration_minutes: number
+          p_repeater_id: string
+          p_spotted_callsign?: string
+          p_talkgroup?: number
+          p_user_id: string
+        }
+        Returns: {
+          access_id: string | null
+          callsign_snapshot: string
+          closed_at: string | null
+          closed_by: string | null
+          created_at: string
+          duration_minutes: number | null
+          expires_at: string | null
+          id: string
+          repeater_id: string
+          spotted_callsign: string | null
+          started_at: string
+          talkgroup: number | null
+          user_id: string
+        }
+        SetofOptions: {
+          from: "*"
+          to: "repeater_spots"
+          isOneToOne: true
+          isSetofReturn: false
+        }
+      }
       authorize: {
         Args: {
           requested_permission: Database["public"]["Enums"]["app_permission"]

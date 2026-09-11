@@ -3,6 +3,7 @@ export interface CreateSpotRequest {
   duration_minutes?: number | null;
   access_id?: string | null;
   spotted_callsign?: string | null;
+  talkgroup?: number | null;
 }
 
 export class SpotError extends Error {
