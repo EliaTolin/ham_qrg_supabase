@@ -6,13 +6,17 @@
 -- (NZ Amateur Radio Emergency Communications), mantenuto da ZL1SKL,
 -- inviato da Nick ZL2NEB a settembre 2026.
 --
--- ATTENZIONE - COORDINATE ASSENTI
+-- COORDINATE
 -- La sorgente e un codeplug radio (lista canali), non un database
--- geografico: non contiene lat/lon ne locator. Le righe entrano quindi
--- con geom nullo e is_active = false, e NON sono visibili in mappa
--- finche non vengono geolocalizzate. Nessuna coordinata e inventata.
--- Per attivarle serve una seconda migration che popoli lat/lon e metta
--- is_active = true (vedi docs/import-repeaters-nz-2026-09.md).
+-- geografico: non contiene lat/lon ne locator. Le coordinate sono
+-- state recuperate per 10 righe su 31 incrociando il nome del
+-- sito con i ripetitori NZ gia presenti in tabella (un sito radio
+-- ospita piu macchine), accettando solo i match certi e coerenti
+-- entro 3 km. Le altre restano senza coordinate.
+--
+-- is_active = true SOLO per le righe geolocalizzate: senza lat/lon la
+-- colonna generata geom e nulla e il ponte non sarebbe comunque
+-- visibile in mappa ne nelle RPC. Nessuna coordinata e inventata.
 
 -- NB: supabase db push esegue ogni migration dentro una transazione,
 -- quindi qui NON si apre un begin/commit esplicito (sarebbe annidato).
@@ -25,41 +29,42 @@ set statement_timeout = '5min';
 create temp table _imp_nz_rep (
   name text, frequency_hz bigint, shift_hz bigint,
   region text, province_code text, locality text,
+  lat double precision, lon double precision,
   is_active boolean, external_id text
 );
 
 insert into _imp_nz_rep values
-('HAM',145325000,-600000,'New Zealand','NZ',NULL,false,'hq_5ff84ecb49dd3d8a7167'),
-('OPUNAKE',145400000,-600000,'New Zealand','NZ',NULL,false,'hq_edda8e25cffda2eb945b'),
-('MANWTU',145725000,-600000,'New Zealand','NZ',NULL,false,'hq_b724c12a5c283a2c3825'),
-('KAIPARA',438250000,-5000000,'New Zealand','NZ',NULL,false,'hq_82ecd5c4528083d76539'),
-('WHEKE',439475000,-5000000,'New Zealand','NZ',NULL,false,'hq_cf69160b77fe1ae5cc99'),
-('TGA',433025000,5000000,'New Zealand','NZ',NULL,false,'hq_fd8d6c7af758d16ea71c'),
-('WKTNE',438400000,-5000000,'New Zealand','NZ',NULL,false,'hq_34ddbd8cfc5720ba6463'),
-('COL KNOB',439250000,-5000000,'New Zealand','NZ',NULL,false,'hq_34a8ded6d6b63be768f6'),
-('ADMIRAL',439300000,-5000000,'New Zealand','NZ',NULL,false,'hq_82842a8953093114de51'),
-('CHCH MH',438400000,-5000000,'New Zealand','NZ',NULL,false,'hq_11a4db819a2cf2757884'),
-('MOSGIEL',438200000,-5000000,'New Zealand','NZ',NULL,false,'hq_0bf3c575a21ad95c56f7'),
-('QTOWN',439650000,-5000000,'New Zealand','NZ',NULL,false,'hq_339e675e300f9c9bff4a'),
-('AK',439700000,-5000000,'New Zealand','NZ','Auckland',false,'hq_764eee9fc9bd516f5245'),
-('WEI',439212500,-5000000,'New Zealand','NZ',NULL,false,'hq_c9ba4294eb3b2ef703e6'),
-('WIS',439687500,-5000000,'New Zealand','NZ',NULL,false,'hq_8941582c23c05a8cc3e2'),
-('HAM',439725000,-5000000,'New Zealand','NZ','Hamilton',false,'hq_8b0cca44580a78ad8ce5'),
-('TGA',439750000,-5000000,'New Zealand','NZ','Tauranga',false,'hq_d1f45c33fef2d5d260b5'),
-('TAUPO',439737500,-5000000,'New Zealand','NZ','Taupo',false,'hq_92d69ef709ff3cfa35e6'),
-('HB/WGI',439237500,-5000000,'New Zealand','NZ',NULL,false,'hq_9159564a323a0a5fa78f'),
-('PMN',439712500,-5000000,'New Zealand','NZ','Manawatu',false,'hq_f8b8e5654dcb1f228d9e'),
-('MAST',433825000,5000000,'New Zealand','NZ','Wairarapa',false,'hq_b0e42ae26f8a0bb970af'),
-('KAP',439700000,-5000000,'New Zealand','NZ','Kapiti',false,'hq_04ea935c85ad780a8dec'),
-('POR 900',927800000,-12000000,'New Zealand','NZ','Porirua 33cm',false,'hq_81e5326b13c8bda017b6'),
-('POR',439750000,-5000000,'New Zealand','NZ','Porirua',false,'hq_43e25b7ee06a59236611'),
-('WGN 900',927850000,-12000000,'New Zealand','NZ','Wellington 33cm',false,'hq_c090285d7bd55c13cf29'),
-('WGN',439725000,-5000000,'New Zealand','NZ','Wellington',false,'hq_032a8f98d2638879bb28'),
-('TAS',439687500,-5000000,'New Zealand','NZ','Tasman',false,'hq_5b79d051c14cb25aedbf'),
-('CHC',439700000,-5000000,'New Zealand','NZ','Christchurch',false,'hq_ab2e138238252cc6508d'),
-('OAM',439237500,-5000000,'New Zealand','NZ','Oamaru',false,'hq_3ff29fedb4133a67b30f'),
-('DUN',439700000,-5000000,'New Zealand','NZ','Dunedin',false,'hq_33ac6499b9837c4b4bdb'),
-('MARL',145325000,-600000,'New Zealand','NZ','Marlborough 2m',false,'hq_09061b7797d94d504a8e');
+('HAM',145325000,-600000,'New Zealand','NZ',NULL,NULL,NULL,false,'hq_5ff84ecb49dd3d8a7167'),
+('OPUNAKE',145400000,-600000,'New Zealand','NZ',NULL,NULL,NULL,false,'hq_edda8e25cffda2eb945b'),
+('MANWTU',145725000,-600000,'New Zealand','NZ',NULL,NULL,NULL,false,'hq_b724c12a5c283a2c3825'),
+('KAIPARA',438250000,-5000000,'New Zealand','NZ',NULL,NULL,NULL,false,'hq_82ecd5c4528083d76539'),
+('WHEKE',439475000,-5000000,'New Zealand','NZ',NULL,NULL,NULL,false,'hq_cf69160b77fe1ae5cc99'),
+('TGA',433025000,5000000,'New Zealand','NZ',NULL,NULL,NULL,false,'hq_fd8d6c7af758d16ea71c'),
+('WKTNE',438400000,-5000000,'New Zealand','NZ',NULL,NULL,NULL,false,'hq_34ddbd8cfc5720ba6463'),
+('COL KNOB',439250000,-5000000,'New Zealand','NZ',NULL,NULL,NULL,false,'hq_34a8ded6d6b63be768f6'),
+('ADMIRAL',439300000,-5000000,'New Zealand','NZ',NULL,NULL,NULL,false,'hq_82842a8953093114de51'),
+('CHCH MH',438400000,-5000000,'New Zealand','NZ','Christchurch National System',-43.611401,172.632996,true,'hq_11a4db819a2cf2757884'),
+('MOSGIEL',438200000,-5000000,'New Zealand','NZ',NULL,NULL,NULL,false,'hq_0bf3c575a21ad95c56f7'),
+('QTOWN',439650000,-5000000,'New Zealand','NZ','Queenstown',-45.064999,168.800995,true,'hq_339e675e300f9c9bff4a'),
+('AK',439700000,-5000000,'New Zealand','NZ','Auckland',NULL,NULL,false,'hq_764eee9fc9bd516f5245'),
+('WEI',439212500,-5000000,'New Zealand','NZ','Wellington, Kaiwharawhara Hill',-41.257801,174.785004,true,'hq_c9ba4294eb3b2ef703e6'),
+('WIS',439687500,-5000000,'New Zealand','NZ',NULL,NULL,NULL,false,'hq_8941582c23c05a8cc3e2'),
+('HAM',439725000,-5000000,'New Zealand','NZ','Hamilton',NULL,NULL,false,'hq_8b0cca44580a78ad8ce5'),
+('TGA',439750000,-5000000,'New Zealand','NZ','Tauranga',NULL,NULL,false,'hq_d1f45c33fef2d5d260b5'),
+('TAUPO',439737500,-5000000,'New Zealand','NZ','Taupo',-38.519798,176.020996,true,'hq_92d69ef709ff3cfa35e6'),
+('HB/WGI',439237500,-5000000,'New Zealand','NZ',NULL,NULL,NULL,false,'hq_9159564a323a0a5fa78f'),
+('PMN',439712500,-5000000,'New Zealand','NZ','Manawatu',-40.404202,175.729004,true,'hq_f8b8e5654dcb1f228d9e'),
+('MAST',433825000,5000000,'New Zealand','NZ','Wairarapa',-41.106998,175.725998,true,'hq_b0e42ae26f8a0bb970af'),
+('KAP',439700000,-5000000,'New Zealand','NZ','Kapiti',-40.852402,175.104996,true,'hq_04ea935c85ad780a8dec'),
+('POR 900',927800000,-12000000,'New Zealand','NZ','Porirua 33cm',NULL,NULL,false,'hq_81e5326b13c8bda017b6'),
+('POR',439750000,-5000000,'New Zealand','NZ','Porirua',NULL,NULL,false,'hq_43e25b7ee06a59236611'),
+('WGN 900',927850000,-12000000,'New Zealand','NZ','Wellington 33cm',-41.257801,174.785004,true,'hq_c090285d7bd55c13cf29'),
+('WGN',439725000,-5000000,'New Zealand','NZ','Wellington',-41.257801,174.785004,true,'hq_032a8f98d2638879bb28'),
+('TAS',439687500,-5000000,'New Zealand','NZ','Tasman',NULL,NULL,false,'hq_5b79d051c14cb25aedbf'),
+('CHC',439700000,-5000000,'New Zealand','NZ','Christchurch',-43.611401,172.632996,true,'hq_ab2e138238252cc6508d'),
+('OAM',439237500,-5000000,'New Zealand','NZ','Oamaru',NULL,NULL,false,'hq_3ff29fedb4133a67b30f'),
+('DUN',439700000,-5000000,'New Zealand','NZ','Dunedin',NULL,NULL,false,'hq_33ac6499b9837c4b4bdb'),
+('MARL',145325000,-600000,'New Zealand','NZ','Marlborough 2m',NULL,NULL,false,'hq_09061b7797d94d504a8e');
 
 create temp table _imp_nz_acc (
   external_id text, mode public.access_mode,
@@ -106,9 +111,9 @@ insert into _imp_nz_acc values
 -- applica: e external_id a rendere l import ripetibile.
 insert into public.repeaters
   (name, frequency_hz, shift_hz, region, province_code, locality,
-   source, is_active, external_id, last_seen_at)
+   lat, lon, source, is_active, external_id, last_seen_at)
 select name, frequency_hz, shift_hz, region, province_code, locality,
-       'arec_nz', is_active, external_id, now()
+       lat, lon, 'arec_nz', is_active, external_id, now()
 from _imp_nz_rep
 on conflict do nothing;
 

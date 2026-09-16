@@ -5,7 +5,9 @@ Migration: `20260916120000_import_repeaters_nz_arec.sql`
 ## Contenuto
 
 - **31 repeaters** (19 DMR, 12 analogici) + **31 repeater_access**
-- Tutti con `source = 'arec_nz'`, `is_active = false`, **senza coordinate**
+- Tutti con `source = 'arec_nz'`
+- **10 con coordinate → attivi e visibili in mappa**; 21 senza coordinate,
+  importati ma `is_active = false`
 
 ## Fonte
 
@@ -73,21 +75,39 @@ risolvibile: tipicamente il codeplug nomina la **collina** (`MUSICK`,
 scartarli perderebbe ripetitori reali: restano fuori e vanno chiusi con Nick
 o con le coordinate.
 
-## Coordinate assenti: perché `is_active = false`
+## Coordinate: 10 recuperate, 21 no
 
 `repeaters.geom` è generata da lat/lon. Senza coordinate `geom` è NULL, quindi
-le righe **non compaiono né in mappa né in `repeaters_nearby`/`in_bounds`**, e
-non è calcolabile la copertura.
+la riga **non compare né in mappa né in `repeaters_nearby`/`in_bounds`**.
 
-Entrano perciò disattivate: i dati RF (frequenza, shift, toni, modo) sono
-conservati e pronti, ma nulla di parziale raggiunge l'utente finale. Per
-attivarle serve una seconda migration che popoli lat/lon e metta
-`is_active = true`.
+Il codeplug non ha coordinate, ma **un sito radio ospita più macchine** e il DB
+contiene già 166 ripetitori NZ, di cui 151 località con posizione. Dove il
+nome del sito corrisponde a una località già nota, le coordinate sono quelle
+(`tool/nz_import/geocode_nz.py`).
 
-Fonti possibili per le coordinate: il registro NZART
-(<https://nzart.org.nz/info/repeater-maps/> — pubblica solo PNG e PDF, quindi
-va estratto a mano) oppure direttamente Nick, che si è offerto di aiutare dopo
-la sua conferenza.
+L'inferenza è volutamente **strict**, e due vincoli la governano:
+
+1. Si parte dalla località letta dal foglio `ZL-TRBO - Details` del workbook
+   stesso — dato reale, non congettura — oppure da una tabella di
+   abbreviazioni scritta a mano e verificabile. Match **esatto o per prefisso**
+   sul nome normalizzato: niente sottosequenze, niente iniziali.
+2. Tutti i riferimenti trovati devono concordare entro **3 km**. «Auckland» in
+   DB sono 4 siti sparsi su 57 km e «Oamaru» su 52: casi del genere vengono
+   **rifiutati**, non mediati.
+
+Una prima versione riusava il matcher fuzzy di `diff_nz.py` senza il vincolo
+di frequenza a restringere i candidati, e produceva errori sicuri di sé:
+`POR` (Porirua) → **Poverty Bay**, `TAS` (Tasman) → **Taupo**, `MARL`
+(Marlborough) → **Minden**. Sono tutti test di regressione ora.
+
+Risultato: **10 geolocalizzati** (Wellington ×2, Christchurch ×2, Kapiti,
+Taupo, Manawatu, Wairarapa, Queenstown, Porirua 33cm) → importati **attivi**.
+Gli altri **21 entrano inattivi**: i dati RF sono conservati e pronti, ma
+nulla di parziale o inventato raggiunge l'utente.
+
+Per attivare i restanti servono le coordinate da NZART
+(<https://nzart.org.nz/info/repeater-maps/> pubblica solo PNG e PDF, quindi va
+estratto a mano) o direttamente da Nick.
 
 **Nessuna coordinata è stata inventata o approssimata.**
 
@@ -120,21 +140,27 @@ esercita il **ramo non-splittato** dell'insert adattivo (produzione usa
 - run ripetuto → 0 inserimenti, conteggi invariati: **idempotente**
 - 17.541 ripetitori preesistenti **intatti**, 166 NZ preesistenti intatti
 - 0 access orfani, 0 `external_id` duplicati, 0 tabelle di staging residue
-- 0 righe attive, 0 con `geom` valorizzato (come atteso)
+- **10 righe attive, tutte e 10 con `geom` valorizzato**; 0 righe attive prive
+  di `geom` (sarebbero invisibili pur risultando attive)
+- **RPC verificate sui dati importati**: `repeaters_nearby(-41.2578, 174.7850)`
+  restituisce i 3 ponti di Wellington con i rispettivi access;
+  `repeaters_in_bounds` sull'intera NZ ne restituisce 10 su 176
 - i 4 ripetitori su 439.700 restano **4 record distinti**
 - nessuna località assegnata a due ripetitori diversi
 
-`tool/nz_import/test_parse.py` esegue 51 controlli su parser e diff, con test
-di regressione per i quattro bug trovati in revisione:
+`tool/nz_import/test_parse.py` esegue 57 controlli su parser, diff e geocoder,
+con test di regressione per i bug trovati in revisione:
 
 1. `Sheet1` scartato per assunzione (conteneva ripetitori reali)
 2. località incrociate per join sulla sola frequenza
 3. siti distinti fusi dalla chiave di dedup senza sito
 4. `GORE` matchato con `Gisborne` per sottosequenza di lettere
+5. geocoding fuzzy: `POR`→Poverty Bay, `TAS`→Taupo, `MARL`→Minden
+6. `AK` (Auckland) rifiutato perché i riferimenti distano 57 km
 
 ## Da chiudere con Nick
 
-1. **Coordinate** dei 31 nuovi (bloccante per l'attivazione).
+1. **Coordinate dei 21 ancora inattivi** (bloccante per la loro attivazione).
 2. **`DNDN 830`**: shift −4.5 MHz nel file contro −5.0 MHz in DB; il band plan
    UHF neozelandese usa normalmente −5.0.
 3. **62 righe ambigue**: servono le coordinate o una conferma nome per capire

@@ -14,7 +14,10 @@
    "locality": null,
    "sheet": "AR2M-NI",
    "notes": null,
-   "duplicate_rows": 1
+   "duplicate_rows": 1,
+   "lat": null,
+   "lon": null,
+   "geo_source": null
   },
   {
    "label": "OPUNAKE 540L",
@@ -30,7 +33,10 @@
    "locality": null,
    "sheet": "AR2M-NI",
    "notes": null,
-   "duplicate_rows": 1
+   "duplicate_rows": 1,
+   "lat": null,
+   "lon": null,
+   "geo_source": null
   },
   {
    "label": "MANWTU 5725",
@@ -46,7 +52,10 @@
    "locality": null,
    "sheet": "AR2M-NI",
    "notes": null,
-   "duplicate_rows": 1
+   "duplicate_rows": 1,
+   "lat": null,
+   "lon": null,
+   "geo_source": null
   },
   {
    "label": "KAIPARA 825",
@@ -65,7 +74,10 @@
    "locality": null,
    "sheet": "AR70-NI",
    "notes": null,
-   "duplicate_rows": 1
+   "duplicate_rows": 1,
+   "lat": null,
+   "lon": null,
+   "geo_source": null
   },
   {
    "label": "WHEKE 9475",
@@ -84,7 +96,10 @@
    "locality": null,
    "sheet": "AR70-NI",
    "notes": null,
-   "duplicate_rows": 1
+   "duplicate_rows": 1,
+   "lat": null,
+   "lon": null,
+   "geo_source": null
   },
   {
    "label": "TGA 3025",
@@ -100,7 +115,10 @@
    "locality": null,
    "sheet": "AR70-NI",
    "notes": null,
-   "duplicate_rows": 1
+   "duplicate_rows": 1,
+   "lat": null,
+   "lon": null,
+   "geo_source": null
   },
   {
    "label": "WKTNE 840",
@@ -116,7 +134,10 @@
    "locality": null,
    "sheet": "AR70-NI",
    "notes": null,
-   "duplicate_rows": 1
+   "duplicate_rows": 1,
+   "lat": null,
+   "lon": null,
+   "geo_source": null
   },
   {
    "label": "COL KNOB 925",
@@ -138,7 +159,10 @@
    "locality": null,
    "sheet": "AR70-NI",
    "notes": null,
-   "duplicate_rows": 1
+   "duplicate_rows": 1,
+   "lat": null,
+   "lon": null,
+   "geo_source": null
   },
   {
    "label": "ADMIRAL 9300",
@@ -154,7 +178,10 @@
    "locality": null,
    "sheet": "AR70-SI",
    "notes": null,
-   "duplicate_rows": 1
+   "duplicate_rows": 1,
+   "lat": null,
+   "lon": null,
+   "geo_source": null
   },
   {
    "label": "CHCH MH 840",
@@ -170,10 +197,15 @@
    "mode": "FM",
    "band": "UHF",
    "island": "South Island",
-   "locality": null,
+   "locality": "Christchurch National System",
    "sheet": "AR70-SI",
    "notes": null,
-   "duplicate_rows": 1
+   "duplicate_rows": 1,
+   "lat": -43.611401,
+   "lon": 172.632996,
+   "geo_locality": "Christchurch National System",
+   "geo_refs": 2,
+   "geo_source": "derived_from_site_match"
   },
   {
    "label": "MOSGIEL 820",
@@ -192,7 +224,10 @@
    "locality": null,
    "sheet": "AR70-SI",
    "notes": null,
-   "duplicate_rows": 1
+   "duplicate_rows": 1,
+   "lat": null,
+   "lon": null,
+   "geo_source": null
   },
   {
    "label": "QTOWN 965",
@@ -211,10 +246,15 @@
    "mode": "FM",
    "band": "UHF",
    "island": "South Island",
-   "locality": null,
+   "locality": "Queenstown",
    "sheet": "AR70-SI",
    "notes": null,
-   "duplicate_rows": 1
+   "duplicate_rows": 1,
+   "lat": -45.064999,
+   "lon": 168.800995,
+   "geo_locality": "Queenstown",
+   "geo_refs": 1,
+   "geo_source": "derived_from_site_match"
   },
   {
    "label": "AK DMR ZL",
@@ -239,7 +279,10 @@
     "AK DMR UAE1",
     "AK DMR UAE2",
     "AK DMR +SP"
-   ]
+   ],
+   "lat": null,
+   "lon": null,
+   "geo_source": null
   },
   {
    "label": "WEI DMR ZL",
@@ -252,7 +295,7 @@
    "mode": "DMR",
    "band": "UHF",
    "island": null,
-   "locality": null,
+   "locality": "Wellington, Kaiwharawhara Hill",
    "sheet": "ZL TRBO",
    "notes": null,
    "duplicate_rows": 8,
@@ -264,7 +307,12 @@
     "WEI DMR UAE1",
     "WEI DMR UAE2",
     "WEI DMR +SP"
-   ]
+   ],
+   "lat": -41.257801,
+   "lon": 174.785004,
+   "geo_locality": "Wellington, Kaiwharawhara Hill",
+   "geo_refs": 1,
+   "geo_source": "derived_from_site_match"
   },
   {
    "label": "WIS DMR ZL",
@@ -289,7 +337,10 @@
     "WIS DMR UAE1",
     "WIS DMR UAE2",
     "WIS DMR +SP"
-   ]
+   ],
+   "lat": null,
+   "lon": null,
+   "geo_source": null
   },
   {
    "label": "HAM DMR ZL",
@@ -314,7 +365,10 @@
     "HAM DMR UAE1",
     "HAM DMR UAE2",
     "HAM DMR +SP"
-   ]
+   ],
+   "lat": null,
+   "lon": null,
+   "geo_source": null
   },
   {
    "label": "TGA DMR ZL",
@@ -339,7 +393,10 @@
     "TGA DMR UAE1",
     "TGA DMR UAE2",
     "TGA DMR +SP"
-   ]
+   ],
+   "lat": null,
+   "lon": null,
+   "geo_source": null
   },
   {
    "label": "TAUPO DMR ZL",
@@ -364,7 +421,12 @@
     "TAUPO DMR UAE1",
     "TAUPO DMR UAE2",
     "TAUPO DMR +SP"
-   ]
+   ],
+   "lat": -38.519798,
+   "lon": 176.020996,
+   "geo_locality": "Taupo",
+   "geo_refs": 2,
+   "geo_source": "derived_from_site_match"
   },
   {
    "label": "HB/WGI DMR ZL",
@@ -389,7 +451,10 @@
     "HB/WGI DMR UAE1",
     "HB/WGI DMR UAE2",
     "HB/WGI DMR +SP"
-   ]
+   ],
+   "lat": null,
+   "lon": null,
+   "geo_source": null
   },
   {
    "label": "PMN DMR ZL",
@@ -414,7 +479,12 @@
     "PMN DMR UAE1",
     "PMN DMR UAE2",
     "PMN DMR +SP"
-   ]
+   ],
+   "lat": -40.404202,
+   "lon": 175.729004,
+   "geo_locality": "Manawatu",
+   "geo_refs": 2,
+   "geo_source": "derived_from_site_match"
   },
   {
    "label": "MAST DMR ZL",
@@ -439,7 +509,12 @@
     "MAST DMR UAE1",
     "MAST DMR UAE2",
     "MAST DMR +SP"
-   ]
+   ],
+   "lat": -41.106998,
+   "lon": 175.725998,
+   "geo_locality": "Wairarapa National System",
+   "geo_refs": 1,
+   "geo_source": "derived_from_site_match"
   },
   {
    "label": "KAP DMR ZL",
@@ -464,7 +539,12 @@
     "KAP DMR UAE1",
     "KAP DMR UAE2",
     "KAP DMR +SP"
-   ]
+   ],
+   "lat": -40.852402,
+   "lon": 175.104996,
+   "geo_locality": "Kapiti",
+   "geo_refs": 4,
+   "geo_source": "derived_from_site_match"
   },
   {
    "label": "POR 900 DMR ZL",
@@ -489,7 +569,10 @@
     "POR 900 DMR UAE1",
     "POR 900 DMR UAE2",
     "POR 900 DMR +SP"
-   ]
+   ],
+   "lat": null,
+   "lon": null,
+   "geo_source": null
   },
   {
    "label": "POR DMR ZL",
@@ -514,7 +597,10 @@
     "POR DMR UAE1",
     "POR DMR UAE2",
     "POR DMR +SP"
-   ]
+   ],
+   "lat": null,
+   "lon": null,
+   "geo_source": null
   },
   {
    "label": "WGN 900 DMR ZL",
@@ -539,7 +625,12 @@
     "WGN 900 DMR UAE1",
     "WGN 900 DMR UAE2",
     "WGN 900 DMR +SP"
-   ]
+   ],
+   "lat": -41.257801,
+   "lon": 174.785004,
+   "geo_locality": "Wellington, Kaiwharawhara Hill",
+   "geo_refs": 1,
+   "geo_source": "derived_from_site_match"
   },
   {
    "label": "WGN DMR ZL",
@@ -564,7 +655,12 @@
     "WGN DMR UAE1",
     "WGN DMR UAE2",
     "WGN DMR +SP"
-   ]
+   ],
+   "lat": -41.257801,
+   "lon": 174.785004,
+   "geo_locality": "Wellington, Kaiwharawhara Hill",
+   "geo_refs": 1,
+   "geo_source": "derived_from_site_match"
   },
   {
    "label": "TAS DMR ZL",
@@ -589,7 +685,10 @@
     "TAS DMR UAE1",
     "TAS DMR UAE2",
     "TAS DMR +SP"
-   ]
+   ],
+   "lat": null,
+   "lon": null,
+   "geo_source": null
   },
   {
    "label": "CHC DMR ZL",
@@ -614,7 +713,12 @@
     "CHC DMR UAE1",
     "CHC DMR UAE2",
     "CHC DMR +SP"
-   ]
+   ],
+   "lat": -43.611401,
+   "lon": 172.632996,
+   "geo_locality": "Christchurch National System",
+   "geo_refs": 2,
+   "geo_source": "derived_from_site_match"
   },
   {
    "label": "OAM DMR ZL",
@@ -639,7 +743,10 @@
     "OAM DMR UAE1",
     "OAM DMR UAE2",
     "OAM DMR +SP"
-   ]
+   ],
+   "lat": null,
+   "lon": null,
+   "geo_source": null
   },
   {
    "label": "DUN DMR ZL",
@@ -664,7 +771,10 @@
     "DUN DMR UAE1",
     "DUN DMR UAE2",
     "DUN DMR +SP"
-   ]
+   ],
+   "lat": null,
+   "lon": null,
+   "geo_source": null
   },
   {
    "label": "MARL DMR ZL",
@@ -689,7 +799,10 @@
     "MARL DMR UAE1",
     "MARL DMR UAE2",
     "MARL DMR +SP"
-   ]
+   ],
+   "lat": null,
+   "lon": null,
+   "geo_source": null
   }
  ],
  "ambiguous": [

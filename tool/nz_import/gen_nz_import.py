@@ -97,6 +97,7 @@ def main():
     n_dmr = sum(1 for r, _ in reps if r['mode'] == 'DMR')
     n_tone = sum(1 for _, a in accs if a['ctcss_tx_hz'] or a['ctcss_rx_hz'])
     n_loc = sum(1 for r, _ in reps if r.get('locality'))
+    n_geo = sum(1 for r, _ in reps if r.get('lat') is not None)
 
     L = []
     L.append('-- Import HamQRG: ripetitori Nuova Zelanda')
@@ -107,13 +108,17 @@ def main():
     L.append('-- (NZ Amateur Radio Emergency Communications), mantenuto da ZL1SKL,')
     L.append('-- inviato da Nick ZL2NEB a settembre 2026.')
     L.append('--')
-    L.append('-- ATTENZIONE - COORDINATE ASSENTI')
+    L.append('-- COORDINATE')
     L.append('-- La sorgente e un codeplug radio (lista canali), non un database')
-    L.append('-- geografico: non contiene lat/lon ne locator. Le righe entrano quindi')
-    L.append('-- con geom nullo e is_active = false, e NON sono visibili in mappa')
-    L.append('-- finche non vengono geolocalizzate. Nessuna coordinata e inventata.')
-    L.append('-- Per attivarle serve una seconda migration che popoli lat/lon e metta')
-    L.append('-- is_active = true (vedi docs/import-repeaters-nz-2026-09.md).')
+    L.append('-- geografico: non contiene lat/lon ne locator. Le coordinate sono')
+    L.append(f'-- state recuperate per {n_geo} righe su {len(reps)} incrociando il nome del')
+    L.append('-- sito con i ripetitori NZ gia presenti in tabella (un sito radio')
+    L.append('-- ospita piu macchine), accettando solo i match certi e coerenti')
+    L.append('-- entro 3 km. Le altre restano senza coordinate.')
+    L.append('--')
+    L.append('-- is_active = true SOLO per le righe geolocalizzate: senza lat/lon la')
+    L.append('-- colonna generata geom e nulla e il ponte non sarebbe comunque')
+    L.append('-- visibile in mappa ne nelle RPC. Nessuna coordinata e inventata.')
     L.append('')
     L.append('-- NB: supabase db push esegue ogni migration dentro una transazione,')
     L.append('-- quindi qui NON si apre un begin/commit esplicito (sarebbe annidato).')
@@ -126,16 +131,19 @@ def main():
     L.append('create temp table _imp_nz_rep (')
     L.append('  name text, frequency_hz bigint, shift_hz bigint,')
     L.append('  region text, province_code text, locality text,')
+    L.append('  lat double precision, lon double precision,')
     L.append('  is_active boolean, external_id text')
     L.append(');')
     L.append('')
     L.append('insert into _imp_nz_rep values')
     vals = []
     for r, eid in reps:
+        has_geo = r.get('lat') is not None
         vals.append('(' + ','.join([
             q(r.get('site') or r['label']), q(r['output_hz']), q(r['shift_hz']),
             q(COUNTRY), q(PROVINCE), q(r.get('locality')),
-            'false', q(eid),
+            q(r.get('lat')), q(r.get('lon')),
+            'true' if has_geo else 'false', q(eid),
         ]) + ')')
     L.append(',\n'.join(vals) + ';')
     L.append('')
@@ -161,9 +169,9 @@ def main():
     L.append('-- applica: e external_id a rendere l import ripetibile.')
     L.append('insert into public.repeaters')
     L.append('  (name, frequency_hz, shift_hz, region, province_code, locality,')
-    L.append('   source, is_active, external_id, last_seen_at)')
+    L.append('   lat, lon, source, is_active, external_id, last_seen_at)')
     L.append('select name, frequency_hz, shift_hz, region, province_code, locality,')
-    L.append(f'       {q(SOURCE)}, is_active, external_id, now()')
+    L.append(f'       lat, lon, {q(SOURCE)}, is_active, external_id, now()')
     L.append('from _imp_nz_rep')
     L.append('on conflict do nothing;')
     L.append('')
@@ -247,7 +255,7 @@ def main():
     print(f'repeaters : {len(reps)} (DMR {n_dmr}, FM {len(reps) - n_dmr})')
     print(f'access    : {len(accs)} (con tono CTCSS: {n_tone})')
     print(f'localita  : {n_loc}/{len(reps)}')
-    print(f'coordinate: 0/{len(reps)} -> tutte is_active=false')
+    print(f'coordinate: {n_geo}/{len(reps)} -> {n_geo} attivi, {len(reps)-n_geo} inattivi')
     print(f'scritto   : {out}')
 
 

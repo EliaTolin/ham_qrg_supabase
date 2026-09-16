@@ -145,6 +145,40 @@ check('GORE !~ Gisborne (falso positivo subsequence)',
       not D.name_matches('GORE', {'locality': 'Gisborne National System'}))
 check('GISB ~ Gisborne', D.name_matches('GISB', {'locality': 'Gisborne National System'}))
 
+print('== unit: geocode (regressione falsi positivi) ==')
+try:
+    import geocode_nz as G
+
+    fake_db = [
+        {'locality': 'Poverty Bay', 'lat': -38.68, 'lon': 178.03},
+        {'locality': 'Porirua', 'lat': -41.13, 'lon': 174.84},
+        {'locality': 'Taupo', 'lat': -38.52, 'lon': 176.02},
+        {'locality': 'Tasman', 'lat': -41.20, 'lon': 173.10},
+        {'locality': 'Minden Amateur', 'lat': -37.71, 'lon': 176.05},
+        {'locality': 'Marlborough', 'lat': -41.51, 'lon': 173.96},
+        {'locality': 'Christchurch, Marleys Hill', 'lat': -43.6114, 'lon': 172.633},
+        {'locality': 'Christchurch National System', 'lat': -43.6114, 'lon': 172.633},
+        # Auckland: 4 siti sparsi su ~57 km -> deve essere rifiutato
+        {'locality': 'Auckland', 'lat': -37.3573, 'lon': 174.809},
+        {'locality': 'Auckland', 'lat': -36.8496, 'lon': 174.901},
+        {'locality': 'Auckland', 'lat': -36.9255, 'lon': 174.552},
+    ]
+    r = G.geocode({'site': 'POR', 'locality': 'Porirua'}, fake_db)
+    check('POR -> Porirua, NON Poverty Bay',
+          r and abs(r[0] - (-41.13)) < 0.01, r)
+    r = G.geocode({'site': 'TAS', 'locality': 'Tasman'}, fake_db)
+    check('TAS -> Tasman, NON Taupo', r and abs(r[0] - (-41.20)) < 0.01, r)
+    r = G.geocode({'site': 'MARL', 'locality': 'Marlborough 2m'}, fake_db)
+    check('MARL -> Marlborough, NON Minden', r and abs(r[0] - (-41.51)) < 0.01, r)
+    r = G.geocode({'site': 'CHC', 'locality': 'Christchurch'}, fake_db)
+    check('CHC -> Christchurch (2 rif. coincidenti)', r and r[3] == 2, r)
+    r = G.geocode({'site': 'AK', 'locality': 'Auckland'}, fake_db)
+    check('AK -> rifiutato (siti sparsi su 57 km)', r is None, r)
+    r = G.geocode({'site': 'XYZ', 'locality': None}, fake_db)
+    check('sito sconosciuto -> nessuna coordinata', r is None, r)
+except ImportError:
+    print('  SKIP geocode_nz non presente')
+
 print('== integration: diff vs DB ==')
 tmp = os.path.join(HERE, '_parsed_test.json')
 json.dump(uniq, open(tmp, 'w'), indent=1)
