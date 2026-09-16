@@ -1,0 +1,1662 @@
+[
+ {
+  "id": "ee209e88-241d-4b39-b606-72d0bb85cdb2",
+  "name": "ZL",
+  "callsign": "ZL",
+  "frequency_hz": 439500000,
+  "shift_hz": -5000000,
+  "locality": "Gisborne",
+  "lat": -38.48870087,
+  "lon": 177.86199951
+ },
+ {
+  "id": "5d14328b-5c18-4d6e-bdf2-94ff62eac3cf",
+  "name": "ZL",
+  "callsign": "ZL",
+  "frequency_hz": 53625000,
+  "shift_hz": -1000000,
+  "locality": "Alexandra",
+  "lat": -45.34619904,
+  "lon": 169.2250061
+ },
+ {
+  "id": "ccd394b5-8708-45f0-a791-62a47b14cef3",
+  "name": "ZL",
+  "callsign": "ZL",
+  "frequency_hz": 53725000,
+  "shift_hz": -1000000,
+  "locality": "Auckland",
+  "lat": -37.3572998,
+  "lon": 174.80900574
+ },
+ {
+  "id": "a26f4e0a-bf3e-485c-a8a8-c29cb698e7c3",
+  "name": "ZL",
+  "callsign": "ZL",
+  "frequency_hz": 53850000,
+  "shift_hz": -1000000,
+  "locality": "Cass Peak",
+  "lat": -43.63850021,
+  "lon": 172.62399292
+ },
+ {
+  "id": "65ccf9d3-bd6a-44f9-ad97-045641173eea",
+  "name": "ZL1ROT",
+  "callsign": "ZL1ROT",
+  "frequency_hz": 144350000,
+  "shift_hz": 600000,
+  "locality": "Rotorua",
+  "lat": -38.10079956,
+  "lon": 176.38299561
+ },
+ {
+  "id": "06a346ef-75a0-4e66-9353-c3485bde3a49",
+  "name": "ZL",
+  "callsign": "ZL",
+  "frequency_hz": 144800000,
+  "shift_hz": -600000,
+  "locality": "Seddon Rd Hamilton",
+  "lat": -37.78630066,
+  "lon": 175.27000427
+ },
+ {
+  "id": "3a0edabd-8f0c-497e-8cce-6579d6a4637a",
+  "name": "ZL",
+  "callsign": "ZL",
+  "frequency_hz": 144935000,
+  "shift_hz": -600000,
+  "locality": "12 Peckham Lane",
+  "lat": -43.54869843,
+  "lon": 172.68200684
+ },
+ {
+  "id": "dac79d3f-6f1c-4463-9c47-433063b886eb",
+  "name": "ZL1CCT",
+  "callsign": "ZL1CCT",
+  "frequency_hz": 145350000,
+  "shift_hz": -600000,
+  "locality": "Hamilton",
+  "lat": -37.78789902,
+  "lon": 175.27999878
+ },
+ {
+  "id": "e81af2fb-59c6-4d32-ab9b-8b4b6c33e508",
+  "name": "ZL",
+  "callsign": "ZL",
+  "frequency_hz": 145350000,
+  "shift_hz": -600000,
+  "locality": "Kapiti Voice and Data",
+  "lat": -40.85240173,
+  "lon": 175.10499573
+ },
+ {
+  "id": "0ff9cdcb-a6dd-4aa4-8353-5af6a8403f5e",
+  "name": "ZL",
+  "callsign": "ZL",
+  "frequency_hz": 145425000,
+  "shift_hz": -600000,
+  "locality": "Whangarei Data",
+  "lat": -35.71450043,
+  "lon": 174.33799744
+ },
+ {
+  "id": "a73adf60-17b4-44b1-8ece-6f2b11429a88",
+  "name": "ZL",
+  "callsign": "ZL",
+  "frequency_hz": 145475000,
+  "shift_hz": -600000,
+  "locality": "Waihi North",
+  "lat": -37.362916,
+  "lon": 175.920843
+ },
+ {
+  "id": "6bc1ef22-264d-47e1-924c-ae4968f16e11",
+  "name": "ZL",
+  "callsign": "ZL",
+  "frequency_hz": 145575000,
+  "shift_hz": -600000,
+  "locality": "Maungakawa",
+  "lat": -37.413971,
+  "lon": 175.395915
+ },
+ {
+  "id": "fa8b91c3-ab6b-48a6-9d95-0aa6fb36d116",
+  "name": "ZL",
+  "callsign": "ZL",
+  "frequency_hz": 145600000,
+  "shift_hz": -600000,
+  "locality": "Brynderwyn",
+  "lat": -36.06940079,
+  "lon": 174.41799927
+ },
+ {
+  "id": "744b50bf-6fea-44df-a003-bc0ec9e70ef9",
+  "name": "ZL",
+  "callsign": "ZL",
+  "frequency_hz": 145600000,
+  "shift_hz": -600000,
+  "locality": "Ward",
+  "lat": -41.84909821,
+  "lon": 174.16999817
+ },
+ {
+  "id": "b7f7cc8c-6fbf-49a7-a0c2-fe25aa3242a9",
+  "name": "ZL",
+  "callsign": "ZL",
+  "frequency_hz": 145625000,
+  "shift_hz": -600000,
+  "locality": "Auckland Data",
+  "lat": -37.3572998,
+  "lon": 174.80900574
+ },
+ {
+  "id": "6b9ebbba-489a-45d4-8929-5259ec749924",
+  "name": "ZL",
+  "callsign": "ZL",
+  "frequency_hz": 145625000,
+  "shift_hz": -600000,
+  "locality": "Canterbury",
+  "lat": -43.63850021,
+  "lon": 172.62399292
+ },
+ {
+  "id": "a1746d9f-d2d8-4f2e-917a-fbd8142bd7f6",
+  "name": "ZL",
+  "callsign": "ZL",
+  "frequency_hz": 145625000,
+  "shift_hz": -600000,
+  "locality": "Tararua Voice and Data",
+  "lat": -40.56140137,
+  "lon": 176.03799438
+ },
+ {
+  "id": "ba0e4761-3952-46a7-8582-565fbb4aa23f",
+  "name": "ZL",
+  "callsign": "ZL",
+  "frequency_hz": 145675000,
+  "shift_hz": -600000,
+  "locality": "Te Uku",
+  "lat": -37.8291882,
+  "lon": 174.9567206
+ },
+ {
+  "id": "0e8bf3f1-d765-417c-a49e-64929c2d2cb5",
+  "name": "ZL",
+  "callsign": "ZL",
+  "frequency_hz": 145775000,
+  "shift_hz": -600000,
+  "locality": "Auckland",
+  "lat": -36.84960175,
+  "lon": 174.90100098
+ },
+ {
+  "id": "7c7d28f9-8394-44e5-8c42-1bda7c400e46",
+  "name": "ZL",
+  "callsign": "ZL",
+  "frequency_hz": 145775000,
+  "shift_hz": -600000,
+  "locality": "Invercargill, Bluff Hill",
+  "lat": -46.61529922,
+  "lon": 168.33900452
+ },
+ {
+  "id": "1672c1a0-a05e-4c77-9f85-2439b7cdc87c",
+  "name": "ZL",
+  "callsign": "ZL",
+  "frequency_hz": 146175000,
+  "shift_hz": -600000,
+  "locality": "Dawson Road",
+  "lat": -35.07709885,
+  "lon": 173.4019928
+ },
+ {
+  "id": "4ac619c9-9a90-4104-9762-eac070508de0",
+  "name": "ZL",
+  "callsign": "ZL",
+  "frequency_hz": 146300000,
+  "shift_hz": -600000,
+  "locality": "Saddle Hill Road",
+  "lat": -45.9076004,
+  "lon": 170.36599731
+ },
+ {
+  "id": "38e73426-c32d-45eb-acba-04a8f70523db",
+  "name": "ZL",
+  "callsign": "ZL",
+  "frequency_hz": 146350000,
+  "shift_hz": -600000,
+  "locality": "Mt Freeth",
+  "lat": -41.29159927,
+  "lon": 173.98399353
+ },
+ {
+  "id": "51b8b64f-5d72-4f6a-98cb-43a126118cb3",
+  "name": "ZL",
+  "callsign": "ZL",
+  "frequency_hz": 146625000,
+  "shift_hz": -600000,
+  "locality": "Auckland",
+  "lat": -37.3572998,
+  "lon": 174.80900574
+ },
+ {
+  "id": "6d43bd1e-05e2-412e-9664-68448729da0a",
+  "name": "ZL",
+  "callsign": "ZL",
+  "frequency_hz": 146625000,
+  "shift_hz": -600000,
+  "locality": "Hawkins Hill",
+  "lat": -41.32699966,
+  "lon": 174.73199463
+ },
+ {
+  "id": "7d1164c7-b964-4d08-84df-c7b3de5a5f41",
+  "name": "ZL",
+  "callsign": "ZL",
+  "frequency_hz": 146625000,
+  "shift_hz": -600000,
+  "locality": "Timaru",
+  "lat": -44.40250015,
+  "lon": 171.06500244
+ },
+ {
+  "id": "9536e4e8-8987-4f6a-81d3-97acbe08daaf",
+  "name": "ZL",
+  "callsign": "ZL",
+  "frequency_hz": 146650000,
+  "shift_hz": -600000,
+  "locality": "Dunedin, Highcliff",
+  "lat": -45.881884,
+  "lon": 170.593663
+ },
+ {
+  "id": "1168bf61-e17f-4e4a-8bfc-94f4cee6862c",
+  "name": "ZL",
+  "callsign": "ZL",
+  "frequency_hz": 146650000,
+  "shift_hz": -600000,
+  "locality": "Whangarei",
+  "lat": -35.66030121,
+  "lon": 174.28100586
+ },
+ {
+  "id": "d80874f6-87aa-4a06-859f-08358e24f6c3",
+  "name": "ZL",
+  "callsign": "ZL",
+  "frequency_hz": 146650000,
+  "shift_hz": -600000,
+  "locality": "Wharite",
+  "lat": -40.25790024,
+  "lon": 175.85600281
+ },
+ {
+  "id": "d594ae54-3abc-4913-9823-2ce89fccffee",
+  "name": "ZL",
+  "callsign": "ZL",
+  "frequency_hz": 146700000,
+  "shift_hz": -600000,
+  "locality": "Auckland",
+  "lat": -36.92549896,
+  "lon": 174.55200195
+ },
+ {
+  "id": "e59efcd7-89ff-414d-a206-e6c12519d7f8",
+  "name": "ZL",
+  "callsign": "ZL",
+  "frequency_hz": 146700000,
+  "shift_hz": -600000,
+  "locality": "Hawkes Bay",
+  "lat": -39.79740143,
+  "lon": 176.8730011
+ },
+ {
+  "id": "b35bee28-116d-4a77-a8b3-5025cb1e908c",
+  "name": "ZL",
+  "callsign": "ZL",
+  "frequency_hz": 146700000,
+  "shift_hz": -600000,
+  "locality": "Motueka",
+  "lat": -41.12549973,
+  "lon": 172.852005
+ },
+ {
+  "id": "54912fba-18b0-4859-835b-b157b185952d",
+  "name": "ZL4OU",
+  "callsign": "ZL4OU",
+  "frequency_hz": 146700000,
+  "shift_hz": -600000,
+  "locality": "Oamaru, Station Peak",
+  "lat": -44.750386,
+  "lon": 170.562069
+ },
+ {
+  "id": "e98d3b05-5c37-465b-a8ee-3427e97b6be5",
+  "name": "ZL",
+  "callsign": "ZL",
+  "frequency_hz": 146750000,
+  "shift_hz": -600000,
+  "locality": "Balclutha",
+  "lat": -46.24069977,
+  "lon": 169.3730011
+ },
+ {
+  "id": "03ceac5e-daff-4dcf-b872-8192b52b4e69",
+  "name": "ZL",
+  "callsign": "ZL",
+  "frequency_hz": 146750000,
+  "shift_hz": -600000,
+  "locality": "Bay of Islands",
+  "lat": -35.21110153,
+  "lon": 173.80700684
+ },
+ {
+  "id": "6c0885fa-31b9-42b6-a7d8-825eb617841d",
+  "name": "ZL",
+  "callsign": "ZL",
+  "frequency_hz": 146750000,
+  "shift_hz": -600000,
+  "locality": "Millerton",
+  "lat": -41.63690186,
+  "lon": 171.85899353
+ },
+ {
+  "id": "cc8e59c2-0c8b-46fa-b33e-b050725648c3",
+  "name": "ZL",
+  "callsign": "ZL",
+  "frequency_hz": 146750000,
+  "shift_hz": -600000,
+  "locality": "Mount Grey",
+  "lat": -43.12340164,
+  "lon": 172.54800415
+ },
+ {
+  "id": "c1ebae25-eb41-47c0-859c-dcb9ae84b11e",
+  "name": "ZL",
+  "callsign": "ZL",
+  "frequency_hz": 146750000,
+  "shift_hz": -600000,
+  "locality": "Taupo",
+  "lat": -38.51979828,
+  "lon": 176.02099609
+ },
+ {
+  "id": "7b93f66f-d429-4dba-bded-3db94bbfdab7",
+  "name": "ZL",
+  "callsign": "ZL",
+  "frequency_hz": 146750000,
+  "shift_hz": -600000,
+  "locality": "Titahi Bay",
+  "lat": -41.10990143,
+  "lon": 174.84899902
+ },
+ {
+  "id": "57e7144d-92e3-427e-8935-aafe24feb297",
+  "name": "ZL",
+  "callsign": "ZL",
+  "frequency_hz": 146775000,
+  "shift_hz": -600000,
+  "locality": "Akatere",
+  "lat": -35.00770187,
+  "lon": 173.66400146
+ },
+ {
+  "id": "e9fa9806-467f-4b40-a221-15c06d2f844b",
+  "name": "ZL",
+  "callsign": "ZL",
+  "frequency_hz": 146775000,
+  "shift_hz": -600000,
+  "locality": "Taihape",
+  "lat": -39.69760132,
+  "lon": 175.73300171
+ },
+ {
+  "id": "f52aa323-1287-4bf4-b38a-dd28a0e17e1f",
+  "name": "ZL",
+  "callsign": "ZL",
+  "frequency_hz": 146800000,
+  "shift_hz": -600000,
+  "locality": "Invercargill, Bald Hill",
+  "lat": -46.16859818,
+  "lon": 167.83299255
+ },
+ {
+  "id": "c351ee49-97b8-4337-acbf-661946619a2e",
+  "name": "ZL",
+  "callsign": "ZL",
+  "frequency_hz": 146800000,
+  "shift_hz": -600000,
+  "locality": "Masterton",
+  "lat": -40.84640121,
+  "lon": 175.73599243
+ },
+ {
+  "id": "3eb337c9-c25a-45a7-bbcf-4d74bc61a52a",
+  "name": "ZL",
+  "callsign": "ZL",
+  "frequency_hz": 146800000,
+  "shift_hz": -600000,
+  "locality": "Murchison",
+  "lat": -41.73139954,
+  "lon": 172.49899292
+ },
+ {
+  "id": "1225d2a2-eb85-4975-9f73-21a6f9b85b9b",
+  "name": "ZL",
+  "callsign": "ZL",
+  "frequency_hz": 146800000,
+  "shift_hz": -600000,
+  "locality": "Poverty Bay",
+  "lat": -38.68030167,
+  "lon": 178.03199768
+ },
+ {
+  "id": "5522063e-66e4-41ff-8024-b684dbb17de5",
+  "name": "ZL",
+  "callsign": "ZL",
+  "frequency_hz": 146800000,
+  "shift_hz": -600000,
+  "locality": "Tauranga",
+  "lat": -37.71350098,
+  "lon": 176.05299377
+ },
+ {
+  "id": "c16fd5d3-3099-4c2f-90f4-aa4aa91c377f",
+  "name": "ZL",
+  "callsign": "ZL",
+  "frequency_hz": 146800000,
+  "shift_hz": -600000,
+  "locality": "Tekapo",
+  "lat": -44.16270065,
+  "lon": 170.61399841
+ },
+ {
+  "id": "389a647c-c59f-405b-81ca-8b1c8446e047",
+  "name": "ZL",
+  "callsign": "ZL",
+  "frequency_hz": 146850000,
+  "shift_hz": -600000,
+  "locality": "Arowhana",
+  "lat": -38.11669922,
+  "lon": 177.86099243
+ },
+ {
+  "id": "3711b915-e868-4189-bfae-b5ea1b62cb02",
+  "name": "ZL",
+  "callsign": "ZL",
+  "frequency_hz": 146850000,
+  "shift_hz": -600000,
+  "locality": "Kapiti",
+  "lat": -40.85240173,
+  "lon": 175.10499573
+ },
+ {
+  "id": "341bfbc1-bc01-4fe7-b762-101d1695beab",
+  "name": "ZL",
+  "callsign": "ZL",
+  "frequency_hz": 146850000,
+  "shift_hz": -600000,
+  "locality": "Queenstown",
+  "lat": -45.06499863,
+  "lon": 168.80099487
+ },
+ {
+  "id": "09d075fe-662b-4756-8549-d458e3bb2b5f",
+  "name": "ZL",
+  "callsign": "ZL",
+  "frequency_hz": 146900000,
+  "shift_hz": -600000,
+  "locality": "Auckland",
+  "lat": -37.19620132,
+  "lon": 175.022995
+ },
+ {
+  "id": "75baeff5-8900-457e-bad2-835a4d9e3c40",
+  "name": "ZL",
+  "callsign": "ZL",
+  "frequency_hz": 146900000,
+  "shift_hz": -600000,
+  "locality": "Dunedin, Mt Cargill",
+  "lat": -45.813324,
+  "lon": 170.554734
+ },
+ {
+  "id": "6802e97e-f721-4af4-a482-38ccfcf15cbe",
+  "name": "ZL",
+  "callsign": "ZL",
+  "frequency_hz": 146900000,
+  "shift_hz": -600000,
+  "locality": "Gisborne, Whakapunake",
+  "lat": -38.834142,
+  "lon": 177.599338
+ },
+ {
+  "id": "3b57f8c0-e9b4-4a75-ae53-e86e73b9bb05",
+  "name": "ZL",
+  "callsign": "ZL",
+  "frequency_hz": 146900000,
+  "shift_hz": -600000,
+  "locality": "Kaikoura",
+  "lat": -42.4219017,
+  "lon": 173.69599915
+ },
+ {
+  "id": "93373a9b-416b-4f11-93af-31dcf5c8edf7",
+  "name": "ZL",
+  "callsign": "ZL",
+  "frequency_hz": 146925000,
+  "shift_hz": -600000,
+  "locality": "Branch 22 STSP",
+  "lat": -41.47230148,
+  "lon": 173.90899658
+ },
+ {
+  "id": "4012a45a-c15f-4e89-9732-3092259808b5",
+  "name": "ZL",
+  "callsign": "ZL",
+  "frequency_hz": 146950000,
+  "shift_hz": -600000,
+  "locality": "Blenheim",
+  "lat": -41.64599991,
+  "lon": 173.92100525
+ },
+ {
+  "id": "d7cdb260-de35-467f-a7b9-f4b12429eb7d",
+  "name": "ZL4AL",
+  "callsign": "ZL4AL",
+  "frequency_hz": 146950000,
+  "shift_hz": -600000,
+  "locality": "Gore",
+  "lat": -46.03968,
+  "lon": 168.86421
+ },
+ {
+  "id": "9c6bae25-fc86-4f6f-b0e0-682f5d491993",
+  "name": "ZL",
+  "callsign": "ZL",
+  "frequency_hz": 146950000,
+  "shift_hz": -600000,
+  "locality": "Greymouth",
+  "lat": -42.40999985,
+  "lon": 171.34300232
+ },
+ {
+  "id": "b1ec06fa-c8bc-4d74-a089-8431f4ed09d9",
+  "name": "ZL",
+  "callsign": "ZL",
+  "frequency_hz": 146950000,
+  "shift_hz": -600000,
+  "locality": "Te Weraiti",
+  "lat": -37.82020187,
+  "lon": 175.90600586
+ },
+ {
+  "id": "10bb6d7f-92f2-4b0d-abcc-cb530457d1d1",
+  "name": "ZL",
+  "callsign": "ZL",
+  "frequency_hz": 146950000,
+  "shift_hz": -600000,
+  "locality": "Waitaki",
+  "lat": -44.65790176,
+  "lon": 170.92199707
+ },
+ {
+  "id": "7eb0286b-2f93-404f-b085-263cd17b7a98",
+  "name": "ZL",
+  "callsign": "ZL",
+  "frequency_hz": 146975000,
+  "shift_hz": -600000,
+  "locality": "North Canterbury",
+  "lat": -42.87060165,
+  "lon": 172.38999939
+ },
+ {
+  "id": "8f02140f-a772-493c-8b15-aa53b0e7393f",
+  "name": "ZL",
+  "callsign": "ZL",
+  "frequency_hz": 146975000,
+  "shift_hz": -600000,
+  "locality": "Tairua",
+  "lat": -36.97330093,
+  "lon": 175.81399536
+ },
+ {
+  "id": "73c74fea-1ef3-41bc-821e-d73efe301917",
+  "name": "ZL",
+  "callsign": "ZL",
+  "frequency_hz": 147000000,
+  "shift_hz": -600000,
+  "locality": "Alexandra",
+  "lat": -45.34619904,
+  "lon": 169.2250061
+ },
+ {
+  "id": "b510c2b7-5ede-490b-b874-00c122827a7a",
+  "name": "ZL",
+  "callsign": "ZL",
+  "frequency_hz": 147000000,
+  "shift_hz": -600000,
+  "locality": "Edgecumbe",
+  "lat": -38.10689926,
+  "lon": 176.73500061
+ },
+ {
+  "id": "c6bb0e34-75c2-4301-a685-4b8ad038745d",
+  "name": "ZL",
+  "callsign": "ZL",
+  "frequency_hz": 147000000,
+  "shift_hz": -600000,
+  "locality": "Lower Hutt",
+  "lat": -41.22069931,
+  "lon": 174.96099854
+ },
+ {
+  "id": "d8f7e4dc-9a63-442f-adab-3dd67ccdc8e8",
+  "name": "ZL",
+  "callsign": "ZL",
+  "frequency_hz": 147025000,
+  "shift_hz": 600000,
+  "locality": "Nelson",
+  "lat": -41.29790115,
+  "lon": 173.27900696
+ },
+ {
+  "id": "a7d6f713-cf3d-405e-8b71-4efd9ac25308",
+  "name": "ZL",
+  "callsign": "ZL",
+  "frequency_hz": 147025000,
+  "shift_hz": 600000,
+  "locality": "Tauranga",
+  "lat": -37.9355011,
+  "lon": 176.12800598
+ },
+ {
+  "id": "5e14a010-1eb4-47bb-b8ac-cdd3f0bebe33",
+  "name": "ZL",
+  "callsign": "ZL",
+  "frequency_hz": 147050000,
+  "shift_hz": 600000,
+  "locality": "Christchurch, Marleys Hill",
+  "lat": -43.6114006,
+  "lon": 172.63299561
+ },
+ {
+  "id": "7ffd7dc3-2191-4041-9e6e-0fdf5446a2d4",
+  "name": "ZL2QF",
+  "callsign": "ZL2QF",
+  "frequency_hz": 147050000,
+  "shift_hz": 600000,
+  "locality": "South Taranaki",
+  "lat": -39.57450104,
+  "lon": 174.43499756
+ },
+ {
+  "id": "a8d77915-17e3-4ad1-b829-f10b8fcdd43c",
+  "name": "ZL",
+  "callsign": "ZL",
+  "frequency_hz": 147075000,
+  "shift_hz": 600000,
+  "locality": "Mercury Bay",
+  "lat": -36.89559937,
+  "lon": 175.55799866
+ },
+ {
+  "id": "e592408d-ae0b-4d8b-8914-5dc766325377",
+  "name": "ZL",
+  "callsign": "ZL",
+  "frequency_hz": 147100000,
+  "shift_hz": 600000,
+  "locality": "Belmont",
+  "lat": -41.17890167,
+  "lon": 174.86999512
+ },
+ {
+  "id": "4585b013-1ca2-438a-ae68-7c74e354a13a",
+  "name": "ZL",
+  "callsign": "ZL",
+  "frequency_hz": 147100000,
+  "shift_hz": 600000,
+  "locality": "Far North",
+  "lat": -35.16870117,
+  "lon": 173.4750061
+ },
+ {
+  "id": "4d24d9b3-c84c-4bb5-b35a-e69d1d525cef",
+  "name": "ZL1REG",
+  "callsign": "ZL1REG",
+  "frequency_hz": 147125000,
+  "shift_hz": 600000,
+  "locality": "Hamilton, --Non US--",
+  "lat": -37.834359,
+  "lon": 175.316934
+ },
+ {
+  "id": "de21a596-3f95-4eb4-8626-5b638a9be140",
+  "name": "ZL",
+  "callsign": "ZL",
+  "frequency_hz": 147125000,
+  "shift_hz": 600000,
+  "locality": "Manawatu",
+  "lat": -40.40420151,
+  "lon": 175.72900391
+ },
+ {
+  "id": "66f67453-2a2c-4740-a982-390206d42d1d",
+  "name": "ZL",
+  "callsign": "ZL",
+  "frequency_hz": 147150000,
+  "shift_hz": 600000,
+  "locality": "Southern Wairarapa",
+  "lat": -41.17959976,
+  "lon": 175.41499329
+ },
+ {
+  "id": "aff7ef36-63df-451d-ad28-7b8215498745",
+  "name": "ZL1AO",
+  "callsign": "ZL1AO",
+  "frequency_hz": 147150000,
+  "shift_hz": 600000,
+  "locality": "Taumarunui",
+  "lat": -38.7942009,
+  "lon": 175.30000305
+ },
+ {
+  "id": "fc32d8d6-ad53-4045-8db0-bfe149e8b7f1",
+  "name": "ZL2OA",
+  "callsign": "ZL2OA",
+  "frequency_hz": 147175000,
+  "shift_hz": 600000,
+  "locality": "Masterton",
+  "lat": -40.95970154,
+  "lon": 175.65800476
+ },
+ {
+  "id": "41d62717-03f5-48ad-8b99-b40a763349eb",
+  "name": "ZL",
+  "callsign": "ZL",
+  "frequency_hz": 147175000,
+  "shift_hz": 600000,
+  "locality": "Pariwhariki",
+  "lat": -41.10699844,
+  "lon": 175.72599792
+ },
+ {
+  "id": "db52a060-bd3d-4733-bd7d-74abdb429ecc",
+  "name": "ZL",
+  "callsign": "ZL",
+  "frequency_hz": 147175000,
+  "shift_hz": 600000,
+  "locality": "Te Puke",
+  "lat": -37.8905983,
+  "lon": 176.26400757
+ },
+ {
+  "id": "0156bf28-a342-4567-8233-022bda5fb356",
+  "name": "ZL",
+  "callsign": "ZL",
+  "frequency_hz": 147200000,
+  "shift_hz": 600000,
+  "locality": "Nelson",
+  "lat": -41.27700043,
+  "lon": 173.43200684
+ },
+ {
+  "id": "343bb8f3-8dbb-4b85-a9f7-52a45ba5d45b",
+  "name": "ZL",
+  "callsign": "ZL",
+  "frequency_hz": 147200000,
+  "shift_hz": 600000,
+  "locality": "New Plymouth",
+  "lat": -39.202292,
+  "lon": 174.055606
+ },
+ {
+  "id": "0a26c29f-bf74-4405-85cd-3115c57b1fac",
+  "name": "ZL",
+  "callsign": "ZL",
+  "frequency_hz": 147225000,
+  "shift_hz": 600000,
+  "locality": "Doubtless Bay",
+  "lat": -34.8689003,
+  "lon": 173.38999939
+ },
+ {
+  "id": "c09a9711-d65d-468f-adf1-8fb57ba0cdda",
+  "name": "ZL 1SQ",
+  "callsign": "ZL 1SQ",
+  "frequency_hz": 147225000,
+  "shift_hz": 600000,
+  "locality": "Hairini",
+  "lat": -38.02249908,
+  "lon": 175.36300659
+ },
+ {
+  "id": "620075e6-c3fa-4ab5-a35a-5a5927ff2d02",
+  "name": "ZL",
+  "callsign": "ZL",
+  "frequency_hz": 147225000,
+  "shift_hz": 600000,
+  "locality": "Picton",
+  "lat": -41.29159927,
+  "lon": 173.98399353
+ },
+ {
+  "id": "e90d3bba-a354-49fa-a2c8-510dd4778058",
+  "name": "ZL",
+  "callsign": "ZL",
+  "frequency_hz": 147250000,
+  "shift_hz": 600000,
+  "locality": "501 Wellwood St",
+  "lat": -39.63259888,
+  "lon": 176.83900452
+ },
+ {
+  "id": "7bfbc6f5-b306-4318-b6eb-2795eb5e8cac",
+  "name": "ZL",
+  "callsign": "ZL",
+  "frequency_hz": 147250000,
+  "shift_hz": 600000,
+  "locality": "Canterbury",
+  "lat": -43.69010162,
+  "lon": 172.74200439
+ },
+ {
+  "id": "1aaacf88-f23b-495f-8d97-d64c918eb736",
+  "name": "ZL",
+  "callsign": "ZL",
+  "frequency_hz": 147250000,
+  "shift_hz": 600000,
+  "locality": "Napier",
+  "lat": -39.13460159,
+  "lon": 176.74000549
+ },
+ {
+  "id": "82b2c1cf-3c9a-4bea-8317-e205b28c8f4f",
+  "name": "ZL",
+  "callsign": "ZL",
+  "frequency_hz": 147275000,
+  "shift_hz": 600000,
+  "locality": "Branch 5 STSP",
+  "lat": -43.90069962,
+  "lon": 171.76100159
+ },
+ {
+  "id": "627eca5c-5da4-46f6-9371-259dfb027ef1",
+  "name": "ZL",
+  "callsign": "ZL",
+  "frequency_hz": 147275000,
+  "shift_hz": 600000,
+  "locality": "Kakaramea",
+  "lat": -38.97750092,
+  "lon": 175.69700623
+ },
+ {
+  "id": "32ad6278-c6df-4819-a6c3-64c4a4613532",
+  "name": "ZL",
+  "callsign": "ZL",
+  "frequency_hz": 147300000,
+  "shift_hz": 600000,
+  "locality": "Rodney",
+  "lat": -36.47269821,
+  "lon": 174.64599609
+ },
+ {
+  "id": "1c034216-7b59-4575-8a75-1d4239eeda93",
+  "name": "ZL",
+  "callsign": "ZL",
+  "frequency_hz": 147300000,
+  "shift_hz": 600000,
+  "locality": "Upper Hutt",
+  "lat": -41.14530182,
+  "lon": 175.14599609
+ },
+ {
+  "id": "a80e6bcb-8428-4d19-9cac-7855ce8c6056",
+  "name": "ZL",
+  "callsign": "ZL",
+  "frequency_hz": 147300000,
+  "shift_hz": 600000,
+  "locality": "Whakatanae",
+  "lat": -37.98180008,
+  "lon": 177.01600647
+ },
+ {
+  "id": "8f10fbf1-2b83-4be9-9974-61f62c5a8f67",
+  "name": "ZL",
+  "callsign": "ZL",
+  "frequency_hz": 147325000,
+  "shift_hz": 600000,
+  "locality": "Barton",
+  "lat": -41.55770111,
+  "lon": 175.33999634
+ },
+ {
+  "id": "10deb19e-a295-4fbe-b2b1-2ee695be943e",
+  "name": "ZL1OTF",
+  "callsign": "ZL1OTF",
+  "frequency_hz": 147325000,
+  "shift_hz": 600000,
+  "locality": "Helensville, Kaipara Harbour",
+  "lat": -36.55419922,
+  "lon": 174.29800415
+ },
+ {
+  "id": "aaf334dd-1aae-4ce3-beee-453b384e27a5",
+  "name": "ZL",
+  "callsign": "ZL",
+  "frequency_hz": 147350000,
+  "shift_hz": 600000,
+  "locality": "Rotorua",
+  "lat": -38.18130112,
+  "lon": 176.31399536
+ },
+ {
+  "id": "41f7d59b-557e-468e-8028-c4f3c3d4c9df",
+  "name": "ZL",
+  "callsign": "ZL",
+  "frequency_hz": 147375000,
+  "shift_hz": 600000,
+  "locality": "Golden Bay",
+  "lat": -41.0243988,
+  "lon": 172.86099243
+ },
+ {
+  "id": "fb7a51e3-eff0-49ce-88f6-a1b10c685604",
+  "name": "ZL",
+  "callsign": "ZL",
+  "frequency_hz": 147375000,
+  "shift_hz": 600000,
+  "locality": "Waitomo",
+  "lat": -38.36640167,
+  "lon": 175.41499329
+ },
+ {
+  "id": "10235744-354c-4c32-8ddb-ac94c85bb172",
+  "name": "ZL",
+  "callsign": "ZL",
+  "frequency_hz": 147700000,
+  "shift_hz": -600000,
+  "locality": "Dawson Road",
+  "lat": -35.07709885,
+  "lon": 173.4019928
+ },
+ {
+  "id": "a6db31b2-20dc-4c7f-a3c7-75b36c535350",
+  "name": "ZL",
+  "callsign": "ZL",
+  "frequency_hz": 147850000,
+  "shift_hz": -600000,
+  "locality": "Maroanui",
+  "lat": -38.51979828,
+  "lon": 176.02099609
+ },
+ {
+  "id": "ebdf1d54-9a78-4f3d-9cdb-2d8373b12f0c",
+  "name": "ZL",
+  "callsign": "ZL",
+  "frequency_hz": 432700000,
+  "shift_hz": 5000000,
+  "locality": "407 Innes Road Christchurch",
+  "lat": -43.49950027,
+  "lon": 172.64100647
+ },
+ {
+  "id": "c074485a-7916-4813-8072-8b22110b97d2",
+  "name": "ZL",
+  "callsign": "ZL",
+  "frequency_hz": 433125000,
+  "shift_hz": 5000000,
+  "locality": "Musick Point",
+  "lat": -36.84960175,
+  "lon": 174.90100098
+ },
+ {
+  "id": "e3bbba73-290b-406b-934e-cd354df577be",
+  "name": "ZL",
+  "callsign": "ZL",
+  "frequency_hz": 433550000,
+  "shift_hz": 5000000,
+  "locality": "Minden Amateur",
+  "lat": -37.71350098,
+  "lon": 176.05299377
+ },
+ {
+  "id": "342d317e-8b7b-4805-a9c3-2c0b49f357dd",
+  "name": "ZL",
+  "callsign": "ZL",
+  "frequency_hz": 433875000,
+  "shift_hz": 5000000,
+  "locality": "Glenview Club Peacockes Rd Hamilton",
+  "lat": -37.81019974,
+  "lon": 175.30700684
+ },
+ {
+  "id": "0b8b6ed4-63ce-46b0-b5df-2696ba35f2fd",
+  "name": "ZL",
+  "callsign": "ZL",
+  "frequency_hz": 433900000,
+  "shift_hz": 5000000,
+  "locality": "Observatory Hill",
+  "lat": -41.2928009,
+  "lon": 173.2539978
+ },
+ {
+  "id": "3647f6f9-8774-4d64-ae50-b5554c08ae41",
+  "name": "ZL",
+  "callsign": "ZL",
+  "frequency_hz": 434050000,
+  "shift_hz": 5000000,
+  "locality": "Napier",
+  "lat": -39.13460159,
+  "lon": 176.74000549
+ },
+ {
+  "id": "2e50dc6b-b626-4d86-9ae7-d72b634a4b9a",
+  "name": "ZL",
+  "callsign": "ZL",
+  "frequency_hz": 434550000,
+  "shift_hz": 5000000,
+  "locality": "Wellington, Kaiwharawhara Hill",
+  "lat": -41.25780106,
+  "lon": 174.78500366
+ },
+ {
+  "id": "d67a7c23-8cdf-4e98-80a2-0acfacf49017",
+  "name": "ZL",
+  "callsign": "ZL",
+  "frequency_hz": 434800000,
+  "shift_hz": 5000000,
+  "locality": "Mercuary Bay National System",
+  "lat": -36.73189926,
+  "lon": 175.81500244
+ },
+ {
+  "id": "432659ae-dbec-4aa5-8f60-03311f9fe7da",
+  "name": "ZL",
+  "callsign": "ZL",
+  "frequency_hz": 434800000,
+  "shift_hz": 5000000,
+  "locality": "Saddle Hill National System",
+  "lat": -41.27700043,
+  "lon": 173.43200684
+ },
+ {
+  "id": "0b3835f0-2614-4a77-bf0f-4f690f853170",
+  "name": "ZL",
+  "callsign": "ZL",
+  "frequency_hz": 434850000,
+  "shift_hz": 5000000,
+  "locality": "Balclutha National System",
+  "lat": -46.07830048,
+  "lon": 169.77200317
+ },
+ {
+  "id": "ee770db5-a6ad-4d7f-b3a0-1352d7eb5127",
+  "name": "ZL",
+  "callsign": "ZL",
+  "frequency_hz": 434850000,
+  "shift_hz": 5000000,
+  "locality": "Blue Duck National System",
+  "lat": -42.2052002,
+  "lon": 173.78900146
+ },
+ {
+  "id": "f041bd87-b6e7-433e-a2b8-ae5e3c9b8840",
+  "name": "ZL",
+  "callsign": "ZL",
+  "frequency_hz": 434850000,
+  "shift_hz": 5000000,
+  "locality": "Kaimai National System",
+  "lat": -37.88249969,
+  "lon": 175.93600464
+ },
+ {
+  "id": "abccb03b-dec3-49c1-81ef-75f1d4ac21ae",
+  "name": "ZL",
+  "callsign": "ZL",
+  "frequency_hz": 434850000,
+  "shift_hz": 5000000,
+  "locality": "Mt Erin National System",
+  "lat": -39.74259949,
+  "lon": 176.84100342
+ },
+ {
+  "id": "95ffc868-a2ce-4595-aa48-dbe3441307fa",
+  "name": "ZL",
+  "callsign": "ZL",
+  "frequency_hz": 434900000,
+  "shift_hz": 5000000,
+  "locality": "Doubtless Bay National System",
+  "lat": -34.8689003,
+  "lon": 173.38999939
+ },
+ {
+  "id": "207147c4-a0b9-4820-a226-71f3a42024ea",
+  "name": "ZL",
+  "callsign": "ZL",
+  "frequency_hz": 434900000,
+  "shift_hz": 5000000,
+  "locality": "Egmont National System",
+  "lat": -39.29199982,
+  "lon": 174.08399963
+ },
+ {
+  "id": "c273e7b3-d0e6-4fba-a30e-16b2a8143ab9",
+  "name": "ZL",
+  "callsign": "ZL",
+  "frequency_hz": 434900000,
+  "shift_hz": 5000000,
+  "locality": "Waitaki National System",
+  "lat": -44.65790176,
+  "lon": 170.92199707
+ },
+ {
+  "id": "d4737652-c8df-4e0a-82ae-b812d2924e4c",
+  "name": "ZL",
+  "callsign": "ZL",
+  "frequency_hz": 434950000,
+  "shift_hz": 5000000,
+  "locality": "Brynderwyn National System",
+  "lat": -36.06940079,
+  "lon": 174.41799927
+ },
+ {
+  "id": "ece1be5a-afe4-424e-8554-4138cc9c60d3",
+  "name": "ZL",
+  "callsign": "ZL",
+  "frequency_hz": 434950000,
+  "shift_hz": 5000000,
+  "locality": "Murchison National System",
+  "lat": -41.73139954,
+  "lon": 172.49899292
+ },
+ {
+  "id": "985bed92-1499-4b85-be24-0fea3b3175c4",
+  "name": "ZL",
+  "callsign": "ZL",
+  "frequency_hz": 434950000,
+  "shift_hz": 5000000,
+  "locality": "Wairarapa National System",
+  "lat": -41.10699844,
+  "lon": 175.72599792
+ },
+ {
+  "id": "a108f2bd-49d9-48db-9167-796e75d0c9b4",
+  "name": "ZL",
+  "callsign": "ZL",
+  "frequency_hz": 438300000,
+  "shift_hz": -5000000,
+  "locality": "Dunedin, Halfway Bush Road",
+  "lat": -45.85566,
+  "lon": 170.442988
+ },
+ {
+  "id": "820c4475-0004-42fc-ae68-88641d42b66f",
+  "name": "ZL",
+  "callsign": "ZL",
+  "frequency_hz": 438425000,
+  "shift_hz": -5000000,
+  "locality": "Lower Hutt, Wellington",
+  "lat": -41.21409988,
+  "lon": 174.92100525
+ },
+ {
+  "id": "7222baba-66f9-4e94-8467-eddc03906e64",
+  "name": "ZL",
+  "callsign": "ZL",
+  "frequency_hz": 438450000,
+  "shift_hz": -5000000,
+  "locality": "Auckland",
+  "lat": -37.3572998,
+  "lon": 174.80900574
+ },
+ {
+  "id": "1ad70153-35f3-42ec-98f4-b2229f14299c",
+  "name": "ZL",
+  "callsign": "ZL",
+  "frequency_hz": 438450000,
+  "shift_hz": -5000000,
+  "locality": "Blenheim",
+  "lat": -41.40280151,
+  "lon": 173.93800354
+ },
+ {
+  "id": "7ad43179-5d91-462a-8b3a-ef133dfb3b1d",
+  "name": "ZL",
+  "callsign": "ZL",
+  "frequency_hz": 438475000,
+  "shift_hz": -5000000,
+  "locality": "New Plymouth",
+  "lat": -39.202292,
+  "lon": 174.055606
+ },
+ {
+  "id": "253f27a5-d501-4e27-bbe9-f71b44767e3d",
+  "name": "ZL",
+  "callsign": "ZL",
+  "frequency_hz": 438500000,
+  "shift_hz": -5000000,
+  "locality": "Cass Peak",
+  "lat": -43.63850021,
+  "lon": 172.62399292
+ },
+ {
+  "id": "b219ad8e-aa76-4b96-a957-ee1306f632f0",
+  "name": "ZL",
+  "callsign": "ZL",
+  "frequency_hz": 438525000,
+  "shift_hz": -5000000,
+  "locality": "Manawatu",
+  "lat": -40.40420151,
+  "lon": 175.72900391
+ },
+ {
+  "id": "284c5984-5215-4b06-a4e2-e4d50588f996",
+  "name": "ZL",
+  "callsign": "ZL",
+  "frequency_hz": 438550000,
+  "shift_hz": -5000000,
+  "locality": "Te Puke",
+  "lat": -37.8905983,
+  "lon": 176.26400757
+ },
+ {
+  "id": "c640a8cb-a684-4cd8-aef2-f363905072eb",
+  "name": "ZL",
+  "callsign": "ZL",
+  "frequency_hz": 438575000,
+  "shift_hz": -5000000,
+  "locality": "Greymouth",
+  "lat": -42.40999985,
+  "lon": 171.34300232
+ },
+ {
+  "id": "056f5f5a-3c35-4168-bbcc-f5e70dd9d3fa",
+  "name": "ZL",
+  "callsign": "ZL",
+  "frequency_hz": 438575000,
+  "shift_hz": -5000000,
+  "locality": "Manurewa",
+  "lat": -36.99000168,
+  "lon": 174.91099548
+ },
+ {
+  "id": "affdc3cd-24af-4655-9789-b458a0365672",
+  "name": "ZL",
+  "callsign": "ZL",
+  "frequency_hz": 438600000,
+  "shift_hz": -5000000,
+  "locality": "Hunua",
+  "lat": -37.10139847,
+  "lon": 175.03100586
+ },
+ {
+  "id": "0b551864-0537-4319-bd62-2409535ab9b5",
+  "name": "ZL",
+  "callsign": "ZL",
+  "frequency_hz": 438625000,
+  "shift_hz": -5000000,
+  "locality": "Branch 26 STSP",
+  "lat": -41.24240112,
+  "lon": 173.32099915
+ },
+ {
+  "id": "b05bd978-1881-46c0-88c2-f687c18de7b0",
+  "name": "ZL4OU",
+  "callsign": "ZL4OU",
+  "frequency_hz": 438650000,
+  "shift_hz": -5000000,
+  "locality": "Oamaru, Cape Wanbrow",
+  "lat": -45.114482,
+  "lon": 170.973514
+ },
+ {
+  "id": "ca829703-67d4-4763-b381-3bab518478f8",
+  "name": "ZL",
+  "callsign": "ZL",
+  "frequency_hz": 438650000,
+  "shift_hz": -5000000,
+  "locality": "Taihape",
+  "lat": -39.52899933,
+  "lon": 175.73899841
+ },
+ {
+  "id": "03acc902-1748-4bff-97b7-a7f27a3763d1",
+  "name": "ZL",
+  "callsign": "ZL",
+  "frequency_hz": 438700000,
+  "shift_hz": -5000000,
+  "locality": "Hawkes Bay",
+  "lat": -39.69810104,
+  "lon": 176.90499878
+ },
+ {
+  "id": "51f29476-61cd-4d89-b66c-66e383282c85",
+  "name": "ZL",
+  "callsign": "ZL",
+  "frequency_hz": 438700000,
+  "shift_hz": -5000000,
+  "locality": "Invercargill, ICC Building",
+  "lat": -46.41210175,
+  "lon": 168.352005
+ },
+ {
+  "id": "15c448d3-51eb-421c-a92a-a3a79cb36582",
+  "name": "ZL",
+  "callsign": "ZL",
+  "frequency_hz": 438700000,
+  "shift_hz": -5000000,
+  "locality": "Waitomo",
+  "lat": -38.36640167,
+  "lon": 175.41499329
+ },
+ {
+  "id": "6eacad19-2866-4832-81ff-407e9809e25c",
+  "name": "ZL",
+  "callsign": "ZL",
+  "frequency_hz": 438700000,
+  "shift_hz": -5000000,
+  "locality": "Whangarei",
+  "lat": -35.71450043,
+  "lon": 174.33799744
+ },
+ {
+  "id": "9afd8398-f1c1-46f0-a02e-716da1309766",
+  "name": "ZL2QF",
+  "callsign": "ZL2QF",
+  "frequency_hz": 438800000,
+  "shift_hz": -5000000,
+  "locality": "South Taranaki",
+  "lat": -39.57450104,
+  "lon": 174.43499756
+ },
+ {
+  "id": "c2cb54f3-9972-48ce-9208-59a0a769cce3",
+  "name": "ZL",
+  "callsign": "ZL",
+  "frequency_hz": 438850000,
+  "shift_hz": -5000000,
+  "locality": "Kapiti",
+  "lat": -40.85240173,
+  "lon": 175.10499573
+ },
+ {
+  "id": "929c4d38-977f-44d4-882a-92adaa7f17a9",
+  "name": "ZL",
+  "callsign": "ZL",
+  "frequency_hz": 438850000,
+  "shift_hz": -5000000,
+  "locality": "Timaru",
+  "lat": -44.40250015,
+  "lon": 171.06500244
+ },
+ {
+  "id": "e0251daf-9668-4be6-b90e-c0846a4660b6",
+  "name": "ZL3AF",
+  "callsign": "ZL3AF",
+  "frequency_hz": 438900000,
+  "shift_hz": -5000000,
+  "locality": "Ashburton, Mt Alford",
+  "lat": -43.590024,
+  "lon": 171.483275
+ },
+ {
+  "id": "e6745bb8-720d-4f00-91c6-7227ce4c93a5",
+  "name": "ZL",
+  "callsign": "ZL",
+  "frequency_hz": 438900000,
+  "shift_hz": -5000000,
+  "locality": "Nelson",
+  "lat": -41.30960083,
+  "lon": 173.31799316
+ },
+ {
+  "id": "0b47d47b-4f7a-4a92-bb0f-b015c6d174d4",
+  "name": "ZL",
+  "callsign": "ZL",
+  "frequency_hz": 439150000,
+  "shift_hz": -5000000,
+  "locality": "Dunedin",
+  "lat": -45.8133324,
+  "lon": 170.46600342
+ },
+ {
+  "id": "6977ad8e-8477-4824-8491-3e4545a14768",
+  "name": "ZL",
+  "callsign": "ZL",
+  "frequency_hz": 439175000,
+  "shift_hz": -5000000,
+  "locality": "Hawkes Bay",
+  "lat": -39.64490128,
+  "lon": 177.00799561
+ },
+ {
+  "id": "20a6027b-1c76-45fb-b6af-1b3cc765c043",
+  "name": "ZL",
+  "callsign": "ZL",
+  "frequency_hz": 439425000,
+  "shift_hz": -5000000,
+  "locality": "Hamilton Voice, Data and D-STAR",
+  "lat": -37.78789902,
+  "lon": 175.27999878
+ },
+ {
+  "id": "75f5a097-6b96-44d6-99d0-dfa1c307e220",
+  "name": "ZL",
+  "callsign": "ZL",
+  "frequency_hz": 439500000,
+  "shift_hz": -5000000,
+  "locality": "Mt Victoria",
+  "lat": -41.29719925,
+  "lon": 174.79600525
+ },
+ {
+  "id": "b828a280-59df-416d-93d2-dafa65463093",
+  "name": "ZL",
+  "callsign": "ZL",
+  "frequency_hz": 439575000,
+  "shift_hz": -5000000,
+  "locality": "Auckland D-Star Voice",
+  "lat": -36.84960175,
+  "lon": 174.90100098
+ },
+ {
+  "id": "1b8910a1-cad6-450e-89e6-a07ddc535404",
+  "name": "ZL",
+  "callsign": "ZL",
+  "frequency_hz": 439600000,
+  "shift_hz": -5000000,
+  "locality": "Wharite Voice and Data",
+  "lat": -40.25780106,
+  "lon": 175.85800171
+ },
+ {
+  "id": "f00289d2-1c1f-4834-8dcc-10f4525b1381",
+  "name": "ZL",
+  "callsign": "ZL",
+  "frequency_hz": 439775000,
+  "shift_hz": -5000000,
+  "locality": "Dawson Road",
+  "lat": -35.07709885,
+  "lon": 173.4019928
+ },
+ {
+  "id": "dbfbd5e9-c3b0-43b2-8749-eebfc13cbec0",
+  "name": "ZL2DS",
+  "callsign": "ZL2DS",
+  "frequency_hz": 439775000,
+  "shift_hz": -5000000,
+  "locality": "Levin",
+  "lat": -40.6218489,
+  "lon": 175.2866444
+ },
+ {
+  "id": "0371f541-cf4c-4f22-849f-12105b614a18",
+  "name": "ZL",
+  "callsign": "ZL",
+  "frequency_hz": 439825000,
+  "shift_hz": -5000000,
+  "locality": "Taupo National System",
+  "lat": -38.51979828,
+  "lon": 176.02099609
+ },
+ {
+  "id": "be188ace-9367-40fa-9e4a-4aa2addb1b67",
+  "name": "ZL",
+  "callsign": "ZL",
+  "frequency_hz": 439875000,
+  "shift_hz": -5000000,
+  "locality": "Auckland National System",
+  "lat": -37.3572998,
+  "lon": 174.80900574
+ },
+ {
+  "id": "ba4bb291-9ee4-4c26-bd33-9110d4e48986",
+  "name": "ZL",
+  "callsign": "ZL",
+  "frequency_hz": 439875000,
+  "shift_hz": -5000000,
+  "locality": "Belmont National System",
+  "lat": -41.17890167,
+  "lon": 174.86999512
+ },
+ {
+  "id": "9256595f-e8e5-41b2-82f7-000d70c7e12e",
+  "name": "ZL",
+  "callsign": "ZL",
+  "frequency_hz": 439875000,
+  "shift_hz": -5000000,
+  "locality": "Christchurch National System",
+  "lat": -43.6114006,
+  "lon": 172.63299561
+ },
+ {
+  "id": "819ee358-09e7-4c53-8a18-82bb2a0720a9",
+  "name": "ZL",
+  "callsign": "ZL",
+  "frequency_hz": 439875000,
+  "shift_hz": -5000000,
+  "locality": "Gisborne National System",
+  "lat": -38.83470154,
+  "lon": 177.5980072
+ },
+ {
+  "id": "167e8f37-3b9e-4d3c-a83f-6988026fd0c3",
+  "name": "ZL",
+  "callsign": "ZL",
+  "frequency_hz": 439875000,
+  "shift_hz": -5000000,
+  "locality": "Greymouth National System",
+  "lat": -42.40999985,
+  "lon": 171.34300232
+ },
+ {
+  "id": "0311f520-cad1-4ea8-9481-073506eae2fb",
+  "name": "ZL",
+  "callsign": "ZL",
+  "frequency_hz": 439925000,
+  "shift_hz": -5000000,
+  "locality": "Dunedin National System",
+  "lat": -45.81430054,
+  "lon": 170.55599976
+ },
+ {
+  "id": "383468eb-9b91-4bac-93ae-01a0bea8a253",
+  "name": "ZL",
+  "callsign": "ZL",
+  "frequency_hz": 439925000,
+  "shift_hz": -5000000,
+  "locality": "Kapiti National System",
+  "lat": -40.85240173,
+  "lon": 175.10499573
+ },
+ {
+  "id": "09416024-f8c4-452b-a8e4-93f99e7bf309",
+  "name": "ZL",
+  "callsign": "ZL",
+  "frequency_hz": 439925000,
+  "shift_hz": -5000000,
+  "locality": "Nelson National System",
+  "lat": -41.29790115,
+  "lon": 173.27900696
+ },
+ {
+  "id": "3f954e2e-5712-49fd-b75a-27aacfbffaa8",
+  "name": "ZL",
+  "callsign": "ZL",
+  "frequency_hz": 439925000,
+  "shift_hz": -5000000,
+  "locality": "Rangitoto National System",
+  "lat": -38.36640167,
+  "lon": 175.41499329
+ },
+ {
+  "id": "b3cb15d8-5554-4ce8-95ac-b0d69abf3e06",
+  "name": "ZL",
+  "callsign": "ZL",
+  "frequency_hz": 439925000,
+  "shift_hz": -5000000,
+  "locality": "Rotorua National System",
+  "lat": -38.09500122,
+  "lon": 176.39599609
+ },
+ {
+  "id": "aa10f0a1-024f-42ed-9c64-ad819578e45d",
+  "name": "ZL",
+  "callsign": "ZL",
+  "frequency_hz": 439925000,
+  "shift_hz": -5000000,
+  "locality": "Whangarei National System",
+  "lat": -35.71450043,
+  "lon": 174.33799744
+ },
+ {
+  "id": "fb30dbe2-5d5f-4f90-afb3-bcfe2b474f4e",
+  "name": "ZL",
+  "callsign": "ZL",
+  "frequency_hz": 439975000,
+  "shift_hz": -5000000,
+  "locality": "Bay of Islands National System",
+  "lat": -35.21110153,
+  "lon": 173.80700684
+ },
+ {
+  "id": "5f299772-13a6-4781-9a73-e9b3fcdd6e14",
+  "name": "ZL",
+  "callsign": "ZL",
+  "frequency_hz": 439975000,
+  "shift_hz": -5000000,
+  "locality": "Denniston",
+  "lat": -41.74380112,
+  "lon": 171.80099487
+ },
+ {
+  "id": "d0575ed5-58e3-4779-b1d9-d8559fa84c11",
+  "name": "ZL",
+  "callsign": "ZL",
+  "frequency_hz": 439975000,
+  "shift_hz": -5000000,
+  "locality": "Edgecumbe National System",
+  "lat": -38.10680008,
+  "lon": 176.73699951
+ },
+ {
+  "id": "65fa6d7c-2cc1-4a16-863f-b38c22a83b83",
+  "name": "ZL",
+  "callsign": "ZL",
+  "frequency_hz": 439975000,
+  "shift_hz": -5000000,
+  "locality": "Hamilton National System",
+  "lat": -37.83430099,
+  "lon": 175.30299377
+ },
+ {
+  "id": "bd694e2c-ed5c-4af8-8faf-4e81d71ce8c4",
+  "name": "ZL",
+  "callsign": "ZL",
+  "frequency_hz": 439975000,
+  "shift_hz": -5000000,
+  "locality": "Wharite National System",
+  "lat": -40.25790024,
+  "lon": 175.85600281
+ }
+]
