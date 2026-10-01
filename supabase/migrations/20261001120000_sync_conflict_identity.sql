@@ -43,22 +43,13 @@ COMMENT ON COLUMN public.sync_pending_changes.diff_hash IS
 --    i reinserimenti appena la riga usciva da status=pending.
 DROP INDEX IF EXISTS public.sync_pending_changes_one_pending_per_ext;
 
--- 3) Unicita' sull'identita' del conflitto, su TUTTI gli stati.
---    I 'new' hanno diff vuoto: per loro la chiave resta di fatto
---    (external_id, 'new'), che e' il comportamento voluto.
-CREATE UNIQUE INDEX IF NOT EXISTS sync_pending_changes_identity_uniq
-  ON public.sync_pending_changes (external_id, change_type, diff_hash);
-
--- 4) Indice per la dashboard: le pending da rivedere, piu' recenti prima.
-CREATE INDEX IF NOT EXISTS sync_pending_changes_pending_review_idx
-  ON public.sync_pending_changes (created_at DESC)
-  WHERE status = 'pending';
-
--- 5) Deduplica lo storico: tiene la riga piu' vecchia per ogni
---    conflitto (la decisione originale) e scarta le ripetizioni
---    successive generate dai run notturni.
---    NB: le righe cancellate sono rumore, non decisioni perse —
---    ogni duplicato ha diff identico alla riga tenuta.
+-- 3) Deduplica lo storico PRIMA di creare l'indice: la tabella contiene
+--    gia' lo stesso conflitto ripetuto per mesi, quindi un vincolo di
+--    unicita' creato adesso fallirebbe (23505).
+--    Si tiene la riga piu' VECCHIA di ogni conflitto, che e' la decisione
+--    originale; le successive sono reinserimenti dei run notturni con diff
+--    identico, cioe' rumore. Nessuna decisione viene persa: dove un umano
+--    aveva deciso, la sua riga e' la piu' vecchia e resta.
 WITH ranked AS (
   SELECT id,
          ROW_NUMBER() OVER (
@@ -69,3 +60,14 @@ WITH ranked AS (
 )
 DELETE FROM public.sync_pending_changes
  WHERE id IN (SELECT id FROM ranked WHERE rn > 1);
+
+-- 4) Unicita' sull'identita' del conflitto, su TUTTI gli stati.
+--    I 'new' hanno diff vuoto: per loro la chiave resta di fatto
+--    (external_id, 'new'), che e' il comportamento voluto.
+CREATE UNIQUE INDEX IF NOT EXISTS sync_pending_changes_identity_uniq
+  ON public.sync_pending_changes (external_id, change_type, diff_hash);
+
+-- 5) Indice per la dashboard: le pending da rivedere, piu' recenti prima.
+CREATE INDEX IF NOT EXISTS sync_pending_changes_pending_review_idx
+  ON public.sync_pending_changes (created_at DESC)
+  WHERE status = 'pending';
