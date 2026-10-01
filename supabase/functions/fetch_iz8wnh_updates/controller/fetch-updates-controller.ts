@@ -5,7 +5,10 @@ import type { FetchLatestUpdatesUseCase } from "../usecase/fetch-latest-updates.
 import type { CompareWithLocalUseCase } from "../usecase/compare-with-local.ts";
 import type { EvaluateActivationStatusUseCase } from "../usecase/evaluate-activation-status.ts";
 import type { StorePendingChangeUseCase } from "../usecase/store-pending-change.ts";
-import type { PendingChangeInsert, HamQRGUpdateRecord } from "../../_shared/types.ts";
+import type {
+  HamQRGUpdateRecord,
+  PendingChangeInsert,
+} from "../../_shared/types.ts";
 
 // deno-lint-ignore no-explicit-any
 type RepeaterRow = Record<string, any>;
@@ -21,6 +24,8 @@ interface FetchUpdatesResult {
   skipped_no_diff: number;
   already_pending: number;
   auto_applied: number;
+  /** update trattenuti per review umana: conflitto con modifiche locali */
+  held_for_review: number;
   errors: number;
 }
 
@@ -54,6 +59,7 @@ export class FetchUpdatesController {
       skipped_no_diff: 0,
       already_pending: 0,
       auto_applied: 0,
+      held_for_review: 0,
       errors: 0,
     };
 
@@ -85,7 +91,6 @@ export class FetchUpdatesController {
           record,
           localRepeater,
           accesses,
-          !!activationChange,
         );
 
         if (activationChange && dataChange) {
@@ -93,11 +98,11 @@ export class FetchUpdatesController {
             ...activationChange,
             diff: { ...activationChange.diff, ...dataChange.diff },
           };
-          await this.processChange(merged, autoApply, result);
+          await this.processChange(merged, autoApply, result, true);
         } else if (activationChange) {
-          await this.processChange(activationChange, autoApply, result);
+          await this.processChange(activationChange, autoApply, result, false);
         } else if (dataChange) {
-          await this.processChange(dataChange, autoApply, result);
+          await this.processChange(dataChange, autoApply, result, false);
         } else {
           result.skipped_no_diff++;
         }
@@ -108,15 +113,20 @@ export class FetchUpdatesController {
     }
 
     console.log(
-      `[Sync] Step 4/4: Done — new=${result.new_repeaters} updates=${result.updates} deact=${result.deactivations} react=${result.reactivations} skip=${result.skipped_no_diff} applied=${result.auto_applied} errors=${result.errors}`,
+      `[Sync] Step 4/4: Done — new=${result.new_repeaters} updates=${result.updates} deact=${result.deactivations} react=${result.reactivations} skip=${result.skipped_no_diff} applied=${result.auto_applied} review=${result.held_for_review} errors=${result.errors}`,
     );
     return result;
   }
 
+  /**
+   * @param carriesDataDiff - true quando il change e' il merge di un cambio di
+   *   attivazione e di un diff sui dati: i campi dati non vanno auto-applicati.
+   */
   private async processChange(
     change: PendingChangeInsert,
     autoApply: boolean,
     result: FetchUpdatesResult,
+    carriesDataDiff: boolean,
   ): Promise<void> {
     const stored = await this.storePendingChangeUseCase.execute(change);
 
@@ -126,6 +136,18 @@ export class FetchUpdatesController {
     }
 
     this.incrementResultCounter(change, result);
+
+    // Un update che tocca campi modificati da noi non si applica da solo:
+    // resta 'pending' e lo decide un umano dalla dashboard. new, deactivate e
+    // reactivate restano automatici: sono fatti dichiarati dalla fonte, non
+    // conflitti di merito.
+    if (this.needsHumanReview(change, carriesDataDiff)) {
+      result.held_for_review++;
+      console.log(
+        `[Sync] ${change.external_id}: conflitto con modifiche locali, tenuto in review (winner=${change.suggested_winner})`,
+      );
+      return;
+    }
 
     if (autoApply) {
       const changeId = this.storePendingChangeUseCase.getLastInsertedId();
@@ -157,6 +179,27 @@ export class FetchUpdatesController {
         result.errors++;
       }
     }
+  }
+
+  /**
+   * true se il change non va applicato in automatico.
+   *
+   * Due casi, entrambi update sui dati:
+   *   - suggested_winner='local': il record locale e' stato toccato dopo
+   *     l'export remoto, quindi c'e' una correzione nostra da non perdere;
+   *   - carriesDataDiff: il change unisce attivazione e dati, e prima il flag
+   *     skipTimestampCheck disattivava ogni protezione sui campi dati.
+   *
+   * Un 'new' non ha nulla di locale da sovrascrivere; deactivate e reactivate
+   * riflettono lo stato dichiarato dalla fonte, autorevole su quello.
+   */
+  private needsHumanReview(
+    change: PendingChangeInsert,
+    carriesDataDiff: boolean,
+  ): boolean {
+    if (carriesDataDiff) return true;
+    return change.change_type === "update" &&
+      change.suggested_winner === "local";
   }
 
   private async buildIndex(): Promise<RepeaterIndex> {
@@ -214,12 +257,12 @@ export class FetchUpdatesController {
 
     return (
       index.byExtId.get(key) ??
-      index.byFreqLocator.get(key) ??
-      (record.Identificativo
-        ? index.byCallsignLocator.get(
+        index.byFreqLocator.get(key) ??
+        (record.Identificativo
+          ? index.byCallsignLocator.get(
             `${record.Identificativo}_${record.Locator}`,
           ) ?? index.byCallsign.get(record.Identificativo) ?? null
-        : null)
+          : null)
     );
   }
 
@@ -228,10 +271,18 @@ export class FetchUpdatesController {
     result: FetchUpdatesResult,
   ): void {
     switch (change.change_type) {
-      case "new": result.new_repeaters++; break;
-      case "update": result.updates++; break;
-      case "deactivate": result.deactivations++; break;
-      case "reactivate": result.reactivations++; break;
+      case "new":
+        result.new_repeaters++;
+        break;
+      case "update":
+        result.updates++;
+        break;
+      case "deactivate":
+        result.deactivations++;
+        break;
+      case "reactivate":
+        result.reactivations++;
+        break;
     }
   }
 }

@@ -7,7 +7,9 @@ import type { HamQRGUpdateRecord } from "../../_shared/types.ts";
 
 // --- Helpers ---
 
-function makeRecord(overrides: Partial<HamQRGUpdateRecord> = {}): HamQRGUpdateRecord {
+function makeRecord(
+  overrides: Partial<HamQRGUpdateRecord> = {},
+): HamQRGUpdateRecord {
   return {
     ID: "100",
     Ripetitore: "RV50",
@@ -44,6 +46,7 @@ function makeLocalRepeater(overrides: Record<string, unknown> = {}) {
     lat: 44.46751,
     lon: 8.08858,
     is_active: true,
+    source: "iz8wnh",
     updated_at: "2026-03-01T00:00:00Z",
     ...overrides,
   };
@@ -198,7 +201,7 @@ Deno.test("New access mode not in local → diff['access_ANALOG']", async () => 
   assertEquals(result!.diff["access_ANALOG"].local, null);
 });
 
-Deno.test("skipTimestampCheck=true → does not skip even if local newer", async () => {
+Deno.test("Local piu' recente del remoto → nessun change, la correzione locale resta", async () => {
   const uc = createUseCase();
   const result = await uc.execute(
     makeRecord({
@@ -207,11 +210,64 @@ Deno.test("skipTimestampCheck=true → does not skip even if local newer", async
     }),
     makeLocalRepeater({ updated_at: "2026-03-15T00:00:00Z" }),
     [makeAccess()],
-    true, // skipTimestampCheck
+  );
+
+  assertEquals(result, null);
+});
+
+Deno.test("Stesso giorno → vince il locale (Ultima_Modifica e' una data, non un istante)", async () => {
+  const result = await createUseCase().execute(
+    makeRecord({
+      Localita: "Cuneo",
+      Ultima_Modifica: "2026-09-30",
+    }),
+    makeLocalRepeater({ updated_at: "2026-09-30T12:02:51Z" }),
+    [makeAccess()],
+  );
+
+  assertNotEquals(result, null);
+  assertEquals(result!.suggested_winner, "local");
+});
+
+Deno.test("source='iz8wnh+manual' → winner 'local' anche con remoto di giorni dopo", async () => {
+  // Caso IR1UBC: coordinate corrette a mano, export remoto successivo. Il
+  // confronto di date qui perderebbe sempre, perche' l'export si rigenera ogni
+  // notte: e' la provenienza a dover prevalere.
+  const result = await createUseCase().execute(
+    makeRecord({
+      Localita: "Cuneo",
+      Lat: "44.384013",
+      Lon: "7.599794",
+      Ultima_Modifica: "2026-09-30",
+    }),
+    makeLocalRepeater({
+      locality: "Cuneo, Torre Civica",
+      lat: 44.3930599,
+      lon: 7.5517131,
+      source: "iz8wnh+manual",
+      updated_at: "2026-09-29T12:02:51Z",
+    }),
+    [makeAccess()],
+  );
+
+  assertNotEquals(result, null);
+  assertEquals(result!.suggested_winner, "local");
+  assertNotEquals(result!.diff.lat, undefined);
+});
+
+Deno.test("Remoto di un giorno successivo su record non manuale → winner 'remote'", async () => {
+  const result = await createUseCase().execute(
+    makeRecord({
+      Localita: "Changed",
+      Ultima_Modifica: "2026-04-06",
+    }),
+    makeLocalRepeater({ updated_at: "2026-03-01T00:00:00Z" }),
+    [makeAccess()],
   );
 
   assertNotEquals(result, null);
   assertEquals(result!.change_type, "update");
+  assertEquals(result!.suggested_winner, "remote");
   assertNotEquals(result!.diff.locality, undefined);
 });
 
